@@ -1,0 +1,19 @@
+{
+  "statusList": {
+    "pending": {
+      "label": "Pending",
+      "color": "#F3F4F6",
+      "textColor": "#313B4A"
+    },
+    "progress": {
+      "label": "In Progress",
+      "color": "#DBEAFF",
+      "textColor": "#1E41BB"
+    },
+    "completed": {
+      "label": "Completed",
+      "color": "#DCFCE6",
+      "textColor": "#2A7847"
+    }
+  }
+}
