@@ -2,18 +2,21 @@
   "statusList": {
     "pending": {
       "label": "Pending",
-      "color": "#F3F4F6",
-      "textColor": "#313B4A"
+      "color": "#FEF9C3",
+      "textColor": "#92400E",
+      "dotColor": "#D97706"
     },
     "progress": {
       "label": "In Progress",
       "color": "#DBEAFF",
-      "textColor": "#1E41BB"
+      "textColor": "#1E41BB",
+      "dotColor": "#2563EB"
     },
     "completed": {
       "label": "Completed",
       "color": "#DCFCE6",
-      "textColor": "#2A7847"
+      "textColor": "#166534",
+      "dotColor": "#16A34A"
     }
   }
 }

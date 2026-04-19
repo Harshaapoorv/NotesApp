@@ -1,14 +1,18 @@
 import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
 import Add from '../assets/icons/Add.jsx';
+import Delete from '../assets/icons/Delete.jsx';
 
 const Button = ({
   onPress,
   title,
   additionalStyles,
   isIcon = false,
+  isAdd = false,
+  isDelete = false,
   variantType = 'primary',
   isDisabled = false,
+  textStyles,
 }) => {
   return (
     <Pressable
@@ -20,8 +24,15 @@ const Button = ({
         additionalStyles,
       ]}
     >
-      {isIcon && <Add width={16} height={16} />}
-      <Text style={[styles.buttonText, styles[`${variantType}ButtonText`]]}>
+      {isIcon && isAdd && <Add width={16} height={16} />}
+      {isIcon && isDelete && <Delete width={16} height={16} />}
+      <Text
+        style={[
+          styles.buttonText,
+          styles[`${variantType}ButtonText`],
+          textStyles,
+        ]}
+      >
         {title}
       </Text>
     </Pressable>

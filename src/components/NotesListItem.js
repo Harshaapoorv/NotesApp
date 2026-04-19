@@ -1,8 +1,9 @@
 import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
 import contentConfig from '../assets/json/content.json';
-import Calendar from '../assets/icons/Calendar.jsx';
+import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Timer from '../assets/icons/Timer.jsx';
+import { convertToShortDate } from '../shared/utils.js';
 import { useNavigation } from '@react-navigation/native';
 
 const ListItem = ({ config }) => {
@@ -12,7 +13,10 @@ const ListItem = ({ config }) => {
 
   return (
     <Pressable
-      style={styles.container}
+      style={[
+        styles.container,
+        config?.status === 'completed' && styles.completedCard,
+      ]}
       onPress={() => navigation.navigate('Note', { config })}
     >
       <View style={styles.notesHeader}>
@@ -33,18 +37,22 @@ const ListItem = ({ config }) => {
       </View>
       <View style={styles.footer}>
         <View style={styles.time}>
-          <Calendar width={14} height={14} />
+          <CalendarIcon width={14} height={14} />
           <Text style={styles.timeText}>
-            {config?.dateCreated?.getDate() + 1}/
-            {config?.dateCreated?.getMonth() + 1}/
-            {config?.dateCreated?.getFullYear()}
+            {convertToShortDate(`${config?.dateCreated?.getDate() + 1}/
+            ${
+              config?.dateCreated?.getMonth() + 1
+            }/${config?.dateCreated?.getFullYear()}`)}
           </Text>
         </View>
         <View style={styles.time}>
           <Timer width={14} height={14} />
           <Text style={styles.timeText}>
-            {config?.deadline?.getDate() + 1}/{config?.deadline?.getMonth() + 1}
-            /{config?.deadline?.getFullYear()}
+            {convertToShortDate(
+              `${config?.deadline?.getDate() + 1}/${
+                config?.deadline?.getMonth() + 1
+              }/${config?.deadline?.getFullYear()}`,
+            )}
           </Text>
         </View>
       </View>
@@ -72,12 +80,16 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
     elevation: 2,
   },
+  completedCard: {
+    opacity: 0.6,
+  },
   notesHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   noteTitle: {
+    width: '70%',
     fontSize: 16,
     fontWeight: '700',
     color: '#111827',

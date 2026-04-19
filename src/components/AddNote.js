@@ -13,15 +13,38 @@ import uuid from 'react-native-uuid';
 import Button from './Button';
 import Close from '../assets/icons/Close.jsx';
 import Input from './Input';
+import contentConfig from '../assets/json/content.json';
+import { useFocusEffect } from '@react-navigation/native';
 
-const AddNote = ({ isVisible, setIsVisible, setNotesList, notesList }) => {
+const AddNote = ({
+  isVisible,
+  setIsVisible,
+  setNotesList,
+  notesList,
+  type = 'create',
+  config = {},
+}) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState();
   const [deadline, setDeadline] = useState();
   const [dateCreated, setDateCreated] = useState(new Date());
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isPrePopulated, setIsPrePopulated] = useState(false);
   const keyboardOffset = useRef(new Animated.Value(0)).current;
+
+  const statusConfig = contentConfig.statusList;
+
+  useFocusEffect(() => {
+    if (type === 'edit' && !isPrePopulated) {
+      setTitle(config?.title);
+      setDescription(config?.description);
+      setStatus(statusConfig[config?.status]);
+      setDeadline(config?.deadline);
+      setDateCreated(config?.dateCreated);
+      setIsPrePopulated(true);
+    }
+  });
 
   useEffect(() => {
     if (title) {
@@ -63,18 +86,31 @@ const AddNote = ({ isVisible, setIsVisible, setNotesList, notesList }) => {
   }, []);
 
   const onCreateNote = () => {
-    let arr = [...notesList];
+    let arr;
+    if (type === 'edit') {
+      arr = [];
+    } else {
+      arr = [...notesList];
+    }
     let newNote = {
-      id: uuid.v4(),
       title: title,
       description: description,
       status: status?.value ? status.value : status,
       deadline: deadline,
       dateCreated: dateCreated,
     };
+    if (type === 'edit') {
+      newNote = { ...newNote, id: config?.id ? config.id : uuid.v4() };
+      arr.push(newNote);
+    } else {
+      newNote = { ...newNote, id: uuid.v4() };
+    }
     arr.push(newNote);
-    console.log('New Note Created: ', newNote);
-    setNotesList(arr);
+    if (type === 'create') {
+      setNotesList(arr);
+    } else {
+      console.log('Edited Note: ', newNote);
+    }
     onReset();
   };
 
@@ -104,9 +140,13 @@ const AddNote = ({ isVisible, setIsVisible, setNotesList, notesList }) => {
               onPress={() => onReset()}
             />
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Create New Note</Text>
+              <Text style={styles.modalTitle}>
+                {type === 'edit' ? `Edit Note` : 'Create New Note'}
+              </Text>
               <Text style={styles.modalTitleDesc}>
-                Fill in the details for your new note:
+                {type === 'edit'
+                  ? title
+                  : 'Fill in the details for your new note:'}
               </Text>
             </View>
 
@@ -164,7 +204,7 @@ const AddNote = ({ isVisible, setIsVisible, setNotesList, notesList }) => {
             </ScrollView>
             <View style={styles.modalFooter}>
               <Button
-                title="Create Note"
+                title={type === 'edit' ? 'Save Changes' : 'Create Note'}
                 variantType="primary"
                 onPress={() => onCreateNote()}
                 isDisabled={isButtonDisabled}
@@ -207,8 +247,8 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     position: 'absolute',
-    top: 1,
-    right: 1,
+    top: 16,
+    right: 16,
     alignSelf: 'flex-end',
   },
   modalHeader: {
@@ -222,9 +262,9 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   modalTitleDesc: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '400',
-    color: '#9797a4',
+    color: '#667085',
   },
   modalBody: {
     width: '100%',

@@ -9,8 +9,10 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { Calendar } from 'react-native-calendars';
+import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Expand from '../assets/icons/Expand.jsx';
 import Collapse from '../assets/icons/Collapse.jsx';
+import { convertToShortDate } from '../shared/utils.js';
 
 const Input = ({
   variantType = 'text',
@@ -168,9 +170,15 @@ const Input = ({
         return (
           <TouchableOpacity onPress={() => setShowDateModal(true)}>
             <View style={styles.input}>
-              <Text style={{ color: value ? '#000' : '#9ca3af' }}>
-                {value ? value.toLocaleDateString('en-GB') : 'Select deadline'}
-              </Text>
+              <View style={styles.dropdown}>
+                <Text style={{ color: value ? '#000' : '#9ca3af' }}>
+                  {value
+                    ? convertToShortDate(`${value.getDate() + 1}/
+            ${value.getMonth() + 1}/${value.getFullYear()}`)
+                    : 'Select deadline'}
+                </Text>
+                <CalendarIcon width={18} height={18} />
+              </View>
             </View>
             {showDatePickerModal()}
           </TouchableOpacity>
