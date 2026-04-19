@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-const NoteScreen = () => {
+const NoteScreen = ({ config }) => {
   return (
     <View>
-      <Text>Note</Text>
+      <Text>{config?.title}</Text>
     </View>
   );
 };

@@ -3,14 +3,18 @@ import { Pressable, View, Text, StyleSheet } from 'react-native';
 import contentConfig from '../assets/json/content.json';
 import Calendar from '../assets/icons/Calendar.jsx';
 import Timer from '../assets/icons/Timer.jsx';
-import { hoverGestureHandlerProps } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/hoverGesture.js';
+import { useNavigation } from '@react-navigation/native';
 
 const ListItem = ({ config }) => {
   const pageConfig = contentConfig.statusList;
   const statusConfig = pageConfig[config.status];
+  const navigation = useNavigation();
 
   return (
-    <Pressable style={styles.container} onPress={config.onPress}>
+    <Pressable
+      style={styles.container}
+      onPress={() => navigation.navigate('Note', { config })}
+    >
       <View style={styles.notesHeader}>
         <Text style={styles.noteTitle}>{config.title}</Text>
         <View
@@ -30,11 +34,18 @@ const ListItem = ({ config }) => {
       <View style={styles.footer}>
         <View style={styles.time}>
           <Calendar width={14} height={14} />
-          <Text style={styles.timeText}>{config?.dateCreated}</Text>
+          <Text style={styles.timeText}>
+            {config?.dateCreated?.getDate() + 1}/
+            {config?.dateCreated?.getMonth() + 1}/
+            {config?.dateCreated?.getFullYear()}
+          </Text>
         </View>
         <View style={styles.time}>
           <Timer width={14} height={14} />
-          <Text style={styles.timeText}>{config?.deadline}</Text>
+          <Text style={styles.timeText}>
+            {config?.deadline?.getDate() + 1}/{config?.deadline?.getMonth() + 1}
+            /{config?.deadline?.getFullYear()}
+          </Text>
         </View>
       </View>
     </Pressable>

@@ -1,10 +1,10 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Button from '../components/Button';
 import NotesList from '../components/NotesList';
 import Add from '../assets/icons/Add.jsx';
 import NotesIcon from '../assets/icons/NotesIcon.jsx';
+import AddNote from '../components/AddNote';
 
 const HomeScreen = () => {
   //   const notesList = [
@@ -33,7 +33,10 @@ const HomeScreen = () => {
   //       status: 'progress',
   //     },
   //   ];
-  const notesList = [];
+  const [notesList, setNotesList] = useState([]);
+
+  const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -59,9 +62,18 @@ const HomeScreen = () => {
           </ScrollView>
         )}
       </View>
-      <View style={styles.floaterButton}>
+      <Pressable
+        style={styles.floaterButton}
+        onPress={() => setIsAddNoteVisible(true)}
+      >
         <Add width={48} height={48} color="#ffffff" />
-      </View>
+      </Pressable>
+      <AddNote
+        isVisible={isAddNoteVisible}
+        setIsVisible={setIsAddNoteVisible}
+        notesList={notesList}
+        setNotesList={setNotesList}
+      />
     </SafeAreaView>
   );
 };
