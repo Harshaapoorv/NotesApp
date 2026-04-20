@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import contentConfig from '../assets/json/content.json';
 import Button from '../components/Button';
@@ -12,17 +12,17 @@ import { convertToLongDate } from '../shared/utils.js';
 import api from '../shared/api';
 
 const NoteScreen = ({ route }) => {
-  const { config, onRefresh } = route.params;
+  const { id: id, onRefresh } = route.params;
   const navigation = useNavigation();
-  const statusConfig = contentConfig.statusList[config?.status];
+  const [statusConfig, setStatusConfig] = useState();
   const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
+  const [config, setConfig] = useState({});
+  const [getData, setGetData] = useState(false);
 
   const onDelete = async () => {
     await api
-      .delete(`/notes/${config?.id}`)
+      .delete(`/notes/${id}`)
       .then(function (response) {
-        console.log(response.data);
-        console.log(response.status);
         if (response.status === 200) {
           onRefresh();
           navigation.goBack();
@@ -30,9 +30,39 @@ const NoteScreen = ({ route }) => {
       })
       .catch(function (error) {
         console.log(error);
-        console.log(error?.data);
       });
   };
+
+  const fetchData = async () => {
+    await api
+      .get(`/notes/${id}`)
+      .then(function (response) {
+        if (response?.data) {
+          let obj = response.data;
+          let newObj = { ...obj };
+          newObj.dateCreated = new Date(obj?.created_at);
+          newObj.deadline = new Date(obj?.deadline);
+          setStatusConfig(contentConfig.statusList[obj?.status]);
+          setConfig(newObj);
+        }
+        setGetData(false);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    if (route?.params?.id) {
+      setGetData(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (getData) {
+      fetchData();
+    }
+  }, [getData]);
 
   return (
     <View style={styles.screen}>
@@ -40,7 +70,6 @@ const NoteScreen = ({ route }) => {
         <TouchableWithoutFeedback
           onPress={() => {
             navigation.goBack();
-            console.log('Back Pressed');
           }}
         >
           <BackArrow width={16} height={16} />
@@ -140,8 +169,6 @@ const NoteScreen = ({ route }) => {
         setIsVisible={setIsAddNoteVisible}
         type="edit"
         config={config}
-        // notesList={notesList}
-        // setNotesList={setNotesList}
       />
     </View>
   );

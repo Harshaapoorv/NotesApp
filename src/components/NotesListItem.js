@@ -17,7 +17,7 @@ const ListItem = ({ config, onRefresh }) => {
         styles.container,
         config?.status === 'completed' && styles.completedCard,
       ]}
-      onPress={() => navigation.navigate('Note', { config, onRefresh })}
+      onPress={() => navigation.navigate('Note', { id: config?.id, onRefresh })}
     >
       <View style={styles.notesHeader}>
         <Text style={styles.noteTitle}>{config.title}</Text>
