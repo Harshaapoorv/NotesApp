@@ -173,7 +173,7 @@ const Input = ({
               <View style={styles.dropdown}>
                 <Text style={{ color: value ? '#000' : '#9ca3af' }}>
                   {value
-                    ? convertToShortDate(`${value.getDate() + 1}/
+                    ? convertToShortDate(`${value.getDate()}/
             ${value.getMonth() + 1}/${value.getFullYear()}`)
                     : 'Select deadline'}
                 </Text>

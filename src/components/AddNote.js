@@ -10,25 +10,18 @@ import {
   Animated,
 } from 'react-native';
 import uuid from 'react-native-uuid';
+import axios from 'axios';
 import Button from './Button';
 import Close from '../assets/icons/Close.jsx';
 import Input from './Input';
 import contentConfig from '../assets/json/content.json';
 import { useFocusEffect } from '@react-navigation/native';
 
-const AddNote = ({
-  isVisible,
-  setIsVisible,
-  setNotesList,
-  notesList,
-  type = 'create',
-  config = {},
-}) => {
+const AddNote = ({ isVisible, setIsVisible, type = 'create', config = {} }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState();
   const [deadline, setDeadline] = useState();
-  const [dateCreated, setDateCreated] = useState(new Date());
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [isPrePopulated, setIsPrePopulated] = useState(false);
   const keyboardOffset = useRef(new Animated.Value(0)).current;
@@ -41,7 +34,6 @@ const AddNote = ({
       setDescription(config?.description);
       setStatus(statusConfig[config?.status]);
       setDeadline(config?.deadline);
-      setDateCreated(config?.dateCreated);
       setIsPrePopulated(true);
     }
   });
@@ -85,33 +77,33 @@ const AddNote = ({
     };
   }, []);
 
+  const makeApiCall = async body => {
+    await axios
+      .post(`http://127.0.0.1:8000/notes`, body)
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    onReset();
+  };
+
   const onCreateNote = () => {
-    let arr;
-    if (type === 'edit') {
-      arr = [];
-    } else {
-      arr = [...notesList];
-    }
     let newNote = {
       title: title,
       description: description,
       status: status?.value ? status.value : status,
       deadline: deadline,
-      dateCreated: dateCreated,
     };
     if (type === 'edit') {
       newNote = { ...newNote, id: config?.id ? config.id : uuid.v4() };
-      arr.push(newNote);
-    } else {
-      newNote = { ...newNote, id: uuid.v4() };
     }
-    arr.push(newNote);
     if (type === 'create') {
-      setNotesList(arr);
+      makeApiCall(newNote);
     } else {
       console.log('Edited Note: ', newNote);
     }
-    onReset();
   };
 
   return (

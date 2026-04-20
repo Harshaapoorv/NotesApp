@@ -1,41 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NotesList from '../components/NotesList';
 import Add from '../assets/icons/Add.jsx';
 import NotesIcon from '../assets/icons/NotesIcon.jsx';
 import AddNote from '../components/AddNote';
+import api from '../shared/api';
 
 const HomeScreen = () => {
-  //   const notesList = [
-  //     {
-  //       id: '1',
-  //       title: 'Note 1',
-  //       description: 'Description 1',
-  //       dateCreated: '2026-04-07',
-  //       deadline: '2026-04-15',
-  //       status: 'pending',
-  //     },
-  //     {
-  //       id: '2',
-  //       title: 'Note 2',
-  //       description: 'Description 2',
-  //       dateCreated: '2026-04-07',
-  //       deadline: '2026-04-15',
-  //       status: 'completed',
-  //     },
-  //     {
-  //       id: '3',
-  //       title: 'Note 3',
-  //       description: 'Description 3',
-  //       dateCreated: '2026-04-07',
-  //       deadline: '2026-04-15',
-  //       status: 'progress',
-  //     },
-  //   ];
   const [notesList, setNotesList] = useState([]);
 
   const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
+
+  async function fetchData() {
+    await api
+      .get('/notes')
+      .then(function (response) {
+        if (response?.data) {
+          let arr = [];
+          response?.data?.map(obj => {
+            let newObj = { ...obj };
+            newObj.dateCreated = new Date(obj?.created_at);
+            newObj.deadline = new Date(obj?.deadline);
+            arr.push(newObj);
+          });
+          setNotesList(arr);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  useEffect(() => {
+    if (!isAddNoteVisible) {
+      fetchData();
+    }
+  }, [isAddNoteVisible]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -58,7 +59,7 @@ const HomeScreen = () => {
             contentContainerStyle={styles.body}
             showsVerticalScrollIndicator={false}
           >
-            <NotesList list={notesList} />
+            <NotesList list={notesList} onRefresh={fetchData} />
           </ScrollView>
         )}
       </View>

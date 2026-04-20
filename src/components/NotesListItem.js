@@ -6,7 +6,7 @@ import Timer from '../assets/icons/Timer.jsx';
 import { convertToShortDate } from '../shared/utils.js';
 import { useNavigation } from '@react-navigation/native';
 
-const ListItem = ({ config }) => {
+const ListItem = ({ config, onRefresh }) => {
   const pageConfig = contentConfig.statusList;
   const statusConfig = pageConfig[config.status];
   const navigation = useNavigation();
@@ -17,7 +17,7 @@ const ListItem = ({ config }) => {
         styles.container,
         config?.status === 'completed' && styles.completedCard,
       ]}
-      onPress={() => navigation.navigate('Note', { config })}
+      onPress={() => navigation.navigate('Note', { config, onRefresh })}
     >
       <View style={styles.notesHeader}>
         <Text style={styles.noteTitle}>{config.title}</Text>

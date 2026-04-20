@@ -9,12 +9,30 @@ import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Timer from '../assets/icons/Timer.jsx';
 import { useNavigation } from '@react-navigation/native';
 import { convertToLongDate } from '../shared/utils.js';
+import api from '../shared/api';
 
 const NoteScreen = ({ route }) => {
-  const { config } = route.params;
+  const { config, onRefresh } = route.params;
   const navigation = useNavigation();
   const statusConfig = contentConfig.statusList[config?.status];
   const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
+
+  const onDelete = async () => {
+    await api
+      .delete(`/notes/${config?.id}`)
+      .then(function (response) {
+        console.log(response.data);
+        console.log(response.status);
+        if (response.status === 200) {
+          onRefresh();
+          navigation.goBack();
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        console.log(error?.data);
+      });
+  };
 
   return (
     <View style={styles.screen}>
@@ -113,7 +131,7 @@ const NoteScreen = ({ route }) => {
           isIcon={true}
           textStyles={styles.deleteButtonText}
           onPress={() => {
-            console.log(config?.id);
+            onDelete();
           }}
         />
       </View>
