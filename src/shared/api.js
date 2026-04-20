@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import { BASE_URL } from '@env';
 import Config from 'react-native-config';
 
 const api = axios.create({
