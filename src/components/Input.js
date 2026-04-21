@@ -101,6 +101,7 @@ const Input = ({
             textContentType={type}
             multiline={multiline}
             numberOfLines={numberOfLines}
+            textAlignVertical="top"
             onFocus={() => setIsInputFocused(true)}
             onBlur={() => setIsInputFocused(false)}
           />
@@ -225,7 +226,9 @@ const styles = StyleSheet.create({
     color: '#353535',
   },
   required: {
-    color: 'red',
+    color: '#E80015',
+    fontSize: 16,
+    fontWeight: '600',
   },
   input: {
     width: '100%',

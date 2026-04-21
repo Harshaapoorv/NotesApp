@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  ScrollView,
+} from 'react-native';
 import contentConfig from '../assets/json/content.json';
 import Button from '../components/Button';
 import AddNote from '../components/AddNote.js';
@@ -7,6 +13,7 @@ import BackArrow from '../assets/icons/Back.jsx';
 import Edit from '../assets/icons/Edit.jsx';
 import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Timer from '../assets/icons/Timer.jsx';
+import Dot from '../assets/icons/Dot.jsx';
 import { useNavigation } from '@react-navigation/native';
 import { convertToLongDate } from '../shared/utils.js';
 import api from '../shared/api';
@@ -78,92 +85,100 @@ const NoteScreen = ({ route }) => {
         <TouchableWithoutFeedback
           onPress={() => {
             setIsAddNoteVisible(true);
-            console.log('Edit Pressed');
           }}
         >
           <Edit width={16} height={16} />
         </TouchableWithoutFeedback>
       </View>
-      <View style={styles.body}>
-        <View style={{ gap: 12 }}>
-          <Text style={styles.sectionTitle}>DESCRIPTION</Text>
-          <Text style={styles.description}>{config?.description}</Text>
-        </View>
-        <View style={styles.metaDataContainer}>
-          <View style={styles.rowBig}>
-            <View style={{ gap: 8 }}>
-              <View style={styles.row}>
-                <CalendarIcon width={16} height={16} />
-                <Text style={styles.sectionTitle}>Created</Text>
-              </View>
-              <Text style={styles.description}>
-                {convertToLongDate(`${config?.dateCreated?.getDate() + 1}/
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContainer}
+      >
+        <View style={styles.body}>
+          <View style={{ gap: 12 }}>
+            <Text style={styles.sectionTitle}>DESCRIPTION</Text>
+            <Text style={styles.description}>{config?.description}</Text>
+          </View>
+          <View style={styles.metaDataContainer}>
+            <View style={styles.rowBig}>
+              <View style={{ gap: 8 }}>
+                <View style={styles.row}>
+                  <CalendarIcon width={16} height={16} />
+                  <Text style={styles.sectionTitle}>Created</Text>
+                </View>
+                {config?.dateCreated && (
+                  <Text style={styles.description}>
+                    {convertToLongDate(`${config?.dateCreated?.getDate() + 1}/
                 ${
                   config?.dateCreated?.getMonth() + 1
                 }/${config?.dateCreated?.getFullYear()}`)}
-                <Text style={{ color: '#6b7280' }}>
-                  {' '}
-                  at {config?.dateCreated?.getHours()}:
-                  {config?.dateCreated?.getMinutes()}
-                </Text>
-              </Text>
-            </View>
-            <View style={{ gap: 8 }}>
-              <View style={styles.row}>
-                <Timer width={16} height={16} />
-                <Text style={styles.sectionTitle}>Deadline</Text>
-              </View>
-              <Text style={styles.description}>
-                {convertToLongDate(
-                  `${config?.deadline?.getDate() + 1}/${
-                    config?.deadline?.getMonth() + 1
-                  }/${config?.deadline?.getFullYear()}`,
+                    <Text style={styles.time}>
+                      {' '}
+                      at {config?.dateCreated?.getHours()}:
+                      {config?.dateCreated?.getMinutes()}
+                    </Text>
+                  </Text>
                 )}
-              </Text>
+              </View>
+              <View style={{ gap: 8 }}>
+                <View style={styles.row}>
+                  <Timer width={16} height={16} />
+                  <Text style={styles.sectionTitle}>Deadline</Text>
+                </View>
+                {config?.deadline && (
+                  <Text style={styles.description}>
+                    {convertToLongDate(
+                      `${config?.deadline?.getDate() + 1}/${
+                        config?.deadline?.getMonth() + 1
+                      }/${config?.deadline?.getFullYear()}`,
+                    )}
+                  </Text>
+                )}
+              </View>
             </View>
-          </View>
 
-          <View style={{ gap: 6 }}>
-            <View style={styles.row}>
-              <View
-                style={[
-                  { backgroundColor: statusConfig?.dotColor },
-                  styles.dot,
-                ]}
-              />
-              <Text style={styles.sectionTitle}>Status</Text>
-            </View>
-            <View
-              style={[
-                {
-                  backgroundColor: statusConfig?.color,
-                  borderColor: statusConfig?.color,
-                },
-                styles.status,
-              ]}
-            >
-              <Text
-                style={[styles.description, { color: statusConfig?.textColor }]}
-              >
-                {statusConfig?.label}
-              </Text>
+            <View style={{ gap: 6 }}>
+              <View style={styles.row}>
+                <Dot width={8} height={8} color={statusConfig?.textColor} />
+                <Text style={styles.sectionTitle}>Status</Text>
+              </View>
+              {statusConfig && (
+                <View
+                  style={[
+                    {
+                      backgroundColor: statusConfig?.color,
+                      borderColor: statusConfig?.color,
+                    },
+                    styles.status,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.description,
+                      { color: statusConfig?.textColor },
+                    ]}
+                  >
+                    {statusConfig?.label}
+                  </Text>
+                </View>
+              )}
             </View>
           </View>
         </View>
-      </View>
-      <View style={styles.footer}>
-        <Button
-          title="Delete Note"
-          variantType="secondary"
-          additionalStyles={styles.deleteButton}
-          isDelete={true}
-          isIcon={true}
-          textStyles={styles.deleteButtonText}
-          onPress={() => {
-            onDelete();
-          }}
-        />
-      </View>
+        <View style={styles.footer}>
+          <Button
+            title="Delete Note"
+            variantType="secondary"
+            additionalStyles={styles.deleteButton}
+            isDelete={true}
+            isIcon={true}
+            textStyles={styles.deleteButtonText}
+            onPress={() => {
+              onDelete();
+            }}
+          />
+        </View>
+      </ScrollView>
       <AddNote
         isVisible={isAddNoteVisible}
         setIsVisible={setIsAddNoteVisible}
@@ -194,6 +209,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#111827',
   },
+  scrollContainer: {
+    marginBottom: 40,
+  },
   body: {
     padding: 16,
     paddingTop: 24,
@@ -206,7 +224,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: '#111827',
+    color: '#000000',
   },
   metaDataContainer: {
     backgroundColor: '#F9FAFB',
@@ -225,10 +243,10 @@ const styles = StyleSheet.create({
     gap: 8,
     alignItems: 'center',
   },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 8,
+  time: {
+    fontSize: 12,
+    fontWeight: '300',
+    color: '#6b7280',
   },
   status: {
     paddingHorizontal: 8,
