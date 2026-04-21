@@ -127,8 +127,8 @@ const NoteScreen = ({ route }) => {
             <View style={styles.row}>
               <View
                 style={[
-                  styles.dot,
                   { backgroundColor: statusConfig?.dotColor },
+                  styles.dot,
                 ]}
               />
               <Text style={styles.sectionTitle}>Status</Text>
@@ -229,7 +229,6 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 8,
-    backgroundColor: '#6b7280',
   },
   status: {
     paddingHorizontal: 8,

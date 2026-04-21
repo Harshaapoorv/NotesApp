@@ -10,7 +10,7 @@ import {
   Animated,
 } from 'react-native';
 import uuid from 'react-native-uuid';
-import axios from 'axios';
+import api from '../shared/api';
 import Button from './Button';
 import Close from '../assets/icons/Close.jsx';
 import Input from './Input';
@@ -78,8 +78,8 @@ const AddNote = ({ isVisible, setIsVisible, type = 'create', config = {} }) => {
   }, []);
 
   const makeApiCall = async body => {
-    await axios
-      .post(`http://127.0.0.1:8000/notes`, body)
+    await api
+      .post(`/notes`, body)
       .then(function (response) {
         console.log(response);
       })
