@@ -39,7 +39,7 @@ const ListItem = ({ config, onRefresh }) => {
         <View style={styles.time}>
           <CalendarIcon width={14} height={14} />
           <Text style={styles.timeText}>
-            {convertToShortDate(`${config?.dateCreated?.getDate() + 1}/
+            {convertToShortDate(`${config?.dateCreated?.getDate()}/
             ${
               config?.dateCreated?.getMonth() + 1
             }/${config?.dateCreated?.getFullYear()}`)}
@@ -49,7 +49,7 @@ const ListItem = ({ config, onRefresh }) => {
           <Timer width={14} height={14} />
           <Text style={styles.timeText}>
             {convertToShortDate(
-              `${config?.deadline?.getDate() + 1}/${
+              `${config?.deadline?.getDate()}/${
                 config?.deadline?.getMonth() + 1
               }/${config?.deadline?.getFullYear()}`,
             )}

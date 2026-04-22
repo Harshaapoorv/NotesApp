@@ -108,7 +108,7 @@ const NoteScreen = ({ route }) => {
                 </View>
                 {config?.dateCreated && (
                   <Text style={styles.description}>
-                    {convertToLongDate(`${config?.dateCreated?.getDate() + 1}/
+                    {convertToLongDate(`${config?.dateCreated?.getDate()}/
                 ${
                   config?.dateCreated?.getMonth() + 1
                 }/${config?.dateCreated?.getFullYear()}`)}
@@ -128,7 +128,7 @@ const NoteScreen = ({ route }) => {
                 {config?.deadline && (
                   <Text style={styles.description}>
                     {convertToLongDate(
-                      `${config?.deadline?.getDate() + 1}/${
+                      `${config?.deadline?.getDate()}/${
                         config?.deadline?.getMonth() + 1
                       }/${config?.deadline?.getFullYear()}`,
                     )}
