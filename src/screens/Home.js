@@ -5,38 +5,32 @@ import NotesList from '../components/NotesList';
 import Add from '../assets/icons/Add.jsx';
 import NotesIcon from '../assets/icons/NotesIcon.jsx';
 import AddNote from '../components/AddNote';
-import api from '../shared/api';
+import {
+  useGetNotesQuery,
+  useUpdateStatusMutation,
+} from '../services/notesApi';
 
 const HomeScreen = () => {
   const [notesList, setNotesList] = useState([]);
 
   const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
 
-  async function fetchData() {
-    await api
-      .get('/notes')
-      .then(function (response) {
-        if (response?.data) {
-          let arr = [];
-          response?.data?.map(obj => {
-            let newObj = { ...obj };
-            newObj.dateCreated = new Date(obj?.created_at);
-            newObj.deadline = new Date(obj?.deadline);
-            arr.push(newObj);
-          });
-          setNotesList(arr);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
+  const { data, isSuccess } = useGetNotesQuery();
 
   useEffect(() => {
-    if (!isAddNoteVisible) {
-      fetchData();
+    if (isSuccess) {
+      let arr = [];
+      data?.map(obj => {
+        let newObj = { ...obj };
+        newObj.dateCreated = new Date(obj?.created_at);
+        newObj.deadline = new Date(obj?.deadline);
+        arr.push(newObj);
+      });
+      setNotesList(arr);
     }
-  }, [isAddNoteVisible]);
+  }, [data, isSuccess]);
+
+  const [updateStatus] = useUpdateStatusMutation();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -59,7 +53,7 @@ const HomeScreen = () => {
             contentContainerStyle={styles.body}
             showsVerticalScrollIndicator={false}
           >
-            <NotesList list={notesList} onRefresh={fetchData} />
+            <NotesList list={notesList} updateStatus={updateStatus} />
           </ScrollView>
         )}
       </View>
@@ -70,6 +64,7 @@ const HomeScreen = () => {
         <Add width={48} height={48} color="#ffffff" />
       </Pressable>
       <AddNote
+        type="create"
         isVisible={isAddNoteVisible}
         setIsVisible={setIsAddNoteVisible}
         notesList={notesList}

@@ -1,12 +1,18 @@
 import React from 'react';
-import { Pressable, View, Text, StyleSheet } from 'react-native';
+import {
+  Pressable,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import contentConfig from '../assets/json/content.json';
 import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Timer from '../assets/icons/Timer.jsx';
 import { convertToShortDate } from '../shared/utils.js';
 import { useNavigation } from '@react-navigation/native';
 
-const ListItem = ({ config, onRefresh }) => {
+const ListItem = ({ config, updateStatus }) => {
   const pageConfig = contentConfig.statusList;
   const statusConfig = pageConfig[config.status];
   const navigation = useNavigation();
@@ -17,11 +23,11 @@ const ListItem = ({ config, onRefresh }) => {
         styles.container,
         config?.status === 'completed' && styles.completedCard,
       ]}
-      onPress={() => navigation.navigate('Note', { id: config?.id, onRefresh })}
+      onPress={() => navigation.navigate('Note', { id: config?.id })}
     >
       <View style={styles.notesHeader}>
         <Text style={styles.noteTitle}>{config.title}</Text>
-        <View
+        <TouchableOpacity
           style={[
             {
               backgroundColor: statusConfig?.color,
@@ -29,11 +35,12 @@ const ListItem = ({ config, onRefresh }) => {
             },
             styles.status,
           ]}
+          onPress={() => updateStatus(config?.id)}
         >
           <Text style={[styles.statusText, { color: statusConfig?.textColor }]}>
             {statusConfig?.label}
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.footer}>
         <View style={styles.time}>

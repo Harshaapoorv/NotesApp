@@ -1,13 +1,17 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Navigation from './src/screens/Navigation';
+import store from './src/store/store';
 
 const App = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <Navigation />
-    </SafeAreaView>
+    <Provider store={store}>
+      <SafeAreaView style={styles.container}>
+        <Navigation />
+      </SafeAreaView>
+    </Provider>
   );
 };
 

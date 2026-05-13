@@ -10,14 +10,16 @@ import {
   Animated,
 } from 'react-native';
 import uuid from 'react-native-uuid';
-import api from '../shared/api';
 import Button from './Button';
 import Close from '../assets/icons/Close.jsx';
 import Input from './Input';
 import contentConfig from '../assets/json/content.json';
-import { useFocusEffect } from '@react-navigation/native';
+import {
+  useUpdateNoteMutation,
+  useCreateNoteMutation,
+} from '../services/notesApi.js';
 
-const AddNote = ({ isVisible, setIsVisible, type = 'create', config = {} }) => {
+const AddNote = ({ isVisible, setIsVisible, type, config }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState();
@@ -28,7 +30,7 @@ const AddNote = ({ isVisible, setIsVisible, type = 'create', config = {} }) => {
 
   const statusConfig = contentConfig.statusList;
 
-  useFocusEffect(() => {
+  useEffect(() => {
     if (type === 'edit' && !isPrePopulated) {
       setTitle(config?.title);
       setDescription(config?.description);
@@ -36,7 +38,7 @@ const AddNote = ({ isVisible, setIsVisible, type = 'create', config = {} }) => {
       setDeadline(config?.deadline);
       setIsPrePopulated(true);
     }
-  });
+  }, [isVisible]);
 
   useEffect(() => {
     if (title) {
@@ -52,6 +54,7 @@ const AddNote = ({ isVisible, setIsVisible, type = 'create', config = {} }) => {
     setStatus();
     setDeadline();
     setIsVisible(false);
+    setIsPrePopulated(false);
   };
 
   useEffect(() => {
@@ -77,17 +80,31 @@ const AddNote = ({ isVisible, setIsVisible, type = 'create', config = {} }) => {
     };
   }, []);
 
-  const makeApiCall = async body => {
-    await api
-      .post(`/notes`, body)
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    onReset();
-  };
+  const [
+    createNote,
+    {
+      isSuccess: createNoteSuccess,
+      isLoading: createNoteLoading,
+      isError: createNoteError,
+    },
+  ] = useCreateNoteMutation();
+  const [
+    updateNote,
+    {
+      isSuccess: updateNoteSuccess,
+      isError: updateNoteError,
+      isLoading: updateNoteLoading,
+    },
+  ] = useUpdateNoteMutation();
+
+  useEffect(() => {
+    if (createNoteSuccess || updateNoteSuccess) {
+      onReset();
+    }
+    if (createNoteError || updateNoteError) {
+      alert('Something went wrong! Please try again.');
+    }
+  }, [createNoteSuccess, createNoteError, updateNoteSuccess, updateNoteError]);
 
   const onCreateNote = () => {
     let newNote = {
@@ -97,12 +114,18 @@ const AddNote = ({ isVisible, setIsVisible, type = 'create', config = {} }) => {
       deadline: deadline,
     };
     if (type === 'edit') {
-      newNote = { ...newNote, id: config?.id ? config.id : uuid.v4() };
+      newNote = {
+        id: config?.id ? config.id : uuid.v4(),
+        title: title,
+        description: description,
+        status: status?.value ? status.value : status,
+        deadline: deadline,
+      };
+      // newNote = { ...newNote, id: config?.id ? config.id : uuid.v4() };
+      updateNote(newNote);
     }
     if (type === 'create') {
-      makeApiCall(newNote);
-    } else {
-      console.log('Edited Note: ', newNote);
+      createNote(newNote);
     }
   };
 

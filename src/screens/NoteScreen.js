@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import contentConfig from '../assets/json/content.json';
 import Button from '../components/Button';
@@ -16,60 +17,50 @@ import Timer from '../assets/icons/Timer.jsx';
 import Dot from '../assets/icons/Dot.jsx';
 import { useNavigation } from '@react-navigation/native';
 import { convertToLongDate } from '../shared/utils.js';
-import api from '../shared/api';
+import {
+  useDeleteNoteMutation,
+  useGetNoteByIdQuery,
+  useUpdateStatusMutation,
+} from '../services/notesApi.js';
 
 const NoteScreen = ({ route }) => {
-  const { id: id, onRefresh } = route.params;
+  const { id: id } = route.params;
   const navigation = useNavigation();
   const [statusConfig, setStatusConfig] = useState();
   const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
   const [config, setConfig] = useState({});
-  const [getData, setGetData] = useState(false);
 
-  const onDelete = async () => {
-    await api
-      .delete(`/notes/${id}`)
-      .then(function (response) {
-        if (response.status === 200) {
-          onRefresh();
-          navigation.goBack();
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
-
-  const fetchData = async () => {
-    await api
-      .get(`/notes/${id}`)
-      .then(function (response) {
-        if (response?.data) {
-          let obj = response.data;
-          let newObj = { ...obj };
-          newObj.dateCreated = new Date(obj?.created_at);
-          newObj.deadline = new Date(obj?.deadline);
-          setStatusConfig(contentConfig.statusList[obj?.status]);
-          setConfig(newObj);
-        }
-        setGetData(false);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
+  const [
+    deleteNote,
+    {
+      isSuccess: deleteNoteSuccess,
+      isLoading: deleteNoteLoading,
+      isError: deleteNoteError,
+    },
+  ] = useDeleteNoteMutation();
 
   useEffect(() => {
-    if (route?.params?.id) {
-      setGetData(true);
+    if (deleteNoteSuccess) {
+      navigation.goBack();
     }
-  }, []);
+  }, [deleteNoteSuccess, navigation]);
+
+  const { data, isSuccess } = useGetNoteByIdQuery(id, {
+    skip: !id || deleteNoteSuccess || deleteNoteLoading,
+  });
 
   useEffect(() => {
-    if (getData) {
-      fetchData();
+    if (isSuccess) {
+      let obj = data;
+      let newObj = { ...obj };
+      newObj.dateCreated = new Date(obj?.created_at);
+      newObj.deadline = new Date(obj?.deadline);
+      setStatusConfig(contentConfig.statusList[obj?.status]);
+      setConfig(newObj);
     }
-  }, [getData]);
+  }, [data, isSuccess]);
+
+  const [updateStatus] = useUpdateStatusMutation();
 
   return (
     <View style={styles.screen}>
@@ -143,7 +134,7 @@ const NoteScreen = ({ route }) => {
                 <Text style={styles.sectionTitle}>Status</Text>
               </View>
               {statusConfig && (
-                <View
+                <TouchableOpacity
                   style={[
                     {
                       backgroundColor: statusConfig?.color,
@@ -151,6 +142,7 @@ const NoteScreen = ({ route }) => {
                     },
                     styles.status,
                   ]}
+                  onPress={() => updateStatus(config?.id)}
                 >
                   <Text
                     style={[
@@ -160,7 +152,7 @@ const NoteScreen = ({ route }) => {
                   >
                     {statusConfig?.label}
                   </Text>
-                </View>
+                </TouchableOpacity>
               )}
             </View>
           </View>
@@ -174,7 +166,8 @@ const NoteScreen = ({ route }) => {
             isIcon={true}
             textStyles={styles.deleteButtonText}
             onPress={() => {
-              onDelete();
+              // onDelete();
+              deleteNote(config?.id);
             }}
           />
         </View>
