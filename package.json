@@ -26,6 +26,7 @@
     "@react-navigation/stack": "^7.8.9",
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.15.1",
+    "dayjs": "^1.11.20",
     "react": "19.2.3",
     "react-native": "0.84.1",
     "react-native-calendars": "^1.1314.0",
@@ -38,7 +39,9 @@
     "react-native-svg": "^15.15.4",
     "react-native-svg-transformer": "^1.5.3",
     "react-native-uuid": "^2.0.4",
-    "react-redux": "^9.2.0"
+    "react-redux": "^9.2.0",
+    "timezone": "^1.0.23",
+    "utc": "^0.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

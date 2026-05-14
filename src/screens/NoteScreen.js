@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import contentConfig from '../assets/json/content.json';
 import Button from '../components/Button';
@@ -16,12 +17,12 @@ import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Timer from '../assets/icons/Timer.jsx';
 import Dot from '../assets/icons/Dot.jsx';
 import { useNavigation } from '@react-navigation/native';
-import { convertToLongDate } from '../shared/utils.js';
 import {
   useDeleteNoteMutation,
   useGetNoteByIdQuery,
   useUpdateStatusMutation,
 } from '../services/notesApi.js';
+import { formatShortDate, formatTime } from '../shared/date.js';
 
 const NoteScreen = ({ route }) => {
   const { id: id } = route.params;
@@ -45,16 +46,17 @@ const NoteScreen = ({ route }) => {
     }
   }, [deleteNoteSuccess, navigation]);
 
-  const { data, isSuccess } = useGetNoteByIdQuery(id, {
-    skip: !id || deleteNoteSuccess || deleteNoteLoading,
-  });
+  const { data, isSuccess, isLoading, refetch, isFetching } =
+    useGetNoteByIdQuery(id, {
+      skip: !id || deleteNoteSuccess || deleteNoteLoading,
+    });
 
   useEffect(() => {
     if (isSuccess) {
       let obj = data;
       let newObj = { ...obj };
-      newObj.dateCreated = new Date(obj?.created_at);
-      newObj.deadline = new Date(obj?.deadline);
+      newObj.dateCreated = obj?.created_at;
+      newObj.deadline = obj?.deadline;
       setStatusConfig(contentConfig.statusList[obj?.status]);
       setConfig(newObj);
     }
@@ -84,77 +86,78 @@ const NoteScreen = ({ route }) => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={isFetching && !isLoading}
+            onRefresh={refetch}
+          />
+        }
       >
         <View style={styles.body}>
-          <View style={{ gap: 12 }}>
-            <Text style={styles.sectionTitle}>DESCRIPTION</Text>
-            <Text style={styles.description}>{config?.description}</Text>
-          </View>
+          {config?.description && (
+            <View style={{ gap: 12 }}>
+              <Text style={styles.sectionTitle}>DESCRIPTION</Text>
+              <Text style={styles.description}>{config?.description}</Text>
+            </View>
+          )}
           <View style={styles.metaDataContainer}>
             <View style={styles.rowBig}>
-              <View style={{ gap: 8 }}>
-                <View style={styles.row}>
-                  <CalendarIcon width={16} height={16} />
-                  <Text style={styles.sectionTitle}>Created</Text>
-                </View>
-                {config?.dateCreated && (
+              {config?.dateCreated && (
+                <View style={{ gap: 8 }}>
+                  <View style={styles.row}>
+                    <CalendarIcon width={16} height={16} />
+                    <Text style={styles.sectionTitle}>Created</Text>
+                  </View>
                   <Text style={styles.description}>
-                    {convertToLongDate(`${config?.dateCreated?.getDate()}/
-                ${
-                  config?.dateCreated?.getMonth() + 1
-                }/${config?.dateCreated?.getFullYear()}`)}
+                    {formatShortDate(config?.dateCreated)}
                     <Text style={styles.time}>
                       {' '}
-                      at {config?.dateCreated?.getHours()}:
-                      {config?.dateCreated?.getMinutes()}
+                      at {formatTime(config?.dateCreated)}
                     </Text>
                   </Text>
-                )}
-              </View>
-              <View style={{ gap: 8 }}>
-                <View style={styles.row}>
-                  <Timer width={16} height={16} />
-                  <Text style={styles.sectionTitle}>Deadline</Text>
                 </View>
-                {config?.deadline && (
+              )}
+              {config?.deadline && (
+                <View style={{ gap: 8 }}>
+                  <View style={styles.row}>
+                    <Timer width={16} height={16} />
+                    <Text style={styles.sectionTitle}>Deadline</Text>
+                  </View>
                   <Text style={styles.description}>
-                    {convertToLongDate(
-                      `${config?.deadline?.getDate()}/${
-                        config?.deadline?.getMonth() + 1
-                      }/${config?.deadline?.getFullYear()}`,
-                    )}
+                    {formatShortDate(config?.deadline)}
                   </Text>
-                )}
-              </View>
-            </View>
-
-            <View style={{ gap: 6 }}>
-              <View style={styles.row}>
-                <Dot width={8} height={8} color={statusConfig?.textColor} />
-                <Text style={styles.sectionTitle}>Status</Text>
-              </View>
-              {statusConfig && (
-                <TouchableOpacity
-                  style={[
-                    {
-                      backgroundColor: statusConfig?.color,
-                      borderColor: statusConfig?.color,
-                    },
-                    styles.status,
-                  ]}
-                  onPress={() => updateStatus(config?.id)}
-                >
-                  <Text
-                    style={[
-                      styles.description,
-                      { color: statusConfig?.textColor },
-                    ]}
-                  >
-                    {statusConfig?.label}
-                  </Text>
-                </TouchableOpacity>
+                </View>
               )}
             </View>
+            {config?.status && (
+              <View style={{ gap: 6 }}>
+                <View style={styles.row}>
+                  <Dot width={8} height={8} color={statusConfig?.textColor} />
+                  <Text style={styles.sectionTitle}>Status</Text>
+                </View>
+                {statusConfig && (
+                  <TouchableOpacity
+                    style={[
+                      {
+                        backgroundColor: statusConfig?.color,
+                        borderColor: statusConfig?.color,
+                      },
+                      styles.status,
+                    ]}
+                    onPress={() => updateStatus(config?.id)}
+                  >
+                    <Text
+                      style={[
+                        styles.description,
+                        { color: statusConfig?.textColor },
+                      ]}
+                    >
+                      {statusConfig?.label}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
           </View>
         </View>
         <View style={styles.footer}>

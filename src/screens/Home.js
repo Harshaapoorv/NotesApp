@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  FlatList,
+  RefreshControl,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import NotesList from '../components/NotesList';
+import ListItem from '../components/NotesListItem';
 import Add from '../assets/icons/Add.jsx';
 import NotesIcon from '../assets/icons/NotesIcon.jsx';
 import AddNote from '../components/AddNote';
@@ -15,7 +22,8 @@ const HomeScreen = () => {
 
   const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
 
-  const { data, isSuccess } = useGetNotesQuery();
+  const { data, isSuccess, isLoading, isFetching, refetch } =
+    useGetNotesQuery();
 
   useEffect(() => {
     if (isSuccess) {
@@ -49,12 +57,21 @@ const HomeScreen = () => {
             </Text>
           </View>
         ) : (
-          <ScrollView
+          <FlatList
+            data={notesList}
+            keyExtractor={item => item.id}
+            renderItem={({ item, index }) => (
+              <ListItem key={index} config={item} updateStatus={updateStatus} />
+            )}
+            refreshControl={
+              <RefreshControl
+                refreshing={isFetching && !isLoading}
+                onRefresh={refetch}
+              />
+            }
             contentContainerStyle={styles.body}
             showsVerticalScrollIndicator={false}
-          >
-            <NotesList list={notesList} updateStatus={updateStatus} />
-          </ScrollView>
+          />
         )}
       </View>
       <Pressable
@@ -102,8 +119,8 @@ const styles = StyleSheet.create({
   body: {
     backgroundColor: '#F9FAFB',
     paddingHorizontal: 16,
-    paddingVertical: 24,
-    paddingBottom: 100,
+    paddingVertical: 32,
+    gap: 16,
   },
   emptyBody: {
     flex: 1,
