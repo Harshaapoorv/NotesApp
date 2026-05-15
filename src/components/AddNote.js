@@ -18,6 +18,8 @@ import {
   useUpdateNoteMutation,
   useCreateNoteMutation,
 } from '../services/notesApi.js';
+import ErrorModal from '../components/ErrorModal.js';
+import getErrorMessage from '../services/apiErrorHandler.js';
 
 const AddNote = ({ isVisible, setIsVisible, type, config }) => {
   const [title, setTitle] = useState('');
@@ -25,6 +27,8 @@ const AddNote = ({ isVisible, setIsVisible, type, config }) => {
   const [status, setStatus] = useState();
   const [deadline, setDeadline] = useState();
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [isPrePopulated, setIsPrePopulated] = useState(false);
   const keyboardOffset = useRef(new Animated.Value(0)).current;
 
@@ -85,26 +89,44 @@ const AddNote = ({ isVisible, setIsVisible, type, config }) => {
     {
       isSuccess: createNoteSuccess,
       isLoading: createNoteLoading,
-      isError: createNoteError,
+      isError: isCreateNoteError,
+      error: createNoteErrorData,
     },
   ] = useCreateNoteMutation();
   const [
     updateNote,
     {
       isSuccess: updateNoteSuccess,
-      isError: updateNoteError,
+      isError: isUpdateNoteError,
+      error: updateNoteErrorData,
       isLoading: updateNoteLoading,
     },
   ] = useUpdateNoteMutation();
+
+  const onCloseErrorModal = () => {
+    setIsErrorModalVisible(false);
+    setErrorMessage('');
+  };
 
   useEffect(() => {
     if (createNoteSuccess || updateNoteSuccess) {
       onReset();
     }
-    if (createNoteError || updateNoteError) {
-      alert('Something went wrong! Please try again.');
+    if (isCreateNoteError || isUpdateNoteError) {
+      if (isCreateNoteError) {
+        setErrorMessage(getErrorMessage(createNoteErrorData));
+      }
+      if (isUpdateNoteError) {
+        setErrorMessage(getErrorMessage(updateNoteErrorData));
+      }
+      setIsErrorModalVisible(true);
     }
-  }, [createNoteSuccess, createNoteError, updateNoteSuccess, updateNoteError]);
+  }, [
+    createNoteSuccess,
+    isCreateNoteError,
+    updateNoteSuccess,
+    isUpdateNoteError,
+  ]);
 
   const onCreateNote = () => {
     let newNote = {
@@ -176,6 +198,7 @@ const AddNote = ({ isVisible, setIsVisible, type, config }) => {
                 value={title}
                 onChangeText={setTitle}
                 isRequired={true}
+                maxLength={30}
               />
               <Input
                 label={'Description'}
@@ -235,6 +258,13 @@ const AddNote = ({ isVisible, setIsVisible, type, config }) => {
           </Animated.View>
         </View>
       </TouchableWithoutFeedback>
+      <ErrorModal
+        isErrorModalVisible={isErrorModalVisible}
+        setIsErrorModalVisible={setIsErrorModalVisible}
+        title={errorMessage?.title}
+        description={errorMessage?.description}
+        onClose={onCloseErrorModal}
+      />
     </Modal>
   );
 };

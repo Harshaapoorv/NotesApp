@@ -26,6 +26,7 @@ const Input = ({
   keypad,
   multiline = false,
   numberOfLines = 1,
+  maxLength,
   optionList = [],
   onPressOption,
 }) => {
@@ -88,23 +89,27 @@ const Input = ({
     switch (variantType) {
       case 'text':
         return (
-          <TextInput
-            placeholder={placeholder}
-            value={value}
-            onChangeText={onChangeText}
-            style={[
-              styles.input,
-              isInputFocused && styles.focused,
-              additionalStyles,
-            ]}
-            keyboardType={keypad}
-            textContentType={type}
-            multiline={multiline}
-            numberOfLines={numberOfLines}
-            textAlignVertical="top"
-            onFocus={() => setIsInputFocused(true)}
-            onBlur={() => setIsInputFocused(false)}
-          />
+          <>
+            <TextInput
+              placeholder={placeholder}
+              value={value}
+              onChangeText={onChangeText}
+              style={[
+                styles.input,
+                isInputFocused && styles.focused,
+                additionalStyles,
+              ]}
+              keyboardType={keypad}
+              maxLength={maxLength}
+              textContentType={type}
+              multiline={multiline}
+              numberOfLines={numberOfLines}
+              textAlignVertical="top"
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setIsInputFocused(false)}
+            />
+            <Text style={styles.charCount}>{value?.length}</Text>
+          </>
         );
       case 'dropdown':
         // Implement dropdown logic here
@@ -192,6 +197,7 @@ const Input = ({
             textContentType={type}
             multiline={multiline}
             numberOfLines={numberOfLines}
+            maxLength={maxLength}
           />
         );
     }
@@ -240,6 +246,13 @@ const styles = StyleSheet.create({
   focused: {
     borderWidth: 3,
     borderColor: '#11582fc',
+  },
+  charCount: {
+    position: 'absolute',
+    right: 8,
+    bottom: 8,
+    fontSize: 12,
+    color: '#9ca3af',
   },
   dropdownWrapper: {
     width: '100%',

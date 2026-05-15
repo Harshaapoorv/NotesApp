@@ -24,6 +24,8 @@ import {
 } from '../services/notesApi.js';
 import { formatShortDate, formatTime } from '../shared/date.js';
 import NoteScreenSkeleton from '../components/NoteScreenSkeleton.js';
+import ErrorModal from '../components/ErrorModal.js';
+import getErrorMessage from '../services/apiErrorHandler.js';
 
 const NoteScreen = ({ route }) => {
   const { id: id } = route.params;
@@ -32,25 +34,44 @@ const NoteScreen = ({ route }) => {
   const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
   const [config, setConfig] = useState({});
 
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const onCloseErrorModal = () => {
+    setIsErrorModalVisible(false);
+    setErrorMessage('');
+  };
+
   const [
     deleteNote,
     {
       isSuccess: deleteNoteSuccess,
       isLoading: deleteNoteLoading,
-      isError: deleteNoteError,
+      isError: isDeleteNoteError,
+      error: deleteNoteErrorData,
     },
   ] = useDeleteNoteMutation();
 
   useEffect(() => {
     if (deleteNoteSuccess) {
       navigation.goBack();
+    } else if (isDeleteNoteError) {
+      setIsErrorModalVisible(true);
+      setErrorMessage(getErrorMessage(deleteNoteErrorData));
     }
-  }, [deleteNoteSuccess, navigation]);
+  }, [deleteNoteSuccess, navigation, isDeleteNoteError, deleteNoteErrorData]);
 
-  const { data, isSuccess, isLoading, refetch, isFetching } =
-    useGetNoteByIdQuery(id, {
-      skip: !id || deleteNoteSuccess || deleteNoteLoading,
-    });
+  const {
+    data,
+    isSuccess,
+    isLoading,
+    isError: isGetNoteError,
+    error: getNoteErrorData,
+    refetch,
+    isFetching,
+  } = useGetNoteByIdQuery(id, {
+    skip: !id || deleteNoteSuccess || deleteNoteLoading,
+  });
 
   useEffect(() => {
     if (isSuccess) {
@@ -60,10 +81,23 @@ const NoteScreen = ({ route }) => {
       newObj.deadline = obj?.deadline;
       setStatusConfig(contentConfig.statusList[obj?.status]);
       setConfig(newObj);
+    } else if (isGetNoteError) {
+      setIsErrorModalVisible(true);
+      setErrorMessage(getErrorMessage(getNoteErrorData));
     }
-  }, [data, isSuccess]);
+  }, [data, isSuccess, isGetNoteError, getNoteErrorData]);
 
-  const [updateStatus] = useUpdateStatusMutation();
+  const [
+    updateStatus,
+    { isError: updateStatusError, error: updateStatusErrorData },
+  ] = useUpdateStatusMutation();
+
+  useEffect(() => {
+    if (updateStatusError) {
+      setIsErrorModalVisible(true);
+      setErrorMessage(getErrorMessage(updateStatusErrorData));
+    }
+  }, [updateStatusError, updateStatusErrorData]);
 
   return (
     <View style={styles.screen}>
@@ -193,6 +227,15 @@ const NoteScreen = ({ route }) => {
           setIsVisible={setIsAddNoteVisible}
           type="edit"
           config={config}
+        />
+      )}
+      {isErrorModalVisible && (
+        <ErrorModal
+          isErrorModalVisible={isErrorModalVisible}
+          setIsErrorModalVisible={setIsErrorModalVisible}
+          title={errorMessage?.title}
+          description={errorMessage?.description}
+          onClose={onCloseErrorModal}
         />
       )}
     </View>

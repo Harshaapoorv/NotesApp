@@ -17,13 +17,22 @@ import {
   useUpdateStatusMutation,
 } from '../services/notesApi';
 import HomeScreenSkeleton from '../components/HomeScreenSkeleton.js';
+import ErrorModal from '../components/ErrorModal.js';
+import getErrorMessage from '../services/apiErrorHandler.js';
 
 const HomeScreen = () => {
   const [notesList, setNotesList] = useState([]);
 
   const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const { data, isSuccess, isLoading, isFetching, refetch } =
+  const onCloseErrorModal = () => {
+    setIsErrorModalVisible(false);
+    setErrorMessage('');
+  };
+
+  const { data, isSuccess, isLoading, isError, error, isFetching, refetch } =
     useGetNotesQuery();
 
   useEffect(() => {
@@ -36,10 +45,23 @@ const HomeScreen = () => {
         arr.push(newObj);
       });
       setNotesList(arr);
+    } else if (isError) {
+      setIsErrorModalVisible(true);
+      setErrorMessage(getErrorMessage(error));
     }
-  }, [data, isSuccess]);
+  }, [data, isSuccess, isError, error]);
 
-  const [updateStatus] = useUpdateStatusMutation();
+  const [
+    updateStatus,
+    { isError: updateStatusError, error: updateStatusErrorData },
+  ] = useUpdateStatusMutation();
+
+  useEffect(() => {
+    if (updateStatusError) {
+      setIsErrorModalVisible(true);
+      setErrorMessage(getErrorMessage(updateStatusErrorData));
+    }
+  }, [updateStatusError, updateStatusErrorData]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -99,6 +121,13 @@ const HomeScreen = () => {
         setIsVisible={setIsAddNoteVisible}
         notesList={notesList}
         setNotesList={setNotesList}
+      />
+      <ErrorModal
+        isErrorModalVisible={isErrorModalVisible}
+        setIsErrorModalVisible={setIsErrorModalVisible}
+        title={errorMessage?.title}
+        description={errorMessage?.description}
+        onClose={onCloseErrorModal}
       />
     </SafeAreaView>
   );
