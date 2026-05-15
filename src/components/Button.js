@@ -2,6 +2,7 @@ import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
 import Add from '../assets/icons/Add.jsx';
 import Delete from '../assets/icons/Delete.jsx';
+import Loader from './Loader.js';
 
 const Button = ({
   onPress,
@@ -13,10 +14,12 @@ const Button = ({
   variantType = 'primary',
   isDisabled = false,
   textStyles,
+  isLoading = false,
+  loaderColor = '#fff',
 }) => {
   return (
     <Pressable
-      onPress={!isDisabled ? onPress : undefined}
+      onPress={!isDisabled && !isLoading ? onPress : undefined}
       style={[
         styles.button,
         styles[`${variantType}Button`],
@@ -24,17 +27,23 @@ const Button = ({
         additionalStyles,
       ]}
     >
-      {isIcon && isAdd && <Add width={16} height={16} />}
-      {isIcon && isDelete && <Delete width={16} height={16} />}
-      <Text
-        style={[
-          styles.buttonText,
-          styles[`${variantType}ButtonText`],
-          textStyles,
-        ]}
-      >
-        {title}
-      </Text>
+      {isLoading ? (
+        <Loader color={loaderColor} />
+      ) : (
+        <>
+          {isIcon && isAdd && <Add width={16} height={16} />}
+          {isIcon && isDelete && <Delete width={16} height={16} />}
+          <Text
+            style={[
+              styles.buttonText,
+              styles[`${variantType}ButtonText`],
+              textStyles,
+            ]}
+          >
+            {title}
+          </Text>
+        </>
+      )}
     </Pressable>
   );
 };

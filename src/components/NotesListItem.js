@@ -11,6 +11,7 @@ import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Timer from '../assets/icons/Timer.jsx';
 import { convertToShortDate } from '../shared/utils.js';
 import { useNavigation } from '@react-navigation/native';
+import { formatShortDate } from '../shared/date.js';
 
 const ListItem = ({ config, updateStatus }) => {
   const pageConfig = contentConfig.statusList;
@@ -27,41 +28,42 @@ const ListItem = ({ config, updateStatus }) => {
     >
       <View style={styles.notesHeader}>
         <Text style={styles.noteTitle}>{config.title}</Text>
-        <TouchableOpacity
-          style={[
-            {
-              backgroundColor: statusConfig?.color,
-              borderColor: statusConfig?.color,
-            },
-            styles.status,
-          ]}
-          onPress={() => updateStatus(config?.id)}
-        >
-          <Text style={[styles.statusText, { color: statusConfig?.textColor }]}>
-            {statusConfig?.label}
-          </Text>
-        </TouchableOpacity>
+        {config?.status && (
+          <TouchableOpacity
+            style={[
+              {
+                backgroundColor: statusConfig?.color,
+                borderColor: statusConfig?.color,
+              },
+              styles.status,
+            ]}
+            onPress={() => updateStatus(config?.id)}
+          >
+            <Text
+              style={[styles.statusText, { color: statusConfig?.textColor }]}
+            >
+              {statusConfig?.label}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.footer}>
-        <View style={styles.time}>
-          <CalendarIcon width={14} height={14} />
-          <Text style={styles.timeText}>
-            {convertToShortDate(`${config?.dateCreated?.getDate()}/
-            ${
-              config?.dateCreated?.getMonth() + 1
-            }/${config?.dateCreated?.getFullYear()}`)}
-          </Text>
-        </View>
-        <View style={styles.time}>
-          <Timer width={14} height={14} />
-          <Text style={styles.timeText}>
-            {convertToShortDate(
-              `${config?.deadline?.getDate()}/${
-                config?.deadline?.getMonth() + 1
-              }/${config?.deadline?.getFullYear()}`,
-            )}
-          </Text>
-        </View>
+        {config?.dateCreated && (
+          <View style={styles.time}>
+            <CalendarIcon width={14} height={14} />
+            <Text style={styles.timeText}>
+              {formatShortDate(config?.dateCreated)}
+            </Text>
+          </View>
+        )}
+        {config?.deadline && (
+          <View style={styles.time}>
+            <Timer width={14} height={14} />
+            <Text style={styles.timeText}>
+              {formatShortDate(config?.deadline)}
+            </Text>
+          </View>
+        )}
       </View>
     </Pressable>
   );

@@ -35,10 +35,10 @@ const AddNote = ({ isVisible, setIsVisible, type, config }) => {
       setTitle(config?.title);
       setDescription(config?.description);
       setStatus(statusConfig[config?.status]);
-      setDeadline(config?.deadline);
+      setDeadline(config?.deadline ? new Date(config.deadline) : null);
       setIsPrePopulated(true);
     }
-  }, [isVisible]);
+  }, [isVisible, config]);
 
   useEffect(() => {
     if (title) {
@@ -121,7 +121,6 @@ const AddNote = ({ isVisible, setIsVisible, type, config }) => {
         status: status?.value ? status.value : status,
         deadline: deadline,
       };
-      // newNote = { ...newNote, id: config?.id ? config.id : uuid.v4() };
       updateNote(newNote);
     }
     if (type === 'create') {
@@ -224,6 +223,7 @@ const AddNote = ({ isVisible, setIsVisible, type, config }) => {
                 onPress={() => onCreateNote()}
                 isDisabled={isButtonDisabled}
                 additionalStyles={{ width: '100%' }}
+                isLoading={createNoteLoading || updateNoteLoading}
               />
               <Button
                 title="Cancel"

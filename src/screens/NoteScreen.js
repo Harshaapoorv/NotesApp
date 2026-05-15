@@ -88,7 +88,7 @@ const NoteScreen = ({ route }) => {
         contentContainerStyle={styles.scrollContainer}
         refreshControl={
           <RefreshControl
-            refreshing={isFetching && !isLoading}
+            refreshing={isFetching && !isLoading && !deleteNoteLoading}
             onRefresh={refetch}
           />
         }
@@ -169,18 +169,21 @@ const NoteScreen = ({ route }) => {
             isIcon={true}
             textStyles={styles.deleteButtonText}
             onPress={() => {
-              // onDelete();
               deleteNote(config?.id);
             }}
+            isLoading={deleteNoteLoading}
+            loaderColor={styles.deleteButtonText.color}
           />
         </View>
       </ScrollView>
-      <AddNote
-        isVisible={isAddNoteVisible}
-        setIsVisible={setIsAddNoteVisible}
-        type="edit"
-        config={config}
-      />
+      {isAddNoteVisible && (
+        <AddNote
+          isVisible={isAddNoteVisible}
+          setIsVisible={setIsAddNoteVisible}
+          type="edit"
+          config={config}
+        />
+      )}
     </View>
   );
 };

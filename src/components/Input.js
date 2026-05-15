@@ -12,7 +12,7 @@ import { Calendar } from 'react-native-calendars';
 import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Expand from '../assets/icons/Expand.jsx';
 import Collapse from '../assets/icons/Collapse.jsx';
-import { convertToShortDate } from '../shared/utils.js';
+import { formatShortDate } from '../shared/date.js';
 
 const Input = ({
   variantType = 'text',
@@ -71,7 +71,7 @@ const Input = ({
             markedDates={
               value
                 ? {
-                    [value.toISOString().split('T')[0]]: {
+                    [value?.toISOString()?.split('T')[0]]: {
                       selected: true,
                       selectedColor: '#2563eb',
                     },
@@ -173,10 +173,7 @@ const Input = ({
             <View style={styles.input}>
               <View style={styles.dropdown}>
                 <Text style={{ color: value ? '#000' : '#9ca3af' }}>
-                  {value
-                    ? convertToShortDate(`${value.getDate()}/
-            ${value.getMonth() + 1}/${value.getFullYear()}`)
-                    : 'Select deadline'}
+                  {value ? formatShortDate(value) : 'Select deadline'}
                 </Text>
                 <CalendarIcon width={18} height={18} />
               </View>

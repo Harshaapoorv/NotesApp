@@ -30,8 +30,8 @@ const HomeScreen = () => {
       let arr = [];
       data?.map(obj => {
         let newObj = { ...obj };
-        newObj.dateCreated = new Date(obj?.created_at);
-        newObj.deadline = new Date(obj?.deadline);
+        newObj.dateCreated = obj?.created_at;
+        newObj.deadline = obj?.deadline;
         arr.push(newObj);
       });
       setNotesList(arr);
