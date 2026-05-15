@@ -16,6 +16,7 @@ import {
   useGetNotesQuery,
   useUpdateStatusMutation,
 } from '../services/notesApi';
+import HomeScreenSkeleton from '../components/HomeScreenSkeleton.js';
 
 const HomeScreen = () => {
   const [notesList, setNotesList] = useState([]);
@@ -45,41 +46,53 @@ const HomeScreen = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Notes</Text>
       </View>
-      <View style={styles.scrollContainer}>
-        {notesList?.length === 0 ? (
-          <View style={styles.emptyBody}>
-            <View style={styles.roundButton}>
-              <NotesIcon width={64} height={64} />
-            </View>
-            <Text style={styles.emptyBodyTitle}>No notes yet</Text>
-            <Text style={styles.emptyBodyText}>
-              Create your first note to get started!
-            </Text>
-          </View>
-        ) : (
-          <FlatList
-            data={notesList}
-            keyExtractor={item => item.id}
-            renderItem={({ item, index }) => (
-              <ListItem key={index} config={item} updateStatus={updateStatus} />
-            )}
-            refreshControl={
-              <RefreshControl
-                refreshing={isFetching && !isLoading}
-                onRefresh={refetch}
+      {isLoading ? (
+        <View style={styles.scrollContainer}>
+          <HomeScreenSkeleton style={styles.skeletonContainer} />
+        </View>
+      ) : (
+        <>
+          <View style={styles.scrollContainer}>
+            {notesList?.length === 0 ? (
+              <View style={styles.emptyBody}>
+                <View style={styles.roundButton}>
+                  <NotesIcon width={64} height={64} />
+                </View>
+                <Text style={styles.emptyBodyTitle}>No notes yet</Text>
+                <Text style={styles.emptyBodyText}>
+                  Create your first note to get started!
+                </Text>
+              </View>
+            ) : (
+              <FlatList
+                data={notesList}
+                keyExtractor={item => item.id}
+                renderItem={({ item, index }) => (
+                  <ListItem
+                    key={index}
+                    config={item}
+                    updateStatus={updateStatus}
+                  />
+                )}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isFetching && !isLoading}
+                    onRefresh={refetch}
+                  />
+                }
+                contentContainerStyle={styles.body}
+                showsVerticalScrollIndicator={false}
               />
-            }
-            contentContainerStyle={styles.body}
-            showsVerticalScrollIndicator={false}
-          />
-        )}
-      </View>
-      <Pressable
-        style={styles.floaterButton}
-        onPress={() => setIsAddNoteVisible(true)}
-      >
-        <Add width={48} height={48} color="#ffffff" />
-      </Pressable>
+            )}
+          </View>
+          <Pressable
+            style={styles.floaterButton}
+            onPress={() => setIsAddNoteVisible(true)}
+          >
+            <Add width={48} height={48} color="#ffffff" />
+          </Pressable>
+        </>
+      )}
       <AddNote
         type="create"
         isVisible={isAddNoteVisible}
@@ -94,6 +107,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#ffffff',
   },
   header: {
@@ -111,6 +125,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#111827',
+  },
+  skeletonContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 32,
+    gap: 16,
   },
   scrollContainer: {
     flex: 1,
