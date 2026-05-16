@@ -26,6 +26,8 @@ import { formatShortDate, formatTime } from '../shared/date.js';
 import NoteScreenSkeleton from '../components/NoteScreenSkeleton.js';
 import ErrorModal from '../components/ErrorModal.js';
 import getErrorMessage from '../services/apiErrorHandler.js';
+import ToastMessage from '../components/ToastMessage.js';
+import AlertModal from '../components/AlertModal.js';
 
 const NoteScreen = ({ route }) => {
   const { id: id } = route.params;
@@ -36,6 +38,10 @@ const NoteScreen = ({ route }) => {
 
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isSuccessVisible, setIsSuccessVisible] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [startTimer, setStartTimer] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
 
   const onCloseErrorModal = () => {
     setIsErrorModalVisible(false);
@@ -54,8 +60,16 @@ const NoteScreen = ({ route }) => {
 
   useEffect(() => {
     if (deleteNoteSuccess) {
-      navigation.goBack();
+      setIsAlertModalVisible(false);
+      navigation.popTo('Home', {
+        isSuccessVisible: deleteNoteSuccess,
+        successMessage: {
+          title: 'Note has been deleted successfully.',
+          type: 'success',
+        },
+      });
     } else if (isDeleteNoteError) {
+      setIsAlertModalVisible(false);
       setIsErrorModalVisible(true);
       setErrorMessage(getErrorMessage(deleteNoteErrorData));
     }
@@ -89,15 +103,38 @@ const NoteScreen = ({ route }) => {
 
   const [
     updateStatus,
-    { isError: updateStatusError, error: updateStatusErrorData },
+    {
+      isError: updateStatusError,
+      error: updateStatusErrorData,
+      isSuccess: updateStatusSuccess,
+    },
   ] = useUpdateStatusMutation();
 
   useEffect(() => {
     if (updateStatusError) {
       setIsErrorModalVisible(true);
       setErrorMessage(getErrorMessage(updateStatusErrorData));
+    } else if (updateStatusSuccess) {
+      setIsSuccessVisible(true);
+      setSuccessMessage({
+        title: 'Note status has been updated successfully.',
+        type: 'success',
+      });
+      setStartTimer(true);
     }
-  }, [updateStatusError, updateStatusErrorData]);
+  }, [updateStatusError, updateStatusErrorData, updateStatusSuccess]);
+
+  useEffect(() => {
+    let timer;
+    if (startTimer) {
+      timer = setTimeout(() => {
+        setIsSuccessVisible(false);
+        setSuccessMessage('');
+        setStartTimer(false);
+      }, 3000);
+    }
+    return () => clearTimeout(timer);
+  }, [startTimer]);
 
   return (
     <View style={styles.screen}>
@@ -212,7 +249,7 @@ const NoteScreen = ({ route }) => {
                 isIcon={true}
                 textStyles={styles.deleteButtonText}
                 onPress={() => {
-                  deleteNote(config?.id);
+                  setIsAlertModalVisible(true);
                 }}
                 isLoading={deleteNoteLoading}
                 loaderColor={styles.deleteButtonText.color}
@@ -221,12 +258,21 @@ const NoteScreen = ({ route }) => {
           </>
         )}
       </ScrollView>
+      {isSuccessVisible && (
+        <ToastMessage
+          message={successMessage.title}
+          type={successMessage.type}
+        />
+      )}
       {isAddNoteVisible && (
         <AddNote
           isVisible={isAddNoteVisible}
           setIsVisible={setIsAddNoteVisible}
           type="edit"
           config={config}
+          setIsSuccessVisible={setIsSuccessVisible}
+          setSuccessMessage={setSuccessMessage}
+          setStartTimer={setStartTimer}
         />
       )}
       {isErrorModalVisible && (
@@ -236,6 +282,24 @@ const NoteScreen = ({ route }) => {
           title={errorMessage?.title}
           description={errorMessage?.description}
           onClose={onCloseErrorModal}
+        />
+      )}
+      {isAlertModalVisible && (
+        <AlertModal
+          isAlertModalVisible={isAlertModalVisible}
+          setIsAlertModalVisible={setIsAlertModalVisible}
+          title={'Are you sure you want to delete this note?'}
+          description={'This action cannot be undone.'}
+          onClose={() => setIsAlertModalVisible(false)}
+          primaryButtonText={'Yes, Delete'}
+          primaryButtonHandler={() => {
+            deleteNote(config?.id);
+          }}
+          primaryButtonLoading={deleteNoteLoading}
+          primaryButtonStyles={styles.deleteModalButton}
+          primaryButtonTextStyles={styles.deleteModalButtonText}
+          secondaryButtonText={'No, Keep it'}
+          secondaryButtonHandler={() => setIsAlertModalVisible(false)}
         />
       )}
     </View>
@@ -250,6 +314,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
     alignItems: 'center',
     gap: 8,
     padding: 16,
@@ -287,9 +352,10 @@ const styles = StyleSheet.create({
   },
   rowBig: {
     flexDirection: 'row',
-    gap: 48,
+    gap: 16,
     alignItems: 'center',
-    // justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   row: {
     flexDirection: 'row',
@@ -319,6 +385,18 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: '#e80015',
+  },
+  deleteModalButton: {
+    backgroundColor: '#e80015',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    gap: 8,
+  },
+  deleteModalButtonText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '600',
   },
 });
 

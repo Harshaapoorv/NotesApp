@@ -248,9 +248,10 @@ const styles = StyleSheet.create({
     borderColor: '#11582fc',
   },
   charCount: {
+    alignSelf: 'flex-end',
     position: 'absolute',
     right: 8,
-    bottom: 8,
+    bottom: -24,
     fontSize: 12,
     color: '#9ca3af',
   },

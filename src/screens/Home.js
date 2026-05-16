@@ -19,13 +19,34 @@ import {
 import HomeScreenSkeleton from '../components/HomeScreenSkeleton.js';
 import ErrorModal from '../components/ErrorModal.js';
 import getErrorMessage from '../services/apiErrorHandler.js';
+import ToastMessage from '../components/ToastMessage.js';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
+  const route = useRoute();
+  const navigation = useNavigation();
   const [notesList, setNotesList] = useState([]);
 
   const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isSuccessVisible, setIsSuccessVisible] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [startTimer, setStartTimer] = useState(false);
+
+  useEffect(() => {
+    if (route?.params?.isSuccessVisible) {
+      setIsSuccessVisible(true);
+      setSuccessMessage(route.params?.successMessage);
+      setStartTimer(true);
+
+      // Clear params after showing
+      navigation.setParams({
+        isSuccessVisible: false,
+        successMessage: null,
+      });
+    }
+  }, [route?.params]);
 
   const onCloseErrorModal = () => {
     setIsErrorModalVisible(false);
@@ -53,15 +74,38 @@ const HomeScreen = () => {
 
   const [
     updateStatus,
-    { isError: updateStatusError, error: updateStatusErrorData },
+    {
+      isError: updateStatusError,
+      error: updateStatusErrorData,
+      isSuccess: updateStatusSuccess,
+    },
   ] = useUpdateStatusMutation();
 
   useEffect(() => {
     if (updateStatusError) {
       setIsErrorModalVisible(true);
       setErrorMessage(getErrorMessage(updateStatusErrorData));
+    } else if (updateStatusSuccess) {
+      setIsSuccessVisible(true);
+      setSuccessMessage({
+        title: 'Note status has been updated successfully.',
+        type: 'success',
+      });
+      setStartTimer(true);
     }
-  }, [updateStatusError, updateStatusErrorData]);
+  }, [updateStatusError, updateStatusErrorData, updateStatusSuccess]);
+
+  useEffect(() => {
+    let timer;
+    if (startTimer) {
+      timer = setTimeout(() => {
+        setIsSuccessVisible(false);
+        setSuccessMessage('');
+        setStartTimer(false);
+      }, 3000);
+    }
+    return () => clearTimeout(timer);
+  }, [startTimer]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -113,6 +157,12 @@ const HomeScreen = () => {
           >
             <Add width={48} height={48} color="#ffffff" />
           </Pressable>
+          {isSuccessVisible && (
+            <ToastMessage
+              message={successMessage.title}
+              type={successMessage.type}
+            />
+          )}
         </>
       )}
       <AddNote
@@ -121,6 +171,9 @@ const HomeScreen = () => {
         setIsVisible={setIsAddNoteVisible}
         notesList={notesList}
         setNotesList={setNotesList}
+        setIsSuccessVisible={setIsSuccessVisible}
+        setSuccessMessage={setSuccessMessage}
+        setStartTimer={setStartTimer}
       />
       <ErrorModal
         isErrorModalVisible={isErrorModalVisible}
@@ -141,7 +194,6 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    // justifyContent: 'space-between',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',

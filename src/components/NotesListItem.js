@@ -9,7 +9,6 @@ import {
 import contentConfig from '../assets/json/content.json';
 import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Timer from '../assets/icons/Timer.jsx';
-import { convertToShortDate } from '../shared/utils.js';
 import { useNavigation } from '@react-navigation/native';
 import { formatShortDate } from '../shared/date.js';
 
@@ -96,6 +95,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 4,
+    flexWrap: 'wrap',
   },
   noteTitle: {
     width: '70%',
@@ -122,6 +123,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     gap: 12,
+    flexWrap: 'wrap',
   },
   time: {
     flexDirection: 'row',

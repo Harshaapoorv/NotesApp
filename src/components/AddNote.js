@@ -21,7 +21,15 @@ import {
 import ErrorModal from '../components/ErrorModal.js';
 import getErrorMessage from '../services/apiErrorHandler.js';
 
-const AddNote = ({ isVisible, setIsVisible, type, config }) => {
+const AddNote = ({
+  isVisible,
+  setIsVisible,
+  type,
+  config,
+  setIsSuccessVisible,
+  setSuccessMessage,
+  setStartTimer,
+}) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState();
@@ -111,6 +119,19 @@ const AddNote = ({ isVisible, setIsVisible, type, config }) => {
   useEffect(() => {
     if (createNoteSuccess || updateNoteSuccess) {
       onReset();
+      setIsSuccessVisible(true);
+      setStartTimer(true);
+      if (updateNoteSuccess) {
+        setSuccessMessage({
+          title: 'Note has been updated successfully.',
+          type: 'success',
+        });
+      } else if (createNoteSuccess) {
+        setSuccessMessage({
+          title: 'Note has been created successfully.',
+          type: 'success',
+        });
+      }
     }
     if (isCreateNoteError || isUpdateNoteError) {
       if (isCreateNoteError) {
