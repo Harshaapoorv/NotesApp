@@ -30,6 +30,9 @@ const styles = StyleSheet.create({
   success: {
     backgroundColor: 'rgba(0,128,0,0.7)',
   },
+  info: {
+    backgroundColor: 'rgba(0,0,255,0.5)',
+  },
 });
 
 export default ToastMessage;

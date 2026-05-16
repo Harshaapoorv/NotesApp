@@ -7,6 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  Pressable,
+  Animated,
 } from 'react-native';
 import contentConfig from '../assets/json/content.json';
 import Button from '../components/Button';
@@ -28,6 +30,9 @@ import ErrorModal from '../components/ErrorModal.js';
 import getErrorMessage from '../services/apiErrorHandler.js';
 import ToastMessage from '../components/ToastMessage.js';
 import AlertModal from '../components/AlertModal.js';
+import ClipBoard from '../assets/icons/ClipBoard.jsx';
+import Clipboard from '@react-native-clipboard/clipboard';
+import SuccessTick from '../assets/icons/SuccessTick.jsx';
 
 const NoteScreen = ({ route }) => {
   const { id: id } = route.params;
@@ -42,6 +47,53 @@ const NoteScreen = ({ route }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [startTimer, setStartTimer] = useState(false);
   const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+
+  const [copied, setCopied] = useState(false);
+  const [copiedTimer, setCopiedTimer] = useState(false);
+  const scaleAnim = useState(new Animated.Value(1))[0];
+  const successAnim = useState(new Animated.Value(0))[0];
+
+  const animateClipboard = () => {
+    Animated.sequence([
+      Animated.spring(scaleAnim, {
+        toValue: 0.88,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 3,
+        tension: 120,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    Animated.sequence([
+      Animated.timing(successAnim, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.delay(700),
+      Animated.timing(successAnim, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const onCopyToClipboard = text => {
+    Clipboard.setString(text);
+    animateClipboard();
+    setIsSuccessVisible(true);
+    setSuccessMessage({
+      title: 'Copied!!',
+      type: 'info',
+    });
+    setCopied(true);
+    setCopiedTimer(true);
+    setStartTimer(true);
+  };
 
   const onCloseErrorModal = () => {
     setIsErrorModalVisible(false);
@@ -136,6 +188,16 @@ const NoteScreen = ({ route }) => {
     return () => clearTimeout(timer);
   }, [startTimer]);
 
+  useEffect(() => {
+    if (copiedTimer) {
+      const timer = setTimeout(() => {
+        setCopied(false);
+        setCopiedTimer(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [copiedTimer]);
+
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
@@ -172,8 +234,42 @@ const NoteScreen = ({ route }) => {
             <View style={styles.body}>
               {config?.description && (
                 <View style={{ gap: 12 }}>
-                  <Text style={styles.sectionTitle}>DESCRIPTION</Text>
-                  <Text style={styles.description}>{config?.description}</Text>
+                  <View style={styles.descriptionRowHeader}>
+                    <Text style={styles.sectionTitle}>DESCRIPTION</Text>
+                    <Pressable
+                      onPress={() => {
+                        onCopyToClipboard(config?.description);
+                      }}
+                    >
+                      <Animated.View
+                        style={{
+                          padding: 6,
+                          transform: [{ scale: scaleAnim }],
+                          opacity: successAnim.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [0.85, 1],
+                          }),
+                        }}
+                      >
+                        {copied ? (
+                          <SuccessTick width={18} height={18} />
+                        ) : (
+                          <ClipBoard
+                            width={18}
+                            height={18}
+                            fill={copied ? '#16a34a' : '#6b7280'}
+                          />
+                        )}
+                      </Animated.View>
+                    </Pressable>
+                  </View>
+                  <Text
+                    style={styles.description}
+                    selectable={true}
+                    selectionColor={statusConfig?.color}
+                  >
+                    {config?.description}
+                  </Text>
                 </View>
               )}
               <View style={styles.metaDataContainer}>
@@ -339,6 +435,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     color: '#6b7280',
+  },
+  descriptionRowHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
   },
   description: {
     fontSize: 14,
