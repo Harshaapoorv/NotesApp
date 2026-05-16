@@ -33,6 +33,7 @@ import AlertModal from '../components/AlertModal.js';
 import ClipBoard from '../assets/icons/ClipBoard.jsx';
 import Clipboard from '@react-native-clipboard/clipboard';
 import SuccessTick from '../assets/icons/SuccessTick.jsx';
+import FormattedText from '../components/FormattedText.js';
 
 const NoteScreen = ({ route }) => {
   const { id: id } = route.params;
@@ -263,13 +264,15 @@ const NoteScreen = ({ route }) => {
                       </Animated.View>
                     </Pressable>
                   </View>
-                  <Text
-                    style={styles.description}
+                  <FormattedText
+                    text={config?.description}
+                    styles={styles.description}
                     selectable={true}
                     selectionColor={statusConfig?.color}
-                  >
-                    {config?.description}
-                  </Text>
+                    setIsSuccessVisible={setIsSuccessVisible}
+                    setSuccessMessage={setSuccessMessage}
+                    setStartTimer={setStartTimer}
+                  />
                 </View>
               )}
               <View style={styles.metaDataContainer}>
