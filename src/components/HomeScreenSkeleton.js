@@ -16,12 +16,13 @@ const HomeScreenSkeleton = ({ style }) => {
             <View
               key={item}
               style={{
-                gap: 12,
+                width: '100%',
                 padding: 16,
-                borderRadius: 16,
-                backgroundColor: '#fff',
-                borderColor: '#f3f3f5',
                 borderWidth: 1,
+                borderColor: '#f3f3f5',
+                backgroundColor: '#fff',
+                borderRadius: 8,
+                gap: 16,
               }}
             >
               {/* Title + Status */}
@@ -29,12 +30,15 @@ const HomeScreenSkeleton = ({ style }) => {
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: 4,
+                  flexWrap: 'wrap',
                 }}
               >
                 <View
                   style={{
                     width: '65%',
-                    height: 21,
+                    height: 24,
                     borderRadius: 4,
                   }}
                 />
@@ -42,8 +46,11 @@ const HomeScreenSkeleton = ({ style }) => {
                 <View
                   style={{
                     width: item % 2 === 0 ? '18%' : '22%',
-                    height: 21,
-                    borderRadius: 12,
+                    height: 24,
+                    paddingHorizontal: 8,
+                    paddingVertical: 4,
+                    borderRadius: 8,
+                    alignSelf: 'flex-start',
                   }}
                 />
               </View>
@@ -52,21 +59,22 @@ const HomeScreenSkeleton = ({ style }) => {
               <View
                 style={{
                   flexDirection: 'row',
-                  gap: 8,
+                  gap: 12,
+                  flexWrap: 'wrap',
                 }}
               >
                 <View
                   style={{
-                    width: '20%',
-                    height: 12,
+                    width: '25%',
+                    height: 18,
                     borderRadius: 4,
                   }}
                 />
 
                 <View
                   style={{
-                    width: '20%',
-                    height: 12,
+                    width: '25%',
+                    height: 18,
                     borderRadius: 4,
                   }}
                 />

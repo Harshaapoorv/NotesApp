@@ -234,7 +234,7 @@ const NoteScreen = ({ route }) => {
           <>
             <View style={styles.body}>
               {config?.description && (
-                <View style={{ gap: 12 }}>
+                <View style={{ width: '98%', gap: 12 }}>
                   <View style={styles.descriptionRowHeader}>
                     <Text style={styles.sectionTitle}>DESCRIPTION</Text>
                     <Pressable

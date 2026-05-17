@@ -47,7 +47,7 @@ const renderInlineContent = (content, selectable, selectionColor) => {
             style={styles.link}
             selectable={selectable}
             selectionColor={selectionColor}
-            suppressHighlighting={true}
+            suppressHighlighting
             onPress={() => {
               if (item.url) {
                 Linking.openURL(item.url);
@@ -190,9 +190,11 @@ const FormattedText = ({
           return (
             <Text
               key={index}
-              style={styles.text}
+              style={[styles.text, styles.paragraph]}
               selectable={selectable}
               selectionColor={selectionColor}
+              textBreakStrategy="simple"
+              allowFontScaling={false}
             >
               {renderInlineContent(block.content, selectable, selectionColor)}
             </Text>
@@ -211,6 +213,8 @@ const FormattedText = ({
                     style={styles.text}
                     selectable={selectable}
                     selectionColor={selectionColor}
+                    textBreakStrategy="simple"
+                    allowFontScaling={false}
                   >
                     {renderInlineContent(
                       bulletItem,
@@ -236,6 +240,8 @@ const FormattedText = ({
                     style={styles.text}
                     selectable={selectable}
                     selectionColor={selectionColor}
+                    textBreakStrategy="simple"
+                    allowFontScaling={false}
                   >
                     {renderInlineContent(item, selectable, selectionColor)}
                   </Text>
@@ -293,6 +299,8 @@ const FormattedText = ({
                 style={styles.codeText}
                 selectable={selectable}
                 selectionColor={selectionColor}
+                textBreakStrategy="simple"
+                allowFontScaling={false}
               >
                 {block.content}
               </Text>
@@ -311,10 +319,15 @@ const styles = StyleSheet.create({
     gap: 12,
   },
 
+  paragraph: {
+    flexWrap: 'wrap',
+  },
+
   text: {
     fontSize: 14,
     lineHeight: 24,
     color: '#111827',
+    includeFontPadding: false,
   },
 
   bold: {
@@ -338,11 +351,14 @@ const styles = StyleSheet.create({
   },
 
   bulletContainer: {
+    width: '100%',
     gap: 8,
     marginLeft: 8,
   },
 
   bulletPoint: {
+    width: '92%',
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 8,
@@ -377,7 +393,6 @@ const styles = StyleSheet.create({
   },
 
   numberText: {
-    width: 24,
     fontSize: 14,
     lineHeight: 24,
     color: '#111827',
@@ -411,12 +426,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     color: '#F9FAFB',
-  },
-
-  copyButton: {
-    // position: 'absolute',
-    // top: 8,
-    // right: 8,
   },
 });
 

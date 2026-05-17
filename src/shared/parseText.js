@@ -185,7 +185,7 @@ export const LANGUAGE_ALIASES = {
 /**
  * INLINE PARSER
  */
-export function parseInline(text = '') {
+export function parseInline(text = '', noText) {
   const tokens = [];
 
   INLINE_REGEX.lastIndex = 0;
@@ -249,10 +249,18 @@ export function parseInline(text = '') {
        */
       const cleanText = matchedText.slice(2, -2);
 
+      let formattedUrl = cleanText;
+
+      if (!cleanText.startsWith('http')) {
+        formattedUrl = cleanText.startsWith('www.')
+          ? `https://${cleanText}`
+          : `https://${cleanText}.com`;
+      }
+
       tokens.push({
         type: 'link',
         text: cleanText,
-        url: cleanText,
+        url: formattedUrl,
       });
     } else if (/^<.*?>$/.test(matchedText)) {
       /**
@@ -270,9 +278,13 @@ export function parseInline(text = '') {
   /**
    * REMAINING TEXT
    */
-  if (lastIndex < text.length) {
+  if (lastIndex < text.length && !noText) {
     tokens.push({
       type: 'text',
+      text: text.slice(lastIndex),
+    });
+  } else if (lastIndex < text.length && noText) {
+    tokens.push({
       text: text.slice(lastIndex),
     });
   }
@@ -466,7 +478,7 @@ export default function parseText(text = '') {
       blocks.push({
         type: 'heading',
         level: 3,
-        content: parseInline(trimmed.slice(4)),
+        content: parseInline(trimmed.slice(4), true),
       });
 
       return;
@@ -482,7 +494,7 @@ export default function parseText(text = '') {
       blocks.push({
         type: 'heading',
         level: 2,
-        content: parseInline(trimmed.slice(3)),
+        content: parseInline(trimmed.slice(3), true),
       });
 
       return;
@@ -498,7 +510,7 @@ export default function parseText(text = '') {
       blocks.push({
         type: 'heading',
         level: 1,
-        content: parseInline(trimmed.slice(2)),
+        content: parseInline(trimmed.slice(2), true),
       });
 
       return;
