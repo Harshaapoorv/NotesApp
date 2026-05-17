@@ -233,11 +233,11 @@ const FormattedText = ({
           return (
             <View key={index} style={styles.bulletContainer}>
               {block.content.map((item, itemIndex) => (
-                <View key={itemIndex} style={styles.bulletPoint}>
+                <View key={itemIndex} style={[styles.numberedPoint]}>
                   <Text style={styles.numberText}>{itemIndex + 1}.</Text>
 
                   <Text
-                    style={styles.text}
+                    style={[styles.text, styles.numberedPointContent]}
                     selectable={selectable}
                     selectionColor={selectionColor}
                     textBreakStrategy="simple"
@@ -358,7 +358,6 @@ const styles = StyleSheet.create({
 
   bulletPoint: {
     width: '92%',
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 8,
@@ -370,6 +369,16 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: '#111827',
     marginTop: 9,
+  },
+
+  numberedPoint: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+
+  numberedPointContent: {
+    flex: 1,
+    flexShrink: 1,
   },
 
   heading: {
@@ -393,6 +402,7 @@ const styles = StyleSheet.create({
   },
 
   numberText: {
+    marginRight: 8,
     fontSize: 14,
     lineHeight: 24,
     color: '#111827',

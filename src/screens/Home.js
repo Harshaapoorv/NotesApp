@@ -15,6 +15,7 @@ import AddNote from '../components/AddNote';
 import {
   useGetNotesQuery,
   useUpdateStatusMutation,
+  useUpdateStarMutation,
 } from '../services/notesApi';
 import HomeScreenSkeleton from '../components/HomeScreenSkeleton.js';
 import ErrorModal from '../components/ErrorModal.js';
@@ -58,8 +59,12 @@ const HomeScreen = () => {
 
   useEffect(() => {
     if (isSuccess) {
+      let starredArr = data?.filter(note => note?.is_starred) || [];
+      let nonStarredArr = data?.filter(note => !note?.is_starred) || [];
+
       let arr = [];
-      data?.map(obj => {
+      let newArr = [...starredArr, ...nonStarredArr];
+      newArr?.map(obj => {
         let newObj = { ...obj };
         newObj.dateCreated = obj?.created_at;
         newObj.deadline = obj?.deadline;
@@ -94,6 +99,29 @@ const HomeScreen = () => {
       setStartTimer(true);
     }
   }, [updateStatusError, updateStatusErrorData, updateStatusSuccess]);
+
+  const [
+    updateStar,
+    {
+      isError: updateStarError,
+      error: updateStarErrorData,
+      isSuccess: updateStarSuccess,
+    },
+  ] = useUpdateStarMutation();
+
+  useEffect(() => {
+    if (updateStarError) {
+      setIsErrorModalVisible(true);
+      setErrorMessage(getErrorMessage(updateStarErrorData));
+    } else if (updateStarSuccess) {
+      setIsSuccessVisible(true);
+      setSuccessMessage({
+        title: 'Note has been starred successfully.',
+        type: 'success',
+      });
+      setStartTimer(true);
+    }
+  }, [updateStarError, updateStarErrorData, updateStarSuccess]);
 
   useEffect(() => {
     let timer;
@@ -138,6 +166,7 @@ const HomeScreen = () => {
                     key={index}
                     config={item}
                     updateStatus={updateStatus}
+                    updateStar={updateStar}
                   />
                 )}
                 refreshControl={

@@ -33,7 +33,9 @@ export default getErrorMessage = error => {
   return {
     title: 'Something went wrong',
     description: error?.data?.detail
-      ? error?.data?.detail
+      ? typeof error?.data?.detail === 'string'
+        ? error?.data?.detail
+        : 'Please try again.'
       : 'Please try again.',
   };
 };

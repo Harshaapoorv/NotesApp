@@ -54,6 +54,16 @@ export const notesApi = createApi({
       invalidatesTags: ['Notes'],
     }),
 
+    updateStar: builder.mutation({
+      query: ({ id, is_starred }) => ({
+        url: `/notes/${id}/star`,
+        method: 'PATCH',
+        body: { is_starred: is_starred },
+      }),
+
+      invalidatesTags: ['Notes'],
+    }),
+
     deleteNote: builder.mutation({
       query: id => ({
         url: `/notes/${id}`,
@@ -71,5 +81,6 @@ export const {
   useCreateNoteMutation,
   useUpdateNoteMutation,
   useUpdateStatusMutation,
+  useUpdateStarMutation,
   useDeleteNoteMutation,
 } = notesApi;

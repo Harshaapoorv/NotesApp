@@ -11,8 +11,9 @@ import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Timer from '../assets/icons/Timer.jsx';
 import { useNavigation } from '@react-navigation/native';
 import { formatShortDate } from '../shared/date.js';
+import Star from '../assets/icons/Star.jsx';
 
-const ListItem = ({ config, updateStatus }) => {
+const ListItem = ({ config, updateStatus, updateStar }) => {
   const pageConfig = contentConfig.statusList;
   const statusConfig = pageConfig[config.status];
   const navigation = useNavigation();
@@ -47,22 +48,31 @@ const ListItem = ({ config, updateStatus }) => {
         )}
       </View>
       <View style={styles.footer}>
-        {config?.dateCreated && (
-          <View style={styles.time}>
-            <CalendarIcon width={14} height={14} />
-            <Text style={styles.timeText}>
-              {formatShortDate(config?.dateCreated)}
-            </Text>
-          </View>
-        )}
-        {config?.deadline && (
-          <View style={styles.time}>
-            <Timer width={14} height={14} />
-            <Text style={styles.timeText}>
-              {formatShortDate(config?.deadline)}
-            </Text>
-          </View>
-        )}
+        <View style={styles.dates}>
+          {config?.dateCreated && (
+            <View style={styles.time}>
+              <CalendarIcon width={14} height={14} />
+              <Text style={styles.timeText}>
+                {formatShortDate(config?.dateCreated)}
+              </Text>
+            </View>
+          )}
+          {config?.deadline && (
+            <View style={styles.time}>
+              <Timer width={14} height={14} />
+              <Text style={styles.timeText}>
+                {formatShortDate(config?.deadline)}
+              </Text>
+            </View>
+          )}
+        </View>
+        <Pressable
+          onPress={() =>
+            updateStar({ id: config?.id, is_starred: !config?.is_starred })
+          }
+        >
+          <Star width={20} height={20} isFilled={config?.is_starred} />
+        </Pressable>
       </View>
     </Pressable>
   );
@@ -121,6 +131,12 @@ const styles = StyleSheet.create({
     color: '#7C8590',
   },
   footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  dates: {
     flexDirection: 'row',
     gap: 12,
     flexWrap: 'wrap',
