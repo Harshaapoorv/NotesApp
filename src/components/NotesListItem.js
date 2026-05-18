@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Pressable,
   View,
@@ -9,14 +9,20 @@ import {
 import contentConfig from '../assets/json/content.json';
 import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Timer from '../assets/icons/Timer.jsx';
-import { useNavigation } from '@react-navigation/native';
 import { formatShortDate } from '../shared/date.js';
 import Star from '../assets/icons/Star.jsx';
 
-const ListItem = ({ config, updateStatus, updateStar }) => {
+const ListItem = ({ config, updateStatus, updateStar, openNote }) => {
   const pageConfig = contentConfig.statusList;
   const statusConfig = pageConfig[config.status];
-  const navigation = useNavigation();
+
+  const statusStyle = useMemo(
+    () => ({
+      backgroundColor: statusConfig?.color,
+      borderColor: statusConfig?.color,
+    }),
+    [statusConfig],
+  );
 
   return (
     <Pressable
@@ -24,19 +30,13 @@ const ListItem = ({ config, updateStatus, updateStar }) => {
         styles.container,
         config?.status === 'completed' && styles.completedCard,
       ]}
-      onPress={() => navigation.navigate('Note', { id: config?.id })}
+      onPress={() => openNote(config?.id)}
     >
       <View style={styles.notesHeader}>
         <Text style={styles.noteTitle}>{config.title}</Text>
         {config?.status && (
           <TouchableOpacity
-            style={[
-              {
-                backgroundColor: statusConfig?.color,
-                borderColor: statusConfig?.color,
-              },
-              styles.status,
-            ]}
+            style={[statusStyle, styles.status]}
             onPress={() => updateStatus(config?.id)}
           >
             <Text
@@ -49,11 +49,11 @@ const ListItem = ({ config, updateStatus, updateStar }) => {
       </View>
       <View style={styles.footer}>
         <View style={styles.dates}>
-          {config?.dateCreated && (
+          {config?.created_at && (
             <View style={styles.time}>
               <CalendarIcon width={14} height={14} />
               <Text style={styles.timeText}>
-                {formatShortDate(config?.dateCreated)}
+                {formatShortDate(config?.created_at)}
               </Text>
             </View>
           )}
@@ -78,7 +78,19 @@ const ListItem = ({ config, updateStatus, updateStar }) => {
   );
 };
 
-export default ListItem;
+export default React.memo(ListItem, (prevProps, nextProps) => {
+  return (
+    prevProps.config.id === nextProps.config.id &&
+    prevProps.config.title === nextProps.config.title &&
+    prevProps.config.status === nextProps.config.status &&
+    prevProps.config.is_starred === nextProps.config.is_starred &&
+    prevProps.config.created_at === nextProps.config.created_at &&
+    prevProps.config.deadline === nextProps.config.deadline &&
+    prevProps.openNote === nextProps.openNote &&
+    prevProps.updateStatus === nextProps.updateStatus &&
+    prevProps.updateStar === nextProps.updateStar
+  );
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -94,9 +106,9 @@ const styles = StyleSheet.create({
       width: 0,
       height: 1,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
+    shadowOpacity: 0.08,
+    shadowRadius: 1,
+    elevation: 1,
   },
   completedCard: {
     opacity: 0.6,
@@ -109,7 +121,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   noteTitle: {
-    width: '70%',
+    width: '65%',
     fontSize: 16,
     fontWeight: '700',
     color: '#111827',

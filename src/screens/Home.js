@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -26,7 +26,6 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 const HomeScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const [notesList, setNotesList] = useState([]);
 
   const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
@@ -54,74 +53,56 @@ const HomeScreen = () => {
     setErrorMessage('');
   };
 
-  const { data, isSuccess, isLoading, isError, error, isFetching, refetch } =
+  const { data, isLoading, isError, error, isFetching, refetch } =
     useGetNotesQuery();
 
-  useEffect(() => {
-    if (isSuccess) {
-      let starredArr = data?.filter(note => note?.is_starred) || [];
-      let nonStarredArr = data?.filter(note => !note?.is_starred) || [];
+  const notesList = data || [];
 
-      let arr = [];
-      let newArr = [...starredArr, ...nonStarredArr];
-      newArr?.map(obj => {
-        let newObj = { ...obj };
-        newObj.dateCreated = obj?.created_at;
-        newObj.deadline = obj?.deadline;
-        arr.push(newObj);
-      });
-      setNotesList(arr);
-    } else if (isError) {
+  useEffect(() => {
+    if (isError) {
       setIsErrorModalVisible(true);
       setErrorMessage(getErrorMessage(error));
     }
-  }, [data, isSuccess, isError, error]);
+  }, [isError, error]);
 
   const [
     updateStatus,
-    {
-      isError: updateStatusError,
-      error: updateStatusErrorData,
-      isSuccess: updateStatusSuccess,
-    },
+    // {
+    //   isError: updateStatusError,
+    //   error: updateStatusErrorData,
+    //   isSuccess: updateStatusSuccess,
+    // },
   ] = useUpdateStatusMutation();
 
-  useEffect(() => {
-    if (updateStatusError) {
-      setIsErrorModalVisible(true);
-      setErrorMessage(getErrorMessage(updateStatusErrorData));
-    } else if (updateStatusSuccess) {
-      setIsSuccessVisible(true);
-      setSuccessMessage({
-        title: 'Note status has been updated successfully.',
-        type: 'success',
-      });
-      setStartTimer(true);
-    }
-  }, [updateStatusError, updateStatusErrorData, updateStatusSuccess]);
+  // useEffect(() => {
+  //   if (updateStatusError) {
+  //     setIsErrorModalVisible(true);
+  //     setErrorMessage(getErrorMessage(updateStatusErrorData));
+  //   } else if (updateStatusSuccess) {
+  //     setIsSuccessVisible(true);
+  //     setSuccessMessage({
+  //       title: 'Note status has been updated successfully.',
+  //       type: 'success',
+  //     });
+  //     setStartTimer(true);
+  //   }
+  // }, [updateStatusError, updateStatusErrorData, updateStatusSuccess]);
 
-  const [
-    updateStar,
-    {
-      isError: updateStarError,
-      error: updateStarErrorData,
-      isSuccess: updateStarSuccess,
-    },
-  ] = useUpdateStarMutation();
+  const [updateStar] = useUpdateStarMutation();
 
-  useEffect(() => {
-    if (updateStarError) {
-      setIsErrorModalVisible(true);
-      setErrorMessage(getErrorMessage(updateStarErrorData));
-    } else if (updateStarSuccess) {
-      setIsSuccessVisible(true);
-      setSuccessMessage({
-        title: 'Note has been starred successfully.',
-        type: 'success',
-      });
-      setStartTimer(true);
-    }
-  }, [updateStarError, updateStarErrorData, updateStarSuccess]);
+  // useEffect(() => {
+  //   if (updateStarError) {
+  //     setIsErrorModalVisible(true);
+  //     setErrorMessage(getErrorMessage(updateStarErrorData));
+  //   } else if (updateStarSuccess) {
+  //     setIsSuccessVisible(true);
+  //     setSuccessMessage({
+  //       title: 'Note has been starred successfully.',
+  //       type: 'success',
+  //     });
+  //     setStartTimer(true);
+  //   }
+  // }, [updateStarError, updateStarErrorData, updateStarSuccess]);
 
   useEffect(() => {
     let timer;
@@ -134,6 +115,72 @@ const HomeScreen = () => {
     }
     return () => clearTimeout(timer);
   }, [startTimer]);
+
+  const handleUpdateStar = useCallback(
+    async ({ id, is_starred }) => {
+      try {
+        const response = await updateStar({
+          id,
+          is_starred,
+        }).unwrap();
+
+        setIsSuccessVisible(true);
+
+        setSuccessMessage({
+          title: response?.message,
+          type: 'success',
+        });
+
+        setStartTimer(true);
+      } catch (err) {
+        setIsErrorModalVisible(true);
+        setErrorMessage(getErrorMessage(err));
+      }
+    },
+    [updateStar],
+  );
+
+  const handleUpdateStatus = useCallback(
+    async id => {
+      try {
+        await updateStatus(id).unwrap();
+
+        setIsSuccessVisible(true);
+        setSuccessMessage({
+          title: 'Note status has been updated successfully.',
+          type: 'success',
+        });
+        setStartTimer(true);
+      } catch (err) {
+        setIsErrorModalVisible(true);
+        setErrorMessage(getErrorMessage(err));
+      }
+    },
+    [updateStar],
+  );
+
+  const handleOpenNote = useCallback(
+    id => {
+      navigation.navigate('Note', { id });
+    },
+    [navigation],
+  );
+
+  const renderItem = useCallback(
+    ({ item }) => {
+      return (
+        <ListItem
+          config={item}
+          updateStatus={handleUpdateStatus}
+          updateStar={handleUpdateStar}
+          openNote={handleOpenNote}
+        />
+      );
+    },
+    [handleUpdateStatus, handleUpdateStar, handleOpenNote],
+  );
+
+  const keyExtractor = useCallback(item => item.id, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -160,23 +207,20 @@ const HomeScreen = () => {
             ) : (
               <FlatList
                 data={notesList}
-                keyExtractor={item => item.id}
-                renderItem={({ item, index }) => (
-                  <ListItem
-                    key={index}
-                    config={item}
-                    updateStatus={updateStatus}
-                    updateStar={updateStar}
-                  />
-                )}
+                keyExtractor={keyExtractor}
+                renderItem={renderItem}
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                windowSize={10}
+                updateCellsBatchingPeriod={100}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.body}
                 refreshControl={
                   <RefreshControl
                     refreshing={isFetching && !isLoading}
                     onRefresh={refetch}
                   />
                 }
-                contentContainerStyle={styles.body}
-                showsVerticalScrollIndicator={false}
               />
             )}
           </View>
@@ -198,8 +242,6 @@ const HomeScreen = () => {
         type="create"
         isVisible={isAddNoteVisible}
         setIsVisible={setIsAddNoteVisible}
-        notesList={notesList}
-        setNotesList={setNotesList}
         setIsSuccessVisible={setIsSuccessVisible}
         setSuccessMessage={setSuccessMessage}
         setStartTimer={setStartTimer}

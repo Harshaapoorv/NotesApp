@@ -194,7 +194,6 @@ const FormattedText = ({
               selectable={selectable}
               selectionColor={selectionColor}
               textBreakStrategy="simple"
-              allowFontScaling={false}
             >
               {renderInlineContent(block.content, selectable, selectionColor)}
             </Text>
@@ -214,7 +213,6 @@ const FormattedText = ({
                     selectable={selectable}
                     selectionColor={selectionColor}
                     textBreakStrategy="simple"
-                    allowFontScaling={false}
                   >
                     {renderInlineContent(
                       bulletItem,
@@ -241,7 +239,6 @@ const FormattedText = ({
                     selectable={selectable}
                     selectionColor={selectionColor}
                     textBreakStrategy="simple"
-                    allowFontScaling={false}
                   >
                     {renderInlineContent(item, selectable, selectionColor)}
                   </Text>
@@ -300,7 +297,6 @@ const FormattedText = ({
                 selectable={selectable}
                 selectionColor={selectionColor}
                 textBreakStrategy="simple"
-                allowFontScaling={false}
               >
                 {block.content}
               </Text>

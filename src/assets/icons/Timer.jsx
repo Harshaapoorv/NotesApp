@@ -17,4 +17,4 @@ const Timer = props => (
     />
   </Svg>
 );
-export default Timer;
+export default React.memo(Timer);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -142,12 +142,8 @@ const NoteScreen = ({ route }) => {
 
   useEffect(() => {
     if (isSuccess) {
-      let obj = data;
-      let newObj = { ...obj };
-      newObj.dateCreated = obj?.created_at;
-      newObj.deadline = obj?.deadline;
-      setStatusConfig(contentConfig.statusList[obj?.status]);
-      setConfig(newObj);
+      setStatusConfig(contentConfig.statusList[data?.status]);
+      setConfig(data);
     } else if (isGetNoteError) {
       setIsErrorModalVisible(true);
       setErrorMessage(getErrorMessage(getNoteErrorData));
@@ -198,6 +194,14 @@ const NoteScreen = ({ route }) => {
       return () => clearTimeout(timer);
     }
   }, [copiedTimer]);
+
+  const statusStyle = useMemo(
+    () => ({
+      backgroundColor: statusConfig?.color,
+      borderColor: statusConfig?.color,
+    }),
+    [statusConfig],
+  );
 
   return (
     <View style={styles.screen}>
@@ -277,17 +281,17 @@ const NoteScreen = ({ route }) => {
               )}
               <View style={styles.metaDataContainer}>
                 <View style={styles.rowBig}>
-                  {config?.dateCreated && (
+                  {config?.created_at && (
                     <View style={{ gap: 8 }}>
                       <View style={styles.row}>
                         <CalendarIcon width={16} height={16} />
                         <Text style={styles.sectionTitle}>Created</Text>
                       </View>
                       <Text style={styles.description}>
-                        {formatShortDate(config?.dateCreated)}
+                        {formatShortDate(config?.created_at)}
                         <Text style={styles.time}>
                           {' '}
-                          at {formatTime(config?.dateCreated)}
+                          at {formatTime(config?.created_at)}
                         </Text>
                       </Text>
                     </View>
@@ -316,13 +320,7 @@ const NoteScreen = ({ route }) => {
                     </View>
                     {statusConfig && (
                       <TouchableOpacity
-                        style={[
-                          {
-                            backgroundColor: statusConfig?.color,
-                            borderColor: statusConfig?.color,
-                          },
-                          styles.status,
-                        ]}
+                        style={[statusStyle, styles.status]}
                         onPress={() => updateStatus(config?.id)}
                       >
                         <Text
@@ -422,6 +420,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e5e7eb',
   },
   title: {
+    width: '80%',
+    textAlign: 'center',
     fontSize: 20,
     fontWeight: '700',
     color: '#111827',

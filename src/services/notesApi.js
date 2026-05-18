@@ -16,6 +16,14 @@ export const notesApi = createApi({
     getNotes: builder.query({
       query: () => '/notes',
 
+      transformResponse: response => {
+        return [...response].sort((a, b) => {
+          if (a.is_starred && !b.is_starred) return -1;
+          if (!a.is_starred && b.is_starred) return 1;
+          return 0;
+        });
+      },
+
       providesTags: ['Notes'],
     }),
 
@@ -51,7 +59,27 @@ export const notesApi = createApi({
         method: 'PATCH',
       }),
 
-      invalidatesTags: ['Notes'],
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          notesApi.util.updateQueryData('getNotes', undefined, draft => {
+            const note = draft.find(n => n.id === id);
+
+            if (!note) return;
+
+            if (note.status === 'pending') {
+              note.status = 'progress';
+            } else if (note.status === 'progress') {
+              note.status = 'completed';
+            }
+          }),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
 
     updateStar: builder.mutation({
@@ -61,7 +89,31 @@ export const notesApi = createApi({
         body: { is_starred: is_starred },
       }),
 
-      invalidatesTags: ['Notes'],
+      async onQueryStarted({ id, is_starred }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          notesApi.util.updateQueryData('getNotes', undefined, draft => {
+            const index = draft.findIndex(n => n.id === id);
+
+            if (index === -1) return;
+
+            const [updatedNote] = draft.splice(index, 1);
+
+            updatedNote.is_starred = is_starred;
+
+            if (is_starred) {
+              draft.unshift(updatedNote);
+            } else {
+              draft.push(updatedNote);
+            }
+          }),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
 
     deleteNote: builder.mutation({
