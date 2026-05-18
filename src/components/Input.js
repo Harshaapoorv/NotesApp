@@ -6,6 +6,7 @@ import {
   Text,
   TouchableWithoutFeedback,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { Calendar } from 'react-native-calendars';
@@ -13,6 +14,7 @@ import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Expand from '../assets/icons/Expand.jsx';
 import Collapse from '../assets/icons/Collapse.jsx';
 import { formatShortDate } from '../shared/date.js';
+import Info from '../assets/icons/Info.jsx';
 
 const Input = ({
   variantType = 'text',
@@ -29,6 +31,11 @@ const Input = ({
   maxLength,
   optionList = [],
   onPressOption,
+  formatter,
+  formatterOptionsList,
+  handleFormatterSelection,
+  tooltip,
+  onToolTipPress,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDateModal, setShowDateModal] = useState(false);
@@ -90,25 +97,45 @@ const Input = ({
       case 'text':
         return (
           <>
-            <TextInput
-              placeholder={placeholder}
-              value={value}
-              onChangeText={onChangeText}
-              style={[
-                styles.input,
-                isInputFocused && styles.focused,
-                additionalStyles,
-              ]}
-              keyboardType={keypad}
-              maxLength={maxLength}
-              textContentType={type}
-              multiline={multiline}
-              numberOfLines={numberOfLines}
-              textAlignVertical="top"
-              onFocus={() => setIsInputFocused(true)}
-              onBlur={() => setIsInputFocused(false)}
-            />
-            <Text style={styles.charCount}>{value?.length}</Text>
+            <View
+              style={[styles.inputBorder, isInputFocused && styles.focused]}
+            >
+              <TextInput
+                placeholder={placeholder}
+                value={value}
+                onChangeText={onChangeText}
+                style={[
+                  styles.input,
+                  formatter && styles.formatterInput,
+                  additionalStyles,
+                ]}
+                keyboardType={keypad}
+                maxLength={maxLength}
+                textContentType={type}
+                multiline={multiline}
+                numberOfLines={numberOfLines}
+                textAlignVertical="top"
+                onFocus={() => setIsInputFocused(true)}
+                onBlur={() => setIsInputFocused(false)}
+              />
+              {formatter && (
+                <View style={styles.formatter}>
+                  {formatterOptionsList.map((obj, index) => (
+                    <Pressable
+                      key={index}
+                      onPress={() => handleFormatterSelection(obj.type)}
+                    >
+                      {obj.icon}
+                    </Pressable>
+                  ))}
+                </View>
+              )}
+            </View>
+            {maxLength && (
+              <Text style={styles.charCount}>
+                {maxLength ? `${value?.length}/${maxLength}` : value?.length}
+              </Text>
+            )}
           </>
         );
       case 'dropdown':
@@ -118,6 +145,7 @@ const Input = ({
             <View
               style={[
                 styles.input,
+                styles.inputBorder,
                 additionalStyles,
                 showDropdown && {
                   borderBottomLeftRadius: 0,
@@ -175,7 +203,7 @@ const Input = ({
       case 'date':
         return (
           <TouchableOpacity onPress={() => setShowDateModal(true)}>
-            <View style={styles.input}>
+            <View style={[styles.input, styles.inputBorder]}>
               <View style={styles.dropdown}>
                 <Text style={{ color: value ? '#000' : '#9ca3af' }}>
                   {value ? formatShortDate(value) : 'Select deadline'}
@@ -192,7 +220,7 @@ const Input = ({
             placeholder={placeholder}
             value={value}
             onChangeText={onChangeText}
-            style={[styles.input, additionalStyles]}
+            style={[styles.input, styles.inputBorder, additionalStyles]}
             keyboardType={keypad}
             textContentType={type}
             multiline={multiline}
@@ -205,10 +233,20 @@ const Input = ({
 
   return (
     <View style={styles.inputContainer}>
-      <View style={styles.labelContainer}>
-        {label && <Text style={styles.label}>{`${label}`}</Text>}
-        {isRequired && <Text style={styles.required}>*</Text>}
+      <View style={styles.inputHeader}>
+        <View style={styles.labelContainer}>
+          {label && <Text style={styles.label}>{`${label}`}</Text>}
+          {isRequired && <Text style={styles.required}>*</Text>}
+        </View>
+        {tooltip && (
+          <View>
+            <Pressable onPress={onToolTipPress}>
+              <Info width={16} height={16} />
+            </Pressable>
+          </View>
+        )}
       </View>
+
       {renderInput()}
     </View>
   );
@@ -217,6 +255,12 @@ const Input = ({
 const styles = StyleSheet.create({
   inputContainer: {
     width: '100%',
+  },
+  inputHeader: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   labelContainer: {
     flexDirection: 'row',
@@ -237,21 +281,34 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    borderRadius: 8,
     fontSize: 14,
     color: '#353535',
   },
   focused: {
-    borderWidth: 3,
-    borderColor: '#11582fc',
+    borderWidth: 2,
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+  },
+  inputBorder: {
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+  },
+  formatter: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  formatterInput: {
+    borderBottomWidth: 1,
+    borderColor: '#e5e7eb',
   },
   charCount: {
     alignSelf: 'flex-end',
-    position: 'absolute',
-    right: 8,
-    bottom: -24,
+    marginRight: 8,
+    marginTop: 4,
     fontSize: 12,
     color: '#9ca3af',
   },

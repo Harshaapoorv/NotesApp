@@ -83,5 +83,120 @@
     "solidity": "Solidity",
     "typescriptreact": "TSX",
     "javascriptreact": "JSX"
+  },
+  "examplesConfig": {
+    "bold": {
+      "title": "Bold",
+      "desc": "Make your text bold using double asterisks",
+      "examples": [
+        {
+          "title": "Example",
+          "body": "**bold content here**",
+          "id": "bold"
+        }
+      ]
+    },
+    "italic": {
+      "title": "Italic",
+      "desc": "Make your text italic using single asterisk",
+      "examples": [
+        {
+          "title": "Example",
+          "body": "*italic content here",
+          "id": "italic"
+        }
+      ]
+    },
+    "link": {
+      "title": "Link",
+      "desc": "Make your text a clickable link using either in https://your-link.com format or www.your-link.com format or <<your-link>> format",
+      "examples": [
+        {
+          "title": "Example 1",
+          "body": "https://your-link.com",
+          "id": "link"
+        },
+        {
+          "title": "Example 2",
+          "body": "www.your-link.com",
+          "id": "link-www"
+        },
+        {
+          "title": "Example 3",
+          "body": "<<your-link>>",
+          "id": "customLink"
+        }
+      ]
+    },
+    "quote": {
+      "title": "Quote",
+      "desc": "Make your text a quote by enclosing it in between angular brackets",
+      "examples": [
+        {
+          "title": "Example",
+          "body": "<your quote goes here>",
+          "id": "quote"
+        }
+      ]
+    },
+    "heading": {
+      "title": "Heading",
+      "desc": "Make your text a heading using \"#\" in differnt levels",
+      "examples": [
+        {
+          "title": "Example 1",
+          "body": "# Heading 1",
+          "id": "heading"
+        },
+        {
+          "title": "Example 2",
+          "body": "## Heading 2",
+          "id": "heading2"
+        },
+        {
+          "title": "Example 3",
+          "body": "### Heading 3",
+          "id": "heading3"
+        }
+      ]
+    },
+    "ul": {
+      "title": "Lists",
+      "desc": "Make your text a list using \"-\" at the start of each list item in a new line",
+      "examples": [
+        {
+          "title": "Example",
+          "body": "- List item\n- List item\n- List item",
+          "id": "ul"
+        }
+      ]
+    },
+    "ol": {
+      "title": "Numbered List",
+      "desc": "Make your text a numbered list using \"1.\" at the start of each list item in a new line",
+      "examples": [
+        {
+          "title": "Example",
+          "body": "1. List item\n2. List item\n3. List item",
+          "id": "ol"
+        }
+      ]
+    },
+    "code": {
+      "title": "Code",
+      "desc": "Make your text a code block",
+      "examples": [
+        {
+          "title": "Example 1",
+          "body": "```\n// Your code goes here\n```",
+          "id": "code"
+        },
+        {
+          "title": "Example 2",
+          "body": "```filetype\n// Your code goes here\n```",
+          "id": "codefile"
+        }
+      ]
+    }
   }
 }

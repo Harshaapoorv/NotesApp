@@ -10,7 +10,7 @@ const Collapse = props => (
     {...props}
   >
     <Polygon
-      fill="#BABAC3"
+      fill={props?.fill || '#BABAC3'}
       points="5,30.9 8.1,34 24,18.1 39.9,34 43,30.9 24,12"
     />
   </Svg>

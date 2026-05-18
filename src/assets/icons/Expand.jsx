@@ -10,7 +10,7 @@ const Expand = props => (
     {...props}
   >
     <Polygon
-      fill="#BABAC3"
+      fill={props?.fill || '#BABAC3'}
       points="43,17.1 39.9,14 24,29.9 8.1,14 5,17.1 24,36"
     />
   </Svg>
