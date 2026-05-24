@@ -34,6 +34,10 @@ import Heading from '../assets/icons/FormatterIcons/Heading.jsx';
 import Expand from '../assets/icons/Expand.jsx';
 import Sparkle from '../assets/icons/Sparkle.jsx';
 import Collapse from '../assets/icons/Collapse.jsx';
+import { formatDateForAPI, parseDateFromAPI } from '../shared/date.js';
+import Add from '../assets/icons/Add.jsx';
+import Copy from '../assets/icons/Copy.jsx';
+import Bulb from '../assets/icons/Bulb.jsx';
 
 const AddNote = ({
   isVisible,
@@ -59,10 +63,22 @@ const AddNote = ({
 
   const [showFormattingGuide, setShowFormattingGuide] = useState(false);
   const [expandFormattingGuide, setExpandFormattingGuide] = useState(false);
-  const [selectedType, setSelectedType] = useState('bold');
+  const [selectedType, setSelectedType] = useState();
+  const [selectedGuideType, setSelectedGuideType] = useState('bold');
   const [selectedConfig, setSelectedConfig] = useState(
-    examplesConfig[selectedType],
+    examplesConfig[selectedGuideType],
   );
+  const [selection, setSelection] = useState({
+    start: 0,
+    end: 0,
+  });
+
+  const [copyText, setCopyText] = useState('Copy');
+  const [insertText, setInsertText] = useState('Insert');
+  const [copyTimer, setCopyTimer] = useState(false);
+  const [insertTimer, setInsertTimer] = useState(false);
+
+  const [showTip, setShowTip] = useState(true);
 
   const modalTranslateY = useRef(new Animated.Value(0)).current;
 
@@ -70,15 +86,38 @@ const AddNote = ({
 
   const onCopyToClipboard = text => {
     Clipboard.setString(text);
+    setCopyText('Copied!!');
+    setCopyTimer(true);
   };
+
+  useEffect(() => {
+    let timer;
+    if (copyTimer) {
+      timer = setTimeout(() => {
+        setCopyText('Copy');
+        setCopyTimer(false);
+      }, 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [copyTimer]);
+
+  useEffect(() => {
+    let timer;
+    if (insertTimer) {
+      timer = setTimeout(() => {
+        setInsertText('Insert');
+        setInsertTimer(false);
+      }, 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [insertTimer]);
 
   useEffect(() => {
     if (type === 'edit' && !isPrePopulated) {
       setTitle(config?.title || '');
       setDescription(config?.description || '');
       setStatus(statusConfig[config?.status]);
-      setDeadline(config?.deadline ? new Date(config.deadline) : null);
-
+      setDeadline(parseDateFromAPI(config?.deadline));
       setIsPrePopulated(true);
     }
   }, [isVisible, config]);
@@ -141,8 +180,11 @@ const AddNote = ({
     setShowFormattingGuide(false);
     setExpandFormattingGuide(false);
 
-    setSelectedType('bold');
-    setSelectedConfig(examplesConfig[selectedType]);
+    setSelectedType();
+    setSelectedConfig(examplesConfig[selectedGuideType]);
+    setSelectedGuideType('bold');
+
+    setShowTip(true);
 
     setIsVisible(false);
     setIsPrePopulated(false);
@@ -222,7 +264,7 @@ const AddNote = ({
         title,
         description,
         status: status?.value ? status.value : status,
-        deadline,
+        deadline: formatDateForAPI(deadline),
       };
 
       updateNote(newNote);
@@ -237,160 +279,140 @@ const AddNote = ({
     setShowFormattingGuide(prev => !prev);
   };
 
-  const handlePress = type => {
-    let newVal = description || '';
+  const insertAtCursor = template => {
+    const start = selection.start;
+    const end = selection.end;
 
+    const before = description.slice(0, start);
+    const after = description.slice(end);
+
+    const newText = before + template + after;
+    setDescription(newText);
+
+    const cursorPosition = start + template.length;
+
+    setSelection({
+      start: cursorPosition,
+      end: cursorPosition,
+    });
+  };
+
+  const handlePress = type => {
     if (type === 'bold') {
-      newVal += ' **bold content here** ';
+      insertAtCursor(' **bold content here** ');
     }
 
     if (type === 'italic') {
-      newVal += ' *italic content here* ';
+      insertAtCursor(' *italic content here* ');
     }
 
     if (type === 'link') {
-      newVal += ' https://your-link.com ';
+      insertAtCursor(' https://your-link.com ');
     }
 
     if (type === 'link-www') {
-      newVal += ' www.your-link.com ';
+      insertAtCursor(' www.your-link.com ');
     }
 
     if (type === 'customLink') {
-      newVal += ' <<your-link>> ';
+      insertAtCursor(' <<your-link>> ');
     }
 
     if (type === 'quote') {
-      newVal += description?.length
-        ? '\n<Your quote goes here>\n'
-        : '<Your quote goes here>\n';
+      insertAtCursor(
+        description?.length
+          ? '\n<Your quote goes here>\n'
+          : '<Your quote goes here>\n',
+      );
     }
 
     if (type === 'heading') {
-      newVal += description?.length ? '\n# Heading 1\n' : '# Heading 1\n';
+      insertAtCursor(description?.length ? '\n# Heading 1\n' : '# Heading 1\n');
     }
 
     if (type === 'heading2') {
-      newVal += description?.length ? '\n## Heading 2\n' : '## Heading 2\n';
+      insertAtCursor(
+        description?.length ? '\n## Heading 2\n' : '## Heading 2\n',
+      );
     }
 
     if (type === 'heading3') {
-      newVal += description?.length ? '\n### Heading 3\n' : '### Heading 3\n';
+      insertAtCursor(
+        description?.length ? '\n### Heading 3\n' : '### Heading 3\n',
+      );
     }
 
     if (type === 'ol') {
-      newVal += description?.length
-        ? '\n1. List item\n2. List item\n3. List item\n'
-        : '1. List item\n2. List item\n3. List item\n';
+      insertAtCursor(
+        description?.length
+          ? '\n1. List item\n2. List item\n3. List item\n'
+          : '1. List item\n2. List item\n3. List item\n',
+      );
     }
 
     if (type === 'ul') {
-      newVal += description?.length
-        ? '\n- List item\n- List item\n- List item\n'
-        : '- List item\n- List item\n- List item\n';
+      insertAtCursor(
+        description?.length
+          ? '\n- List item\n- List item\n- List item\n'
+          : '- List item\n- List item\n- List item\n',
+      );
     }
 
     if (type === 'code') {
-      newVal += description?.length
-        ? '\n```\n// Your code goes here\n```\n'
-        : '```\n// Your code goes here\n```\n';
+      insertAtCursor(
+        description?.length
+          ? '\n```\n// Your code goes here\n```\n'
+          : '```\n// Your code goes here\n```\n',
+      );
     }
 
     if (type === 'codefile') {
-      newVal += description?.length
-        ? '\n```filetype\n// Your code goes here\n```\n'
-        : '```filetype\n// Your code goes here\n```\n';
+      insertAtCursor(
+        description?.length
+          ? '\n```filetype\n// Your code goes here\n```\n'
+          : '```filetype\n// Your code goes here\n```\n',
+      );
     }
-
-    setDescription(newVal);
   };
 
   const formatterOptionsList = [
     {
-      icon: (
-        <Bold
-          width={16}
-          height={16}
-          fill={selectedType === 'bold' ? '#165DFC' : '#000000'}
-        />
-      ),
+      Icon: Bold,
       type: 'bold',
       text: 'Bold',
     },
     {
-      icon: (
-        <Italic
-          width={16}
-          height={16}
-          fill={selectedType === 'italic' ? '#165DFC' : '#000000'}
-        />
-      ),
+      Icon: Italic,
       type: 'italic',
       text: 'Italic',
     },
     {
-      icon: (
-        <LinkSvg
-          width={16}
-          height={16}
-          fill={selectedType === 'link' ? '#165DFC' : '#000000'}
-        />
-      ),
+      Icon: LinkSvg,
       type: 'link',
       text: 'Link',
     },
     {
-      icon: (
-        <Quote
-          width={16}
-          height={16}
-          fill={selectedType === 'quote' ? '#165DFC' : '#000000'}
-        />
-      ),
+      Icon: Quote,
       type: 'quote',
       text: 'Quote',
     },
     {
-      icon: (
-        <Heading
-          width={16}
-          height={16}
-          fill={selectedType === 'heading' ? '#165DFC' : '#000000'}
-        />
-      ),
+      Icon: Heading,
       type: 'heading',
       text: 'Heading',
     },
     {
-      icon: (
-        <UnOrderedList
-          width={16}
-          height={16}
-          fill={selectedType === 'ul' ? '#165DFC' : '#000000'}
-        />
-      ),
+      Icon: UnOrderedList,
       type: 'ul',
       text: 'List',
     },
     {
-      icon: (
-        <NumberedList
-          width={16}
-          height={16}
-          fill={selectedType === 'ol' ? '#165DFC' : '#000000'}
-        />
-      ),
+      Icon: NumberedList,
       type: 'ol',
       text: 'Numbered',
     },
     {
-      icon: (
-        <Code
-          width={16}
-          height={16}
-          fill={selectedType === 'code' ? '#165DFC' : '#000000'}
-        />
-      ),
+      Icon: Code,
       type: 'code',
       text: 'Code',
     },
@@ -405,51 +427,52 @@ const AddNote = ({
       onRequestClose={onReset}
     >
       <View style={styles.modalContainer}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.overlay}>
-            <Animated.View
-              style={[
-                styles.modalContent,
-                {
-                  maxHeight: expandFormattingGuide ? '88%' : '75%',
-                  minHeight: expandFormattingGuide ? '88%' : '75%',
-                  transform: [
-                    {
-                      translateY: modalTranslateY,
-                    },
-                  ],
-                },
-              ]}
+        <View style={styles.overlay}>
+          <Animated.View
+            style={[
+              styles.modalContent,
+              {
+                maxHeight: expandFormattingGuide ? '88%' : '75%',
+                minHeight: expandFormattingGuide ? '88%' : '75%',
+                transform: [
+                  {
+                    translateY: modalTranslateY,
+                  },
+                ],
+              },
+            ]}
+          >
+            <Close
+              width={24}
+              height={24}
+              style={styles.closeIcon}
+              onPress={onReset}
+            />
+
+            {/* HEADER */}
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                {type === 'edit' ? 'Edit Note' : 'Create New Note'}
+              </Text>
+
+              <Text style={styles.modalTitleDesc}>
+                {type === 'edit'
+                  ? title
+                  : 'Fill in the details for your new note:'}
+              </Text>
+            </View>
+
+            {/* BODY */}
+            <ScrollView
+              style={styles.scrollView}
+              contentContainerStyle={styles.scrollContainer}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="interactive"
+              nestedScrollEnabled
+              bounces={false}
             >
-              <Close
-                width={24}
-                height={24}
-                style={styles.closeIcon}
-                onPress={onReset}
-              />
-
-              {/* HEADER */}
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>
-                  {type === 'edit' ? 'Edit Note' : 'Create New Note'}
-                </Text>
-
-                <Text style={styles.modalTitleDesc}>
-                  {type === 'edit'
-                    ? title
-                    : 'Fill in the details for your new note:'}
-                </Text>
-              </View>
-
-              {/* BODY */}
-              <ScrollView
-                style={styles.scrollView}
-                contentContainerStyle={styles.scrollContainer}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-                keyboardDismissMode="interactive"
-                bounces={false}
-              >
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.modalBody}>
                   <Input
                     label={'Title'}
@@ -476,6 +499,9 @@ const AddNote = ({
                     tooltip
                     onToolTipPress={onTooltipPress}
                     handleFormatterSelection={handlePress}
+                    selection={selection}
+                    onSelectionChange={setSelection}
+                    selectedType={selectedType}
                   />
 
                   {showFormattingGuide && (
@@ -518,32 +544,43 @@ const AddNote = ({
                       {expandFormattingGuide && (
                         <View style={styles.expandedContainer}>
                           <View style={styles.formatOptionContainer}>
-                            {formatterOptionsList.map((obj, index) => (
-                              <Pressable
-                                key={index}
-                                style={[
-                                  styles.formatOption,
-                                  selectedType === obj.type &&
-                                    styles.selectedFormatOption,
-                                ]}
-                                onPress={() => {
-                                  setSelectedType(obj.type);
-                                  setSelectedConfig(examplesConfig[obj.type]);
-                                }}
-                              >
-                                {obj.icon}
-
-                                <Text
+                            {formatterOptionsList.map((obj, index) => {
+                              const Icon = obj.Icon;
+                              return (
+                                <Pressable
+                                  key={index}
                                   style={[
-                                    styles.formatOptionText,
-                                    selectedType === obj.type &&
-                                      styles.selectedFormatOptionText,
+                                    styles.formatOption,
+                                    selectedGuideType === obj.type &&
+                                      styles.selectedFormatOption,
                                   ]}
+                                  onPress={() => {
+                                    setSelectedGuideType(obj.type);
+                                    setSelectedConfig(examplesConfig[obj.type]);
+                                  }}
                                 >
-                                  {obj.text}
-                                </Text>
-                              </Pressable>
-                            ))}
+                                  <Icon
+                                    width={16}
+                                    height={16}
+                                    fill={
+                                      selectedGuideType === obj.type
+                                        ? '#165DFC'
+                                        : '#000000'
+                                    }
+                                  />
+
+                                  <Text
+                                    style={[
+                                      styles.formatOptionText,
+                                      selectedGuideType === obj.type &&
+                                        styles.selectedFormatOptionText,
+                                    ]}
+                                  >
+                                    {obj.text}
+                                  </Text>
+                                </Pressable>
+                              );
+                            })}
                           </View>
                           <View style={styles.selectedContainer}>
                             <View style={{ gap: 4 }}>
@@ -568,25 +605,54 @@ const AddNote = ({
                                   <View style={styles.exampleButtons}>
                                     <Button
                                       variantType="secondary"
-                                      title={'Copy'}
+                                      title={copyText}
                                       additionalStyles={styles.copyButton}
                                       textStyles={styles.buttonText}
+                                      isDisabled={copyTimer}
                                       onPress={() =>
                                         onCopyToClipboard(obj?.body)
                                       }
+                                      LeftIcon={Copy}
+                                      leftIconFill={'#165DFC'}
                                     />
                                     <Button
                                       variantType="secondary"
-                                      title={'Insert'}
+                                      title={insertText}
                                       additionalStyles={styles.insertButton}
                                       textStyles={styles.buttonText}
-                                      onPress={() => handlePress(obj.id)}
+                                      isDisabled={insertTimer}
+                                      onPress={() => {
+                                        handlePress(obj.id);
+                                        setInsertText('Inserted!!');
+                                        setInsertTimer(true);
+                                      }}
+                                      LeftIcon={Add}
+                                      leftIconFill={'#165DFC'}
                                     />
                                   </View>
                                 </View>
                               ))}
                             </View>
                           </View>
+                          {showTip && (
+                            <View style={styles.tipContainer}>
+                              <Bulb width={24} height={24} color={'#165DFC'} />
+                              <View style={styles.tipTextContainer}>
+                                <Text style={styles.tipTitle}>Tip</Text>
+                                <Text style={styles.tipDesc}>
+                                  You can combine multiple formats for even more
+                                  powerful notes!
+                                </Text>
+                              </View>
+                              <Pressable onPress={() => setShowTip(false)}>
+                                <Close
+                                  width={24}
+                                  height={24}
+                                  color={'#165DFC'}
+                                />
+                              </Pressable>
+                            </View>
+                          )}
                         </View>
                       )}
                     </View>
@@ -623,29 +689,29 @@ const AddNote = ({
                     onChangeText={setDeadline}
                   />
                 </View>
-              </ScrollView>
+              </TouchableWithoutFeedback>
+            </ScrollView>
 
-              {/* FOOTER */}
-              <View style={styles.modalFooter}>
-                <Button
-                  title="Cancel"
-                  variantType="secondary"
-                  onPress={onReset}
-                  additionalStyles={{ width: '48%' }}
-                />
+            {/* FOOTER */}
+            <View style={styles.modalFooter}>
+              <Button
+                title="Cancel"
+                variantType="secondary"
+                onPress={onReset}
+                additionalStyles={{ width: '48%' }}
+              />
 
-                <Button
-                  title={type === 'edit' ? 'Save Changes' : 'Create Note'}
-                  variantType="primary"
-                  onPress={onCreateNote}
-                  isDisabled={isButtonDisabled}
-                  additionalStyles={{ width: '48%' }}
-                  isLoading={createNoteLoading || updateNoteLoading}
-                />
-              </View>
-            </Animated.View>
-          </View>
-        </TouchableWithoutFeedback>
+              <Button
+                title={type === 'edit' ? 'Save Changes' : 'Create Note'}
+                variantType="primary"
+                onPress={onCreateNote}
+                isDisabled={isButtonDisabled}
+                additionalStyles={{ width: '48%' }}
+                isLoading={createNoteLoading || updateNoteLoading}
+              />
+            </View>
+          </Animated.View>
+        </View>
       </View>
 
       <ErrorModal
@@ -855,6 +921,28 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#165DFC',
+  },
+  tipContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#EAF2FE',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#EAF2FE',
+  },
+  tipTextContainer: {
+    width: '78%',
+    gap: 8,
+  },
+  tipTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#165DFC',
+  },
+  tipDesc: {
+    fontSize: 12,
+    color: '#667085',
   },
 });
 

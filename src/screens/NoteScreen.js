@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -152,26 +152,45 @@ const NoteScreen = ({ route }) => {
 
   const [
     updateStatus,
-    {
-      isError: updateStatusError,
-      error: updateStatusErrorData,
-      isSuccess: updateStatusSuccess,
-    },
+    // {
+    //   isError: updateStatusError,
+    //   error: updateStatusErrorData,
+    //   isSuccess: updateStatusSuccess,
+    // },
   ] = useUpdateStatusMutation();
 
-  useEffect(() => {
-    if (updateStatusError) {
-      setIsErrorModalVisible(true);
-      setErrorMessage(getErrorMessage(updateStatusErrorData));
-    } else if (updateStatusSuccess) {
-      setIsSuccessVisible(true);
-      setSuccessMessage({
-        title: 'Note status has been updated successfully.',
-        type: 'success',
-      });
-      setStartTimer(true);
-    }
-  }, [updateStatusError, updateStatusErrorData, updateStatusSuccess]);
+  const handleUpdateStatus = useCallback(
+    async id => {
+      try {
+        await updateStatus(id).unwrap();
+
+        setIsSuccessVisible(true);
+        setSuccessMessage({
+          title: 'Note status has been updated successfully.',
+          type: 'success',
+        });
+        setStartTimer(true);
+      } catch (err) {
+        setIsErrorModalVisible(true);
+        setErrorMessage(getErrorMessage(err));
+      }
+    },
+    [updateStatus],
+  );
+
+  // useEffect(() => {
+  //   if (updateStatusError) {
+  //     setIsErrorModalVisible(true);
+  //     setErrorMessage(getErrorMessage(updateStatusErrorData));
+  //   } else if (updateStatusSuccess) {
+  //     setIsSuccessVisible(true);
+  //     setSuccessMessage({
+  //       title: 'Note status has been updated successfully.',
+  //       type: 'success',
+  //     });
+  //     setStartTimer(true);
+  //   }
+  // }, [updateStatusError, updateStatusErrorData, updateStatusSuccess]);
 
   useEffect(() => {
     let timer;
@@ -321,7 +340,7 @@ const NoteScreen = ({ route }) => {
                     {statusConfig && (
                       <TouchableOpacity
                         style={[statusStyle, styles.status]}
-                        onPress={() => updateStatus(config?.id)}
+                        onPress={() => handleUpdateStatus(config?.id)}
                       >
                         <Text
                           style={[

@@ -9,33 +9,23 @@ import {
 } from 'react-native';
 import parseText from '../shared/parseText';
 import ClipBoard from '../assets/icons/ClipBoard.jsx';
-import Clipboard from '@react-native-clipboard/clipboard';
 import SuccessTick from '../assets/icons/SuccessTick.jsx';
+import Clipboard from '@react-native-clipboard/clipboard';
 import contentConfig from '../assets/json/content.json';
 
-const renderInlineContent = (content, selectable, selectionColor) => {
+const renderInlineContent = content => {
   return content.map((item, index) => {
     switch (item.type) {
       case 'text':
         return (
-          <Text
-            key={index}
-            style={styles.text}
-            selectable={selectable}
-            selectionColor={selectionColor}
-          >
+          <Text key={index} style={styles.text}>
             {item.text}
           </Text>
         );
 
       case 'bold':
         return (
-          <Text
-            key={index}
-            style={styles.bold}
-            selectable={selectable}
-            selectionColor={selectionColor}
-          >
+          <Text key={index} style={styles.bold}>
             {item.text}
           </Text>
         );
@@ -45,8 +35,6 @@ const renderInlineContent = (content, selectable, selectionColor) => {
           <Text
             key={index}
             style={styles.link}
-            selectable={selectable}
-            selectionColor={selectionColor}
             suppressHighlighting
             onPress={() => {
               if (item.url) {
@@ -60,38 +48,20 @@ const renderInlineContent = (content, selectable, selectionColor) => {
 
       case 'italic':
         return (
-          <Text
-            key={index}
-            style={styles.italic}
-            selectable={selectable}
-            selectionColor={selectionColor}
-          >
+          <Text key={index} style={styles.italic}>
             {item.text}
           </Text>
         );
 
       case 'quote':
         return (
-          <Text
-            key={index}
-            style={[styles.text, styles.quote]}
-            selectable={selectable}
-            selectionColor={selectionColor}
-          >
+          <Text key={index} style={[styles.text, styles.quote]}>
             {item.text}
           </Text>
         );
 
       default:
-        return (
-          <Text
-            key={index}
-            selectable={selectable}
-            selectionColor={selectionColor}
-          >
-            {item.text}
-          </Text>
-        );
+        return <Text key={index}>{item.text}</Text>;
     }
   });
 };
@@ -179,8 +149,11 @@ const FormattedText = ({
                 block.level === 2 && styles.heading2,
                 block.level === 3 && styles.heading3,
               ]}
+              selectable={selectable}
+              selectionColor={selectionColor}
+              textBreakStrategy="simple"
             >
-              {renderInlineContent(block.content, selectable, selectionColor)}
+              {renderInlineContent(block.content)}
             </Text>
           );
         }
@@ -195,7 +168,7 @@ const FormattedText = ({
               selectionColor={selectionColor}
               textBreakStrategy="simple"
             >
-              {renderInlineContent(block.content, selectable, selectionColor)}
+              {renderInlineContent(block.content)}
             </Text>
           );
         }
@@ -214,11 +187,7 @@ const FormattedText = ({
                     selectionColor={selectionColor}
                     textBreakStrategy="simple"
                   >
-                    {renderInlineContent(
-                      bulletItem,
-                      selectable,
-                      selectionColor,
-                    )}
+                    {renderInlineContent(bulletItem)}
                   </Text>
                 </View>
               ))}
@@ -231,7 +200,7 @@ const FormattedText = ({
           return (
             <View key={index} style={styles.bulletContainer}>
               {block.content.map((item, itemIndex) => (
-                <View key={itemIndex} style={[styles.numberedPoint]}>
+                <View key={itemIndex} style={styles.numberedPoint}>
                   <Text style={styles.numberText}>{itemIndex + 1}.</Text>
 
                   <Text
@@ -240,7 +209,7 @@ const FormattedText = ({
                     selectionColor={selectionColor}
                     textBreakStrategy="simple"
                   >
-                    {renderInlineContent(item, selectable, selectionColor)}
+                    {renderInlineContent(item)}
                   </Text>
                 </View>
               ))}
@@ -311,12 +280,11 @@ const FormattedText = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    gap: 12,
-  },
+  container: {},
 
   paragraph: {
     flexWrap: 'wrap',
+    marginBottom: 2,
   },
 
   text: {
@@ -350,6 +318,7 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 8,
     marginLeft: 8,
+    marginVertical: 8,
   },
 
   bulletPoint: {
@@ -385,16 +354,19 @@ const styles = StyleSheet.create({
   heading1: {
     fontSize: 28,
     lineHeight: 36,
+    marginBottom: 6,
   },
 
   heading2: {
     fontSize: 22,
     lineHeight: 30,
+    marginBottom: 4,
   },
 
   heading3: {
     fontSize: 18,
     lineHeight: 26,
+    marginBottom: 4,
   },
 
   numberText: {
@@ -408,6 +380,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F2937',
     borderRadius: 12,
     padding: 16,
+    marginVertical: 8,
   },
 
   codeBlockHeader: {
@@ -432,6 +405,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     color: '#F9FAFB',
+  },
+
+  copyButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

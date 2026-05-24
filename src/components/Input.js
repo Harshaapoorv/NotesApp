@@ -13,7 +13,7 @@ import { Calendar } from 'react-native-calendars';
 import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
 import Expand from '../assets/icons/Expand.jsx';
 import Collapse from '../assets/icons/Collapse.jsx';
-import { formatShortDate } from '../shared/date.js';
+import { formatDateForAPI, formatShortDate } from '../shared/date.js';
 import Info from '../assets/icons/Info.jsx';
 
 const Input = ({
@@ -36,6 +36,9 @@ const Input = ({
   handleFormatterSelection,
   tooltip,
   onToolTipPress,
+  selection,
+  onSelectionChange,
+  selectedType,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDateModal, setShowDateModal] = useState(false);
@@ -79,7 +82,7 @@ const Input = ({
             markedDates={
               value
                 ? {
-                    [value?.toISOString()?.split('T')[0]]: {
+                    [formatDateForAPI(value)]: {
                       selected: true,
                       selectedColor: '#2563eb',
                     },
@@ -117,17 +120,31 @@ const Input = ({
                 textAlignVertical="top"
                 onFocus={() => setIsInputFocused(true)}
                 onBlur={() => setIsInputFocused(false)}
+                selection={selection}
+                onSelectionChange={e =>
+                  onSelectionChange(e.nativeEvent.selection)
+                }
               />
               {formatter && (
                 <View style={styles.formatter}>
-                  {formatterOptionsList.map((obj, index) => (
-                    <Pressable
-                      key={index}
-                      onPress={() => handleFormatterSelection(obj.type)}
-                    >
-                      {obj.icon}
-                    </Pressable>
-                  ))}
+                  {formatterOptionsList.map((item, index) => {
+                    const Icon = item.Icon;
+
+                    const isSelected = selectedType === item.type;
+
+                    return (
+                      <Pressable
+                        key={index}
+                        onPress={() => handleFormatterSelection(item.type)}
+                      >
+                        <Icon
+                          width={16}
+                          height={16}
+                          fill={isSelected ? '#165DFC' : '#000000'}
+                        />
+                      </Pressable>
+                    );
+                  })}
                 </View>
               )}
             </View>

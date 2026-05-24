@@ -156,7 +156,7 @@ const HomeScreen = () => {
         setErrorMessage(getErrorMessage(err));
       }
     },
-    [updateStar],
+    [updateStatus],
   );
 
   const handleOpenNote = useCallback(

@@ -16,6 +16,8 @@ const Button = ({
   textStyles,
   isLoading = false,
   loaderColor = '#fff',
+  LeftIcon,
+  leftIconFill,
 }) => {
   return (
     <Pressable
@@ -33,6 +35,7 @@ const Button = ({
         <>
           {isIcon && isAdd && <Add width={16} height={16} />}
           {isIcon && isDelete && <Delete width={16} height={16} />}
+          {LeftIcon && <LeftIcon color={leftIconFill} width={16} height={16} />}
           <Text
             style={[
               styles.buttonText,

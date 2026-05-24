@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Config from 'react-native-config';
+import applyDefaultNotesOrdering from '../shared/applyDefaultNotesOrdering';
 
 export const notesApi = createApi({
   reducerPath: 'notesApi',
@@ -17,11 +18,7 @@ export const notesApi = createApi({
       query: () => '/notes',
 
       transformResponse: response => {
-        return [...response].sort((a, b) => {
-          if (a.is_starred && !b.is_starred) return -1;
-          if (!a.is_starred && b.is_starred) return 1;
-          return 0;
-        });
+        return applyDefaultNotesOrdering([...response]);
       },
 
       providesTags: ['Notes'],
@@ -60,7 +57,8 @@ export const notesApi = createApi({
       }),
 
       async onQueryStarted(id, { dispatch, queryFulfilled }) {
-        const patchResult = dispatch(
+        // UPDATE NOTES LIST CACHE
+        const patchNotesResult = dispatch(
           notesApi.util.updateQueryData('getNotes', undefined, draft => {
             const note = draft.find(n => n.id === id);
 
@@ -71,13 +69,29 @@ export const notesApi = createApi({
             } else if (note.status === 'progress') {
               note.status = 'completed';
             }
+
+            applyDefaultNotesOrdering(draft);
+          }),
+        );
+
+        // UPDATE NOTE DETAIL CACHE
+        const patchNoteResult = dispatch(
+          notesApi.util.updateQueryData('getNoteById', id, draft => {
+            if (!draft) return;
+
+            if (draft.status === 'pending') {
+              draft.status = 'progress';
+            } else if (draft.status === 'progress') {
+              draft.status = 'completed';
+            }
           }),
         );
 
         try {
           await queryFulfilled;
         } catch {
-          patchResult.undo();
+          patchNotesResult.undo();
+          patchNoteResult.undo();
         }
       },
     }),
@@ -86,32 +100,37 @@ export const notesApi = createApi({
       query: ({ id, is_starred }) => ({
         url: `/notes/${id}/star`,
         method: 'PATCH',
-        body: { is_starred: is_starred },
+        body: { is_starred },
       }),
 
       async onQueryStarted({ id, is_starred }, { dispatch, queryFulfilled }) {
-        const patchResult = dispatch(
+        // UPDATE NOTES LIST CACHE
+        const patchNotesResult = dispatch(
           notesApi.util.updateQueryData('getNotes', undefined, draft => {
-            const index = draft.findIndex(n => n.id === id);
+            const note = draft.find(n => n.id === id);
 
-            if (index === -1) return;
+            if (!note) return;
 
-            const [updatedNote] = draft.splice(index, 1);
+            note.is_starred = is_starred;
 
-            updatedNote.is_starred = is_starred;
+            applyDefaultNotesOrdering(draft);
+          }),
+        );
 
-            if (is_starred) {
-              draft.unshift(updatedNote);
-            } else {
-              draft.push(updatedNote);
-            }
+        // UPDATE NOTE DETAIL CACHE
+        const patchNoteResult = dispatch(
+          notesApi.util.updateQueryData('getNoteById', id, draft => {
+            if (!draft) return;
+
+            draft.is_starred = is_starred;
           }),
         );
 
         try {
           await queryFulfilled;
         } catch {
-          patchResult.undo();
+          patchNotesResult.undo();
+          patchNoteResult.undo();
         }
       },
     }),
