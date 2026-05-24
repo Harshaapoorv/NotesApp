@@ -120,9 +120,11 @@ const Input = ({
                 textAlignVertical="top"
                 onFocus={() => setIsInputFocused(true)}
                 onBlur={() => setIsInputFocused(false)}
-                selection={selection}
-                onSelectionChange={e =>
-                  onSelectionChange(e.nativeEvent.selection)
+                selection={selection || undefined}
+                onSelectionChange={
+                  onSelectionChange
+                    ? e => onSelectionChange(e.nativeEvent.selection)
+                    : undefined
                 }
               />
               {formatter && (
