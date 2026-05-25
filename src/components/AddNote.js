@@ -31,6 +31,7 @@ import NumberedList from '../assets/icons/FormatterIcons/NumberedList.jsx';
 import Quote from '../assets/icons/FormatterIcons/Quote.jsx';
 import UnOrderedList from '../assets/icons/FormatterIcons/UnOrderedList.jsx';
 import Heading from '../assets/icons/FormatterIcons/Heading.jsx';
+import StrikeThrough from '../assets/icons/FormatterIcons/StrikeThrough.jsx';
 import Expand from '../assets/icons/Expand.jsx';
 import Sparkle from '../assets/icons/Sparkle.jsx';
 import Collapse from '../assets/icons/Collapse.jsx';
@@ -306,6 +307,10 @@ const AddNote = ({
       insertAtCursor(' *italic content here* ');
     }
 
+    if (type === 'strikethrough') {
+      insertAtCursor(' ~~striked content here~~ ');
+    }
+
     if (type === 'link') {
       insertAtCursor(' https://your-link.com ');
     }
@@ -385,6 +390,11 @@ const AddNote = ({
       Icon: Italic,
       type: 'italic',
       text: 'Italic',
+    },
+    {
+      Icon: StrikeThrough,
+      type: 'strikethrough',
+      text: 'Strike',
     },
     {
       Icon: LinkSvg,

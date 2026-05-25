@@ -258,11 +258,9 @@ const Input = ({
           {isRequired && <Text style={styles.required}>*</Text>}
         </View>
         {tooltip && (
-          <View>
-            <Pressable onPress={onToolTipPress}>
-              <Info width={16} height={16} />
-            </Pressable>
-          </View>
+          <Pressable onPress={onToolTipPress}>
+            <Info width={16} height={16} />
+          </Pressable>
         )}
       </View>
 

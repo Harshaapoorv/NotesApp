@@ -1,5 +1,5 @@
 const INLINE_REGEX =
-  /(\*\*[^*]+\*\*)|(\*[^*]+\*)|(https?:\/\/[^\s]+)|(www\.[^\s]+)|(<<.*?>>)|(<.*?>)/g;
+  /(\*\*[^*]+\*\*)|(\*[^*]+\*)|(https?:\/\/[^\s]+)|(www\.[^\s]+)|(<<.*?>>)|(<.*?>)|(~~.*?~~)/g;
 
 /**
  * SUPPORTED CODE LANGUAGES
@@ -224,6 +224,11 @@ export function parseInline(text = '', noText) {
       tokens.push({
         type: 'italic',
         text: matchedText.slice(1, -1),
+      });
+    } else if (/^\~\~[^*]+\~\~$/.test(matchedText)) {
+      tokens.push({
+        type: 'strikethrough',
+        text: matchedText.slice(2, -2),
       });
     } else if (/^https?:\/\/[^\s]+$/.test(matchedText)) {
       /**

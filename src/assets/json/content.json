@@ -102,8 +102,19 @@
       "examples": [
         {
           "title": "Example",
-          "body": "*italic content here",
+          "body": "*italic content here*",
           "id": "italic"
+        }
+      ]
+    },
+    "strikethrough": {
+      "title": "Strike",
+      "desc": "Make your text striked using ~~",
+      "examples": [
+        {
+          "title": "Example",
+          "body": "~~striked content here~~",
+          "id": "strikethrough"
         }
       ]
     },

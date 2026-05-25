@@ -53,6 +53,13 @@ const renderInlineContent = content => {
           </Text>
         );
 
+      case 'strikethrough':
+        return (
+          <Text key={index} style={styles.strikethrough}>
+            {item.text}
+          </Text>
+        );
+
       case 'quote':
         return (
           <Text key={index} style={[styles.text, styles.quote]}>
@@ -307,6 +314,10 @@ const styles = StyleSheet.create({
   italic: {
     fontStyle: 'italic',
     color: '#111827',
+  },
+
+  strikethrough: {
+    textDecorationLine: 'line-through',
   },
 
   quote: {
