@@ -133,13 +133,12 @@ Export all notes into a professionally formatted Excel workbook with:
 ```bash
 src/
 │
-├── api/
 ├── assets/
 ├── components/
 ├── screens/
+├── services/
 ├── shared/
 ├── store/
-├── utils/
 ```
 
 ---
