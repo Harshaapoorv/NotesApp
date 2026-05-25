@@ -136,7 +136,17 @@ const HomeScreen = () => {
 
   const handleExportExcel = async () => {
     if (notesList.length > 0) {
-      await exportNotesToExcel(notesList);
+      await exportNotesToExcel(
+        notesList,
+        setIsErrorModalVisible,
+        setErrorMessage,
+      );
+    } else {
+      setIsErrorModalVisible(true);
+      setErrorMessage({
+        title: 'Error',
+        description: 'There are no notes to export',
+      });
     }
   };
 

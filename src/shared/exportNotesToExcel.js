@@ -1,6 +1,6 @@
 import XLSX from 'xlsx-js-style';
-import FileViewer from 'react-native-file-viewer';
 import ReactNativeBlobUtil from 'react-native-blob-util';
+import Share from 'react-native-share';
 
 const STATUS_ORDER = {
   progress: 'In Progress',
@@ -8,7 +8,11 @@ const STATUS_ORDER = {
   completed: 'Completed',
 };
 
-export const exportNotesToExcel = async notes => {
+export const exportNotesToExcel = async (
+  notes,
+  setIsErrorModalVisible,
+  setErrorMessage,
+) => {
   try {
     const formattedNotes = notes.map(note => ({
       Title: note.title || '',
@@ -172,16 +176,38 @@ export const exportNotesToExcel = async notes => {
 
     const dir = ReactNativeBlobUtil.fs.dirs;
 
-    const path = `${dir.DocumentDir}/notes.xlsx`;
+    const path = `${dir.CacheDir}/notes.xlsx`;
 
     // Write file
     await ReactNativeBlobUtil.fs.writeFile(path, wbOut, 'base64');
 
-    // Open file
-    await FileViewer.open(path);
+    const exists = await ReactNativeBlobUtil.fs.exists(path);
 
-    console.log('Excel exported successfully:', path);
+    console.log('PATH =>', path);
+    console.log('FILE EXISTS =>', exists);
+
+    if (!exists) {
+      throw new Error('Excel file was not created');
+    }
+
+    // Open file
+    await Share.open({
+      title: 'Export Notes',
+      url: `file://${path}`,
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      filename: 'notes',
+      subject: 'Exported Notes',
+      failOnCancel: false,
+      saveToFiles: true,
+      useInternalStorage: false,
+    });
   } catch (error) {
-    console.log('Excel export error:', error);
+    setIsErrorModalVisible(true);
+    setErrorMessage({
+      title: 'Error',
+      description:
+        error?.message ||
+        "We're currently unable to export notes, please try again later",
+    });
   }
 };
