@@ -49,6 +49,7 @@ import Code from '../assets/icons/FormatterIcons/Code.jsx';
 import Alphabets from '../assets/icons/FormatterIcons/Alphabets.jsx';
 import Next from '../assets/icons/Next.jsx';
 import Copy from '../assets/icons/Copy.jsx';
+import StrikeThrough from '../assets/icons/FormatterIcons/StrikeThrough.jsx';
 
 const NoteScreen = ({ route }) => {
   const { id: id } = route.params;
@@ -71,6 +72,8 @@ const NoteScreen = ({ route }) => {
 
   const [copied, setCopied] = useState(false);
   const [copiedTimer, setCopiedTimer] = useState(false);
+  const [copiedText, setCopiedText] = useState();
+  const [copiedIndexTimer, setCopiedIndexTimer] = useState(false);
   const scaleAnim = useState(new Animated.Value(1))[0];
   const successAnim = useState(new Animated.Value(0))[0];
 
@@ -103,17 +106,23 @@ const NoteScreen = ({ route }) => {
     ]).start();
   };
 
-  const onCopyToClipboard = text => {
+  const onCopyToClipboard = (text, index) => {
     Clipboard.setString(text);
-    animateClipboard();
-    setIsSuccessVisible(true);
-    setSuccessMessage({
-      title: 'Copied!!',
-      type: 'info',
-    });
-    setCopied(true);
-    setCopiedTimer(true);
-    setStartTimer(true);
+    if (index !== undefined) {
+      animateClipboard();
+      setCopiedText(text);
+      setCopiedIndexTimer(true);
+    } else {
+      animateClipboard();
+      setIsSuccessVisible(true);
+      setSuccessMessage({
+        title: 'Copied!!',
+        type: 'info',
+      });
+      setCopied(true);
+      setStartTimer(true);
+      setCopiedTimer(true);
+    }
   };
 
   const onCloseErrorModal = () => {
@@ -213,6 +222,16 @@ const NoteScreen = ({ route }) => {
     }
   }, [copiedTimer]);
 
+  useEffect(() => {
+    if (copiedIndexTimer) {
+      const timer = setTimeout(() => {
+        setCopiedText();
+        setCopiedIndexTimer(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [copiedIndexTimer]);
+
   const statusStyle = useMemo(
     () => ({
       backgroundColor: statusConfig?.color,
@@ -248,6 +267,12 @@ const NoteScreen = ({ route }) => {
           title: 'Italic',
           desc: 'Make text italic',
           syntaxes: ['*This is italic*'],
+        },
+        {
+          Icon: StrikeThrough,
+          title: 'Strike',
+          desc: 'Make text striked',
+          syntaxes: ['~~This is striked text~~'],
         },
         {
           Icon: LinkSvg,
@@ -397,7 +422,7 @@ const NoteScreen = ({ route }) => {
                                   <Text>{syntax}</Text>
                                   <Pressable
                                     onPress={() => {
-                                      onCopyToClipboard(syntax);
+                                      onCopyToClipboard(syntax, idx);
                                     }}
                                   >
                                     <Animated.View
@@ -410,7 +435,7 @@ const NoteScreen = ({ route }) => {
                                         }),
                                       }}
                                     >
-                                      {copied ? (
+                                      {copiedText === syntax ? (
                                         <View style={styles.copyContainer}>
                                           <SuccessTick width={18} height={18} />
                                           <Text style={styles.copyText}>

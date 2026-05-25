@@ -78,6 +78,8 @@ const AddNote = ({
   const [insertText, setInsertText] = useState('Insert');
   const [copyTimer, setCopyTimer] = useState(false);
   const [insertTimer, setInsertTimer] = useState(false);
+  const [copiedText, setCopiedText] = useState();
+  const [insertedText, setInsertedText] = useState();
 
   const [showTip, setShowTip] = useState(true);
 
@@ -87,6 +89,7 @@ const AddNote = ({
 
   const onCopyToClipboard = text => {
     Clipboard.setString(text);
+    setCopiedText(text);
     setCopyText('Copied!!');
     setCopyTimer(true);
   };
@@ -96,6 +99,7 @@ const AddNote = ({
     if (copyTimer) {
       timer = setTimeout(() => {
         setCopyText('Copy');
+        setCopiedText();
         setCopyTimer(false);
       }, 1000);
     }
@@ -107,6 +111,7 @@ const AddNote = ({
     if (insertTimer) {
       timer = setTimeout(() => {
         setInsertText('Insert');
+        setInsertedText();
         setInsertTimer(false);
       }, 1000);
     }
@@ -615,10 +620,15 @@ const AddNote = ({
                                   <View style={styles.exampleButtons}>
                                     <Button
                                       variantType="secondary"
-                                      title={copyText}
+                                      title={
+                                        (copiedText === obj.body && copyText) ||
+                                        'Copy'
+                                      }
                                       additionalStyles={styles.copyButton}
                                       textStyles={styles.buttonText}
-                                      isDisabled={copyTimer}
+                                      isDisabled={
+                                        copiedText === obj.body && copyTimer
+                                      }
                                       onPress={() =>
                                         onCopyToClipboard(obj?.body)
                                       }
@@ -627,12 +637,19 @@ const AddNote = ({
                                     />
                                     <Button
                                       variantType="secondary"
-                                      title={insertText}
+                                      title={
+                                        (insertedText === obj.body &&
+                                          insertText) ||
+                                        'Insert'
+                                      }
                                       additionalStyles={styles.insertButton}
                                       textStyles={styles.buttonText}
-                                      isDisabled={insertTimer}
+                                      isDisabled={
+                                        insertedText === obj.body && insertTimer
+                                      }
                                       onPress={() => {
                                         handlePress(obj.id);
+                                        setInsertedText(obj.body);
                                         setInsertText('Inserted!!');
                                         setInsertTimer(true);
                                       }}
