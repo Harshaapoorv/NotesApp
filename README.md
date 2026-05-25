@@ -31,14 +31,18 @@ Supports markdown-inspired formatting options including:
 |---|---|
 | Bold | `**text**` |
 | Italic | `*text*` |
-| Underline | `__text__` |
+| Links | `<<yourlink>>` |
+| Links | `https://yourlink.com` |
+| Links | `www.yourlink.com` |
 | Strikethrough | `~~text~~` |
-| Inline Code | `` `code` `` |
+| Inline Code | `` ```code``` `` |
 | Code Block | ```` ```js ``` ```` |
 | Bullet List | `- item` |
 | Numbered List | `1. item` |
-| Quote | `> text` |
+| Quote | `<text>` |
 | Headings | `# Heading` |
+| Headings | `## Heading` |
+| Headings | `### Heading` |
 
 ---
 
@@ -132,12 +136,10 @@ src/
 ├── api/
 ├── assets/
 ├── components/
-├── navigation/
 ├── screens/
 ├── shared/
 ├── store/
 ├── utils/
-└── hooks/
 ```
 
 ---
