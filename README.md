@@ -1,97 +1,327 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# NotesFlow – Full Stack Productivity & Notes Platform
 
-# Getting Started
+A modern full-stack productivity application built using **React Native**, **FastAPI**, and **PostgreSQL** featuring markdown-inspired note formatting, optimized rendering architecture, Excel export functionality, authentication-ready APIs, and scalable backend infrastructure.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+# Features
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Productivity Features
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- Create, update and delete notes
+- Status-based workflow management
+  - Pending
+  - In Progress
+  - Completed
+- Star important notes
+- Deadline management
+- Rich note formatting support
+- Code block support
+- Copy formatted content
+- Optimized note ordering
+- Persistent backend storage
 
-```sh
-# Using npm
+---
+
+# Rich Text Formatting
+
+Supports markdown-inspired formatting options including:
+
+| Format | Syntax |
+|---|---|
+| Bold | `**text**` |
+| Italic | `*text*` |
+| Underline | `__text__` |
+| Strikethrough | `~~text~~` |
+| Inline Code | `` `code` `` |
+| Code Block | ```` ```js ``` ```` |
+| Bullet List | `- item` |
+| Numbered List | `1. item` |
+| Quote | `> text` |
+| Headings | `# Heading` |
+
+---
+
+# Performance Optimizations
+
+Implemented multiple rendering and state optimization techniques:
+
+- `React.memo` based list item optimization
+- Optimized `FlatList` virtualization
+- Stable callback references using `useCallback`
+- RTK Query optimistic updates
+- Prevented unnecessary list rerenders
+- Optimized cache synchronization
+- Local cache updates without full refetch
+- Selective item reordering for starred notes
+
+---
+
+# Excel Export System
+
+Export all notes into a professionally formatted Excel workbook with:
+
+- Styled headers
+- Autofilters
+- Frozen rows
+- Wrapped content
+- Column sizing
+- Structured formatting
+- Native mobile share support
+
+---
+
+# Tech Stack
+
+## Frontend
+
+- React Native
+- Redux Toolkit
+- RTK Query
+- React Navigation
+- React Native SVG
+- DayJS
+- XLSX-JS-Style
+
+---
+
+## Backend
+
+- FastAPI
+- SQLAlchemy
+- Alembic
+- PostgreSQL
+
+---
+
+## Cloud & Deployment
+
+- Render
+- Neon PostgreSQL
+
+---
+
+# Architecture Highlights
+
+## Frontend Architecture
+
+- Component-based scalable architecture
+- Reusable UI system
+- Centralized API layer using RTK Query
+- Optimistic UI updates
+- Shared formatting utilities
+- Modular feature organization
+
+---
+
+## Backend Architecture
+
+- RESTful API architecture
+- Alembic database migrations
+- Structured schema validation
+- User-ready scalable note APIs
+- Optimized query handling
+
+---
+
+# Folder Structure
+
+```bash
+src/
+│
+├── api/
+├── assets/
+├── components/
+├── navigation/
+├── screens/
+├── shared/
+├── store/
+├── utils/
+└── hooks/
+```
+
+---
+
+# Screens
+
+- Home Screen
+- Add/Edit Note Modal
+- Note Details Screen
+- Formatting Guide
+- Export Workflow
+- Error & Success Modals
+
+---
+
+# Upcoming Features
+
+## Version 1
+
+- User Authentication
+- Login / Signup
+- Filters
+- Sorting
+
+---
+
+## Version 2
+
+- AI Workspace Assistant
+- AI Note Intelligence
+- Voice-to-Note
+- AI Generated Notes
+
+---
+
+## Version 3
+
+- Excel Import System
+- Bulk Note Import Validation
+- Data Migration Tools
+
+---
+
+## Version 4
+
+- Syntax Highlighting
+- Language-aware Code Blocks
+
+---
+
+# Installation
+
+## Clone Repository
+
+```bash
+git clone https://github.com/yourusername/notesflow.git
+```
+
+---
+
+# Frontend Setup
+
+```bash
+cd frontend
+npm install
+```
+
+Create `.env`
+
+```env
+BASE_URL=YOUR_API_URL
+```
+
+Start Metro
+
+```bash
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
+Run Android
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+```bash
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
+Run iOS
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+```bash
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+---
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+# Backend Setup
 
-## Step 3: Modify your app
+```bash
+cd backend
+pip install -r requirements.txt
+```
 
-Now that you have successfully run the app, let's make changes!
+Run migrations
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+```bash
+alembic upgrade head
+```
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+Start server
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+```bash
+uvicorn app.main:app --reload
+```
 
-## Congratulations! :tada:
+---
 
-You've successfully run and modified your React Native App. :partying_face:
+# Environment Variables
 
-### Now what?
+## Frontend
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+```env
+BASE_URL=
+```
 
-# Troubleshooting
+---
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## Backend
 
-# Learn More
+```env
+DATABASE_URL=
+SECRET_KEY=
+ALGORITHM=
+ACCESS_TOKEN_EXPIRE_MINUTES=
+```
 
-To learn more about React Native, take a look at the following resources:
+---
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+# Key Engineering Challenges Solved
+
+- Large `FlatList` rerender optimization
+- RTK Query cache synchronization
+- Optimistic update architecture
+- Date & timezone normalization
+- Dynamic markdown formatting
+- Modal + keyboard handling
+- Cross-platform Excel export workflows
+- Efficient list ordering strategies
+
+---
+
+# Future AI Architecture
+
+The platform is designed for future AI integrations including:
+
+## Lakshmi
+Workspace-level productivity assistant capable of:
+- Note analytics
+- Task summaries
+- AI-generated notes
+- Smart productivity insights
+
+---
+
+## Nag
+Contextual note intelligence capable of:
+- Code explanation
+- Note summarization
+- Contextual assistance
+- Note-specific AI interactions
+
+---
+
+# Author
+
+## Harsha Apoorv
+
+Full Stack Mobile Application Developer
+
+- React Native
+- FastAPI
+- PostgreSQL
+- Mobile Performance Optimization
+- Full Stack Product Development
+
+---
+
+# License
+
+This project is licensed under the MIT License.
