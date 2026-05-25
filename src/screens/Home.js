@@ -22,6 +22,9 @@ import ErrorModal from '../components/ErrorModal.js';
 import getErrorMessage from '../services/apiErrorHandler.js';
 import ToastMessage from '../components/ToastMessage.js';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import Export from '../assets/icons/Export.jsx';
+import Filters from '../assets/icons/Filters.jsx';
+import { exportNotesToExcel } from '../shared/exportNotesToExcel';
 
 const HomeScreen = () => {
   const route = useRoute();
@@ -65,44 +68,9 @@ const HomeScreen = () => {
     }
   }, [isError, error]);
 
-  const [
-    updateStatus,
-    // {
-    //   isError: updateStatusError,
-    //   error: updateStatusErrorData,
-    //   isSuccess: updateStatusSuccess,
-    // },
-  ] = useUpdateStatusMutation();
-
-  // useEffect(() => {
-  //   if (updateStatusError) {
-  //     setIsErrorModalVisible(true);
-  //     setErrorMessage(getErrorMessage(updateStatusErrorData));
-  //   } else if (updateStatusSuccess) {
-  //     setIsSuccessVisible(true);
-  //     setSuccessMessage({
-  //       title: 'Note status has been updated successfully.',
-  //       type: 'success',
-  //     });
-  //     setStartTimer(true);
-  //   }
-  // }, [updateStatusError, updateStatusErrorData, updateStatusSuccess]);
+  const [updateStatus] = useUpdateStatusMutation();
 
   const [updateStar] = useUpdateStarMutation();
-
-  // useEffect(() => {
-  //   if (updateStarError) {
-  //     setIsErrorModalVisible(true);
-  //     setErrorMessage(getErrorMessage(updateStarErrorData));
-  //   } else if (updateStarSuccess) {
-  //     setIsSuccessVisible(true);
-  //     setSuccessMessage({
-  //       title: 'Note has been starred successfully.',
-  //       type: 'success',
-  //     });
-  //     setStartTimer(true);
-  //   }
-  // }, [updateStarError, updateStarErrorData, updateStarSuccess]);
 
   useEffect(() => {
     let timer;
@@ -166,6 +134,12 @@ const HomeScreen = () => {
     [navigation],
   );
 
+  const handleExportExcel = async () => {
+    if (notesList.length > 0) {
+      await exportNotesToExcel(notesList);
+    }
+  };
+
   const renderItem = useCallback(
     ({ item }) => {
       return (
@@ -185,7 +159,13 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
+        <Pressable onPress={() => console.log('Filters')}>
+          <Filters width={24} height={24} />
+        </Pressable>
         <Text style={styles.title}>Notes</Text>
+        <Pressable onPress={() => handleExportExcel()}>
+          <Export width={24} height={24} />
+        </Pressable>
       </View>
       {isLoading ? (
         <View style={styles.scrollContainer}>
@@ -265,7 +245,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
     padding: 16,
