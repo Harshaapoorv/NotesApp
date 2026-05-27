@@ -15,6 +15,8 @@ import Expand from '../assets/icons/Expand.jsx';
 import Collapse from '../assets/icons/Collapse.jsx';
 import { formatDateForAPI, formatShortDate } from '../shared/date.js';
 import Info from '../assets/icons/Info.jsx';
+import Eye from '../assets/icons/Eye.jsx';
+import EyeOff from '../assets/icons/EyeOff.jsx';
 
 const Input = ({
   variantType = 'text',
@@ -39,6 +41,10 @@ const Input = ({
   selection,
   onSelectionChange,
   selectedType,
+  secureTextEntry = false,
+  showPasswordToggle = false,
+  setShowPassword,
+  LeftIcon,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDateModal, setShowDateModal] = useState(false);
@@ -103,30 +109,67 @@ const Input = ({
             <View
               style={[styles.inputBorder, isInputFocused && styles.focused]}
             >
-              <TextInput
-                placeholder={placeholder}
-                value={value}
-                onChangeText={onChangeText}
-                style={[
-                  styles.input,
-                  formatter && styles.formatterInput,
-                  additionalStyles,
-                ]}
-                keyboardType={keypad}
-                maxLength={maxLength}
-                textContentType={type}
-                multiline={multiline}
-                numberOfLines={numberOfLines}
-                textAlignVertical="top"
-                onFocus={() => setIsInputFocused(true)}
-                onBlur={() => setIsInputFocused(false)}
-                selection={selection || undefined}
-                onSelectionChange={
-                  onSelectionChange
-                    ? e => onSelectionChange(e.nativeEvent.selection)
-                    : undefined
-                }
-              />
+              <View style={styles.inputWrapper}>
+                {LeftIcon && <LeftIcon width={20} height={20} />}
+                <TextInput
+                  placeholder={placeholder}
+                  value={value}
+                  onChangeText={onChangeText}
+                  style={[
+                    styles.input,
+                    formatter && styles.formatterInput,
+                    additionalStyles,
+                    { width: LeftIcon ? '80%' : '100%' },
+                  ]}
+                  keyboardType={keypad}
+                  maxLength={maxLength}
+                  textContentType={type}
+                  multiline={multiline}
+                  numberOfLines={numberOfLines}
+                  textAlignVertical="top"
+                  secureTextEntry={
+                    secureTextEntry && showPasswordToggle
+                      ? false
+                      : secureTextEntry
+                  }
+                  onFocus={() => setIsInputFocused(true)}
+                  onBlur={() => setIsInputFocused(false)}
+                  selection={selection || undefined}
+                  returnKeyType={multiline ? 'default' : 'done'}
+                  onSelectionChange={
+                    onSelectionChange
+                      ? e => onSelectionChange(e.nativeEvent.selection)
+                      : undefined
+                  }
+                />
+                {secureTextEntry &&
+                  (showPasswordToggle ? (
+                    <Pressable
+                      onPress={() => setShowPassword(prev => !prev)}
+                      style={{
+                        position: 'absolute',
+                        right: 12,
+                        top: 12,
+                        alignSelf: 'center',
+                      }}
+                    >
+                      <EyeOff width={16} height={16} />
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      onPress={() => setShowPassword(prev => !prev)}
+                      style={{
+                        position: 'absolute',
+                        right: 12,
+                        top: 12,
+                        alignSelf: 'center',
+                      }}
+                    >
+                      <Eye width={16} height={16} />
+                    </Pressable>
+                  ))}
+              </View>
+
               {formatter && (
                 <View style={styles.formatter}>
                   {formatterOptionsList.map((item, index) => {
@@ -305,6 +348,11 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#e5e7eb',
     borderRadius: 8,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 12,
   },
   inputBorder: {
     borderWidth: 1,

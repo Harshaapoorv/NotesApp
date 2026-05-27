@@ -50,6 +50,7 @@ import Alphabets from '../assets/icons/FormatterIcons/Alphabets.jsx';
 import Next from '../assets/icons/Next.jsx';
 import Copy from '../assets/icons/Copy.jsx';
 import StrikeThrough from '../assets/icons/FormatterIcons/StrikeThrough.jsx';
+import BackgroundDecorations from '../components/BackgroundDecorations.jsx';
 
 const NoteScreen = ({ route }) => {
   const { id: id } = route.params;
@@ -524,6 +525,7 @@ const NoteScreen = ({ route }) => {
         >
           <BackArrow width={16} height={16} />
         </TouchableWithoutFeedback>
+        <BackgroundDecorations />
         <Text style={styles.title}>{config?.title}</Text>
         <TouchableWithoutFeedback
           onPress={() => {
