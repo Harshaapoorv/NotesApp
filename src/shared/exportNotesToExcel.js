@@ -183,9 +183,6 @@ export const exportNotesToExcel = async (
 
     const exists = await ReactNativeBlobUtil.fs.exists(path);
 
-    console.log('PATH =>', path);
-    console.log('FILE EXISTS =>', exists);
-
     if (!exists) {
       throw new Error('Excel file was not created');
     }

@@ -17,6 +17,7 @@ import { formatDateForAPI, formatShortDate } from '../shared/date.js';
 import Info from '../assets/icons/Info.jsx';
 import Eye from '../assets/icons/Eye.jsx';
 import EyeOff from '../assets/icons/EyeOff.jsx';
+import ErrorIcon from '../assets/icons/ErrorIcon.jsx';
 
 const Input = ({
   variantType = 'text',
@@ -45,6 +46,10 @@ const Input = ({
   showPasswordToggle = false,
   setShowPassword,
   LeftIcon,
+  autoCapitalize = 'none',
+  errorMsg,
+  onFocus,
+  onBlur,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDateModal, setShowDateModal] = useState(false);
@@ -107,9 +112,15 @@ const Input = ({
         return (
           <>
             <View
-              style={[styles.inputBorder, isInputFocused && styles.focused]}
+              style={[
+                styles.inputBorder,
+                isInputFocused && styles.focused,
+                errorMsg && { borderColor: '#E80015' },
+              ]}
             >
-              <View style={styles.inputWrapper}>
+              <View
+                style={[styles.inputWrapper, LeftIcon && { paddingLeft: 12 }]}
+              >
                 {LeftIcon && <LeftIcon width={20} height={20} />}
                 <TextInput
                   placeholder={placeholder}
@@ -124,6 +135,7 @@ const Input = ({
                   keyboardType={keypad}
                   maxLength={maxLength}
                   textContentType={type}
+                  autoCapitalize={autoCapitalize}
                   multiline={multiline}
                   numberOfLines={numberOfLines}
                   textAlignVertical="top"
@@ -132,8 +144,14 @@ const Input = ({
                       ? false
                       : secureTextEntry
                   }
-                  onFocus={() => setIsInputFocused(true)}
-                  onBlur={() => setIsInputFocused(false)}
+                  onFocus={() => {
+                    onFocus && onFocus();
+                    setIsInputFocused(true);
+                  }}
+                  onBlur={() => {
+                    onBlur && onBlur();
+                    setIsInputFocused(false);
+                  }}
                   selection={selection || undefined}
                   returnKeyType={multiline ? 'default' : 'done'}
                   onSelectionChange={
@@ -193,6 +211,27 @@ const Input = ({
                 </View>
               )}
             </View>
+            {errorMsg && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 8,
+                  gap: 4,
+                }}
+              >
+                <ErrorIcon width={14} height={14} style={{ marginRight: 4 }} />
+                <Text
+                  style={{
+                    color: '#E80015',
+                    fontSize: 12,
+                    fontWeight: '500',
+                  }}
+                >
+                  {errorMsg}
+                </Text>
+              </View>
+            )}
             {maxLength && (
               <Text style={styles.charCount}>
                 {maxLength ? `${value?.length}/${maxLength}` : value?.length}
@@ -288,6 +327,7 @@ const Input = ({
             multiline={multiline}
             numberOfLines={numberOfLines}
             maxLength={maxLength}
+            autoCapitalize={autoCapitalize}
           />
         );
     }
@@ -352,7 +392,6 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 12,
   },
   inputBorder: {
     borderWidth: 1,

@@ -13,12 +13,28 @@ export default getErrorMessage = error => {
     };
   }
 
+  if (error?.status === 422 && error?.data?.detail) {
+    return {
+      title: 'Validation Error',
+
+      description: error.data.detail.message,
+    };
+  }
+
   if (error?.status === 500) {
     return {
       title: 'Server Error',
       description: error?.data?.detail
         ? error?.data?.detail
         : 'Something went wrong. Please try again later.',
+    };
+  }
+
+  if (error?.data?.detail === 'User already exists') {
+    return {
+      title: 'User Already Exists',
+      description:
+        'An account with this email already exists. Please log in instead.',
     };
   }
 

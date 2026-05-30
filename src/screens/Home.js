@@ -25,10 +25,16 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import Export from '../assets/icons/Export.jsx';
 import Filters from '../assets/icons/Filters.jsx';
 import { exportNotesToExcel } from '../shared/exportNotesToExcel';
+import { notesApi } from '../services/notesApi';
+import { authApi } from '../services/authApi';
+import { logout } from '../redux/slices/authSlice';
+import { clearRefreshToken } from '../shared/auth/authStorage';
+import { useDispatch } from 'react-redux';
 
 const HomeScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
@@ -63,7 +69,13 @@ const HomeScreen = () => {
 
   useEffect(() => {
     if (isError) {
+      // GLOBAL AUTH HANDLES THIS
+      if (error?.status === 401) {
+        return;
+      }
+
       setIsErrorModalVisible(true);
+
       setErrorMessage(getErrorMessage(error));
     }
   }, [isError, error]);
@@ -101,7 +113,12 @@ const HomeScreen = () => {
 
         setStartTimer(true);
       } catch (err) {
+        if (err?.status === 401) {
+          return;
+        }
+
         setIsErrorModalVisible(true);
+
         setErrorMessage(getErrorMessage(err));
       }
     },
@@ -120,7 +137,12 @@ const HomeScreen = () => {
         });
         setStartTimer(true);
       } catch (err) {
+        if (err?.status === 401) {
+          return;
+        }
+
         setIsErrorModalVisible(true);
+
         setErrorMessage(getErrorMessage(err));
       }
     },
@@ -165,6 +187,16 @@ const HomeScreen = () => {
   );
 
   const keyExtractor = useCallback(item => item.id, []);
+
+  const handleLogout = async () => {
+    await clearRefreshToken();
+
+    dispatch(logout());
+
+    dispatch(notesApi.util.resetApiState());
+
+    dispatch(authApi.util.resetApiState());
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -220,6 +252,13 @@ const HomeScreen = () => {
           >
             <Add width={48} height={48} color="#ffffff" />
           </Pressable>
+          <Text
+            onPress={() => {
+              handleLogout();
+            }}
+          >
+            Logout
+          </Text>
           {isSuccessVisible && (
             <ToastMessage
               message={successMessage.title}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import BackArrow from '../assets/icons/SmallBack.jsx';
 import Button from '../components/Button';
@@ -8,10 +8,80 @@ import Input from '../components/Input.js';
 import { useNavigation } from '@react-navigation/native';
 import Mail from '../assets/icons/Mail.jsx';
 import Lock from '../assets/icons/Lock.jsx';
+import { useLoginMutation } from '../services/authApi.js';
+import ErrorModal from '../components/ErrorModal.js';
+import getErrorMessage from '../services/apiErrorHandler.js';
+import { saveRefreshToken } from '../shared/auth/authStorage.js';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../redux/slices/authSlice';
+
+import {
+  isValidPassword,
+  isValidEmail,
+  normalizeEmail,
+} from '../shared/validators/validators';
 
 const Login = () => {
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+
+  const isPasswordValid = isValidPassword(password);
+  const [isEmailValid, setIsEmailValid] = useState(true);
+
+  const isButtonDisabled =
+    !isValidEmail(email) || !isPasswordValid || isLoading;
+
+  const [login, { isLoading, isError, error, isSuccess, data }] =
+    useLoginMutation();
+  const dispatch = useDispatch();
+
+  const onLogin = () => {
+    login({ email: normalizeEmail(email), password });
+  };
+
+  const onCloseErrorModal = () => {
+    setIsErrorModalVisible(false);
+    setErrorMessage('');
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      saveRefreshToken(data?.refresh_token);
+      dispatch(
+        setCredentials({
+          accessToken: data?.access_token,
+          user: data?.user,
+        }),
+      );
+
+      // navigation.navigate('SuccessScreen', {
+      //   title: 'Account created',
+      //   description: 'Your account has been successfully created.',
+      //   buttonText: 'Go to Login',
+      //   onPress: () => navigation.navigate('Login'),
+      //   Icon: SuccessTick,
+      // });
+    } else if (isError) {
+      setErrorMessage(
+        getErrorMessage(error) || {
+          title: 'Login Failed',
+          description: 'An unexpected error occurred. Please try again.',
+        },
+      );
+      setIsErrorModalVisible(true);
+    }
+    // navigation.navigate('VerifyYourEmail', {
+    //   email: email,
+    //   flowType: 'signUp',
+    // });
+  }, [isSuccess, navigation, isError, error]);
+
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
@@ -38,29 +108,53 @@ const Login = () => {
             label="Email"
             variantType="text"
             LeftIcon={Mail}
+            value={email}
+            onChangeText={setEmail}
+            isRequired
+            onBlur={() => {
+              if (email.length > 0 && !isValidEmail(email)) {
+                setIsEmailValid(false);
+              } else {
+                setIsEmailValid(true);
+              }
+            }}
+            onFocus={() => {
+              setIsEmailValid(true);
+            }}
+            errorMsg={isEmailValid ? '' : 'Please enter a valid email address.'}
           />
-          <Input
-            placeholder="Password"
-            label="Password"
-            additionalStyles={styles.input}
-            LeftIcon={Lock}
-            secureTextEntry
-            showPasswordToggle={showPassword}
-            setShowPassword={setShowPassword}
-            variantType="text"
-          />
-          <Text style={styles.forgotPasswordText} onPress={() => {}}>
-            Forgot your password?
-          </Text>
+          <View style={{ gap: 8 }}>
+            <Input
+              placeholder="Password"
+              label="Password"
+              additionalStyles={styles.input}
+              LeftIcon={Lock}
+              secureTextEntry
+              showPasswordToggle={showPassword}
+              setShowPassword={setShowPassword}
+              variantType="text"
+              value={password}
+              isRequired
+              onChangeText={setPassword}
+            />
+            <Text
+              style={styles.forgotPasswordText}
+              onPress={() => navigation.navigate('ForgotPassword')}
+            >
+              Forgot your password?
+            </Text>
+          </View>
         </View>
         <View style={styles.footer}>
           <View style={styles.buttonsContainer}>
             <Button
               title="Log In"
               variantType="primary"
-              onPress={() => navigation.reset({ routes: [{ name: 'Home' }] })}
+              onPress={() => onLogin()}
               additionalStyles={styles.loginButton}
               textStyles={styles.loginButtonText}
+              isLoading={isLoading}
+              isDisabled={isButtonDisabled}
             />
           </View>
           <View style={styles.orContainer}>
@@ -85,6 +179,13 @@ const Login = () => {
               Sign Up
             </Text>
           </Text>
+          <ErrorModal
+            isErrorModalVisible={isErrorModalVisible}
+            setIsErrorModalVisible={setIsErrorModalVisible}
+            title={errorMessage?.title}
+            description={errorMessage?.description}
+            onClose={onCloseErrorModal}
+          />
         </View>
       </View>
     </ScrollView>

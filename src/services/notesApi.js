@@ -1,13 +1,11 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import Config from 'react-native-config';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import applyDefaultNotesOrdering from '../shared/applyDefaultNotesOrdering';
+import baseQueryWithReauth from './baseQuery/baseQueryWithReauth';
 
 export const notesApi = createApi({
   reducerPath: 'notesApi',
 
-  baseQuery: fetchBaseQuery({
-    baseUrl: Config.BASE_URL,
-  }),
+  baseQuery: baseQueryWithReauth,
 
   tagTypes: ['Notes'],
 

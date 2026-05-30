@@ -153,6 +153,10 @@ const NoteScreen = ({ route }) => {
       });
     } else if (isDeleteNoteError) {
       setIsAlertModalVisible(false);
+      // GLOBAL AUTH HANDLES THIS
+      if (deleteNoteErrorData?.status === 401) {
+        return;
+      }
       setIsErrorModalVisible(true);
       setErrorMessage(getErrorMessage(deleteNoteErrorData));
     }
@@ -175,6 +179,10 @@ const NoteScreen = ({ route }) => {
       setStatusConfig(contentConfig.statusList[data?.status]);
       setConfig(data);
     } else if (isGetNoteError) {
+      // GLOBAL AUTH HANDLES THIS
+      if (getNoteErrorData?.status === 401) {
+        return;
+      }
       setIsErrorModalVisible(true);
       setErrorMessage(getErrorMessage(getNoteErrorData));
     }
@@ -194,7 +202,12 @@ const NoteScreen = ({ route }) => {
         });
         setStartTimer(true);
       } catch (err) {
+        if (err?.status === 401) {
+          return;
+        }
+
         setIsErrorModalVisible(true);
+
         setErrorMessage(getErrorMessage(err));
       }
     },

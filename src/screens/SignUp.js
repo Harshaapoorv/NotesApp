@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import BackArrow from '../assets/icons/SmallBack.jsx';
 import Button from '../components/Button';
@@ -8,13 +8,108 @@ import Input from '../components/Input.js';
 import { useNavigation } from '@react-navigation/native';
 import Mail from '../assets/icons/Mail.jsx';
 import Lock from '../assets/icons/Lock.jsx';
-import SuccessTick from '../assets/icons/SuccessTick.jsx';
 import Profile from '../assets/icons/Profile.jsx';
+import { useSignupMutation } from '../services/authApi.js';
+import ErrorModal from '../components/ErrorModal.js';
+import getErrorMessage from '../services/apiErrorHandler.js';
+import { saveRefreshToken } from '../shared/auth/authStorage.js';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../redux/slices/authSlice';
+import PasswordRules from '../components/PasswordRules.js';
+import {
+  getPasswordChecks,
+  isValidPassword,
+  doPasswordsMatch,
+  isValidEmail,
+  normalizeEmail,
+  isValidFullName,
+} from '../shared/validators/validators';
 
 const SignUp = () => {
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const passwordChecks = getPasswordChecks(password);
+
+  const passwordsMatch = doPasswordsMatch(password, confirmPassword);
+
+  const isPasswordValid = isValidPassword(password);
+
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isFullNameValid, setIsFullNameValid] = useState(true);
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+
+  const [signUp, { data, isLoading, isError, error, isSuccess }] =
+    useSignupMutation();
+
+  const onCloseErrorModal = () => {
+    setIsErrorModalVisible(false);
+    setErrorMessage('');
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      saveRefreshToken(data?.refresh_token);
+      dispatch(
+        setCredentials({
+          accessToken: data?.access_token,
+          user: data?.user,
+        }),
+      );
+
+      // navigation.navigate('SuccessScreen', {
+      //   title: 'Account created',
+      //   description: 'Your account has been successfully created.',
+      //   buttonText: 'Go to Login',
+      //   onPress: () => navigation.navigate('Login'),
+      //   Icon: SuccessTick,
+      // });
+    } else if (isError) {
+      setErrorMessage(
+        getErrorMessage(error) || {
+          title: 'Signup Failed',
+          description: 'An unexpected error occurred. Please try again.',
+        },
+      );
+      setIsErrorModalVisible(true);
+    }
+    // navigation.navigate('VerifyYourEmail', {
+    //   email: email,
+    //   flowType: 'signUp',
+    // });
+  }, [isSuccess, navigation, isError, error]);
+
+  const onSignUp = () => {
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    } else {
+      let obj = {
+        full_name: name,
+        email: normalizeEmail(email),
+        password: password,
+      };
+      signUp(obj);
+    }
+  };
+
+  const isButtonDisabled =
+    !isValidFullName(name) ||
+    !isValidEmail(email) ||
+    !isPasswordValid ||
+    !passwordsMatch ||
+    isLoading;
+
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
@@ -41,13 +136,46 @@ const SignUp = () => {
             label="Full Name"
             variantType="text"
             LeftIcon={Profile}
+            isRequired
+            value={name}
+            onChangeText={setName}
+            autoCapitalize="words"
+            onBlur={() => {
+              if (!isValidFullName(name)) {
+                setIsFullNameValid(false);
+              } else {
+                setIsFullNameValid(true);
+              }
+            }}
+            onFocus={() => {
+              setIsFullNameValid(true);
+            }}
+            errorMsg={
+              isFullNameValid
+                ? ''
+                : 'Please enter a valid full name of at least 2 characters.'
+            }
           />
           <Input
             placeholder="Enter your email"
             additionalStyles={styles.input}
             label="Email"
             variantType="text"
+            isRequired
             LeftIcon={Mail}
+            value={email}
+            onChangeText={setEmail}
+            onBlur={() => {
+              if (email.length > 0 && !isValidEmail(email)) {
+                setIsEmailValid(false);
+              } else {
+                setIsEmailValid(true);
+              }
+            }}
+            onFocus={() => {
+              setIsEmailValid(true);
+            }}
+            errorMsg={isEmailValid ? '' : 'Please enter a valid email address.'}
           />
           <Input
             placeholder="Create a password"
@@ -55,9 +183,12 @@ const SignUp = () => {
             additionalStyles={styles.input}
             LeftIcon={Lock}
             secureTextEntry
+            isRequired
             showPasswordToggle={showPassword}
             setShowPassword={setShowPassword}
             variantType="text"
+            value={password}
+            onChangeText={setPassword}
           />
           <Input
             placeholder="Confirm your password"
@@ -65,46 +196,29 @@ const SignUp = () => {
             additionalStyles={styles.input}
             LeftIcon={Lock}
             secureTextEntry
+            isRequired
             showPasswordToggle={showConfirmPassword}
             setShowPassword={setShowConfirmPassword}
             variantType="text"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
           />
-          <View style={styles.passwordCriteria}>
-            <View style={styles.passwordCriteriaItem}>
-              <SuccessTick width={16} height={16} />
-              <Text style={styles.passwordCriteriaText}>
-                At least 8 characters
-              </Text>
-            </View>
-            <View style={styles.passwordCriteriaItem}>
-              <SuccessTick width={16} height={16} />
-
-              <Text style={styles.passwordCriteriaText}>
-                One uppercase letter
-              </Text>
-            </View>
-            <View style={styles.passwordCriteriaItem}>
-              <SuccessTick width={16} height={16} />
-
-              <Text style={styles.passwordCriteriaText}>
-                One number or special character
-              </Text>
-            </View>
-          </View>
+          <PasswordRules
+            passwordChecks={passwordChecks}
+            passwordsMatch={passwordsMatch}
+            showMatchRule={confirmPassword.length > 0}
+          />
         </View>
         <View style={styles.footer}>
           <View style={styles.buttonsContainer}>
             <Button
-              title="Create Account"
+              title="Continue"
               variantType="primary"
-              onPress={() =>
-                navigation.navigate('VerifyYourEmail', {
-                  email: 'harsha@gmail.com',
-                  flowType: 'signUp',
-                })
-              }
+              onPress={() => onSignUp()}
               additionalStyles={styles.loginButton}
               textStyles={styles.loginButtonText}
+              isLoading={isLoading}
+              isDisabled={isButtonDisabled || isLoading}
             />
           </View>
           <View style={styles.orContainer}>
@@ -130,6 +244,13 @@ const SignUp = () => {
             </Text>
           </Text>
         </View>
+        <ErrorModal
+          isErrorModalVisible={isErrorModalVisible}
+          setIsErrorModalVisible={setIsErrorModalVisible}
+          title={errorMessage?.title}
+          description={errorMessage?.description}
+          onClose={onCloseErrorModal}
+        />
       </View>
     </ScrollView>
   );

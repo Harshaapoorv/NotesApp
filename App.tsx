@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Navigation from './src/screens/Navigation';
-import store from './src/store/store';
+import store from './src/redux/store';
 
 const App = () => {
   return (

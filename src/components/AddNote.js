@@ -55,6 +55,8 @@ const AddNote = ({
   const [status, setStatus] = useState();
   const [deadline, setDeadline] = useState();
 
+  const [isNoteValid, setIsNoteValid] = useState(true);
+
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
@@ -182,6 +184,7 @@ const AddNote = ({
     setIsButtonDisabled(true);
     setIsErrorModalVisible(false);
     setErrorMessage('');
+    setIsNoteValid(true);
 
     setShowFormattingGuide(false);
     setExpandFormattingGuide(false);
@@ -239,13 +242,17 @@ const AddNote = ({
     }
 
     if (isCreateNoteError || isUpdateNoteError) {
-      if (isCreateNoteError) {
-        setErrorMessage(getErrorMessage(createNoteErrorData));
+      const currentError = isCreateNoteError
+        ? createNoteErrorData
+        : updateNoteErrorData;
+
+      // GLOBAL AUTH HANDLES THIS
+      if (currentError?.status === 401) {
+        setIsVisible(false);
+        return;
       }
 
-      if (isUpdateNoteError) {
-        setErrorMessage(getErrorMessage(updateNoteErrorData));
-      }
+      setErrorMessage(getErrorMessage(currentError));
 
       setIsErrorModalVisible(true);
     }
@@ -496,6 +503,19 @@ const AddNote = ({
                     onChangeText={setTitle}
                     isRequired
                     maxLength={30}
+                    autoCapitalize="sentences"
+                    onBlur={() => {
+                      setTitle(title.trim());
+                      if (title.trim().length === 0) {
+                        setIsNoteValid(false);
+                      } else {
+                        setIsNoteValid(true);
+                      }
+                    }}
+                    onFocus={() => {
+                      setIsNoteValid(true);
+                    }}
+                    errorMsg={isNoteValid ? '' : 'Title cannot be empty.'}
                   />
 
                   <Input
@@ -509,6 +529,7 @@ const AddNote = ({
                       minHeight: 120,
                       maxHeight: 200,
                     }}
+                    autoCapitalize="sentences"
                     formatter
                     formatterOptionsList={formatterOptionsList}
                     tooltip
