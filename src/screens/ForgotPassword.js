@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -17,13 +17,49 @@ import { useNavigation } from '@react-navigation/native';
 import Mail from '../assets/icons/Mail.jsx';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { isValidEmail, normalizeEmail } from '../shared/validators/validators';
+import { useForgotPasswordMutation } from '../services/authApi.js';
+import ErrorModal from '../components/ErrorModal.js';
+import getErrorMessage from '../services/apiErrorHandler.js';
 
-const ForgotPassword = ({ route }) => {
+const ForgotPassword = () => {
   const navigation = useNavigation();
   const headerHeight = useHeaderHeight();
   const [email, setEmail] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(true);
-  const isLoading = false; // Placeholder for loading state, replace with actual state when integrating API
+
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const onCloseErrorModal = () => {
+    setIsErrorModalVisible(false);
+    setErrorMessage('');
+  };
+
+  const [forgotPasswordApi, { isLoading }] = useForgotPasswordMutation();
+
+  const onReset = useCallback(async () => {
+    if (email) {
+      try {
+        const response = await forgotPasswordApi({
+          email: normalizeEmail(email),
+        }).unwrap();
+        if (response?.message === 'OTP sent successfully') {
+          navigation.navigate('VerifyYourEmail', {
+            email: email,
+            flowType: 'reset',
+            purpose: response?.purpose,
+          });
+        }
+      } catch (err) {
+        if (err?.status === 401) {
+          return;
+        }
+        setIsErrorModalVisible(true);
+        setErrorMessage(getErrorMessage(err));
+        return;
+      }
+    }
+  }, [forgotPasswordApi, email]);
 
   const isButtonDisabled = !isValidEmail(email) || isLoading;
 
@@ -87,12 +123,7 @@ const ForgotPassword = ({ route }) => {
                 <Button
                   title="Send Verification Code"
                   variantType="primary"
-                  onPress={() =>
-                    navigation.navigate('VerifyYourEmail', {
-                      email: email || 'harsha@gmail.com',
-                      flowType: 'reset',
-                    })
-                  }
+                  onPress={() => onReset()}
                   additionalStyles={styles.loginButton}
                   textStyles={styles.loginButtonText}
                   isDisabled={isButtonDisabled}
@@ -109,6 +140,13 @@ const ForgotPassword = ({ route }) => {
                 </Text>
               </Text>
             </View>
+            <ErrorModal
+              isErrorModalVisible={isErrorModalVisible}
+              setIsErrorModalVisible={setIsErrorModalVisible}
+              title={errorMessage?.title}
+              description={errorMessage?.description}
+              onClose={onCloseErrorModal}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

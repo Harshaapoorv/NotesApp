@@ -12,9 +12,6 @@ import Profile from '../assets/icons/Profile.jsx';
 import { useSignupMutation } from '../services/authApi.js';
 import ErrorModal from '../components/ErrorModal.js';
 import getErrorMessage from '../services/apiErrorHandler.js';
-import { saveRefreshToken } from '../shared/auth/authStorage.js';
-import { useDispatch } from 'react-redux';
-import { setCredentials } from '../redux/slices/authSlice';
 import PasswordRules from '../components/PasswordRules.js';
 import {
   getPasswordChecks,
@@ -29,8 +26,6 @@ const SignUp = () => {
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const dispatch = useDispatch();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -59,21 +54,13 @@ const SignUp = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      saveRefreshToken(data?.refresh_token);
-      dispatch(
-        setCredentials({
-          accessToken: data?.access_token,
-          user: data?.user,
-        }),
-      );
-
-      // navigation.navigate('SuccessScreen', {
-      //   title: 'Account created',
-      //   description: 'Your account has been successfully created.',
-      //   buttonText: 'Go to Login',
-      //   onPress: () => navigation.navigate('Login'),
-      //   Icon: SuccessTick,
-      // });
+      if (data?.message === 'OTP sent successfully') {
+        navigation.navigate('VerifyYourEmail', {
+          email: email,
+          flowType: 'signUp',
+          purpose: data?.purpose,
+        });
+      }
     } else if (isError) {
       setErrorMessage(
         getErrorMessage(error) || {
@@ -83,10 +70,6 @@ const SignUp = () => {
       );
       setIsErrorModalVisible(true);
     }
-    // navigation.navigate('VerifyYourEmail', {
-    //   email: email,
-    //   flowType: 'signUp',
-    // });
   }, [isSuccess, navigation, isError, error]);
 
   const onSignUp = () => {

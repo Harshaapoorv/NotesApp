@@ -7,13 +7,25 @@ import BackgroundDecorations from '../components/BackgroundDecorations.jsx';
 
 const SuccessScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { title, description, onPress, buttonText, Icon } = route.params;
+  const {
+    title,
+    description,
+    onPress,
+    buttonText,
+    Icon,
+    canGoBack = false,
+  } = route.params;
   return (
     <View style={styles.container}>
       <BackgroundDecorations />
-      <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
-        <BackArrow width={24} height={24} />
-      </Pressable>
+      {canGoBack && (
+        <Pressable
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <BackArrow width={24} height={24} />
+        </Pressable>
+      )}
       <View style={styles.content}>
         <View style={styles.header}>
           {Icon && <Icon width={220} height={120} />}

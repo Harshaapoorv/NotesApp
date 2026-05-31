@@ -46,6 +46,22 @@ export default getErrorMessage = error => {
     };
   }
 
+  if (error?.data?.detail === 'User not found') {
+    return {
+      title: error.data.detail,
+      description:
+        "There is no account with the email you've entered. Try signing up instead.",
+    };
+  }
+
+  if (error?.data?.detail === 'Invalid credentials') {
+    return {
+      title: error.data.detail,
+      description:
+        "The credentials you entered don't match our records. Please check your spelling and try again, or reset your password.",
+    };
+  }
+
   return {
     title: 'Something went wrong',
     description: error?.data?.detail

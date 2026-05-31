@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -22,12 +22,14 @@ import {
   getPasswordChecks,
   isValidPassword,
   doPasswordsMatch,
-  isValidEmail,
 } from '../shared/validators/validators';
+import { useResetPasswordMutation } from '../services/authApi.js';
 
-const CreateNewPassword = () => {
+const CreateNewPassword = ({ route }) => {
   const navigation = useNavigation();
   const headerHeight = useHeaderHeight();
+
+  const { reset_token } = route?.params;
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -41,20 +43,37 @@ const CreateNewPassword = () => {
 
   const isPasswordValid = isValidPassword(password);
 
-  const isLoading = false; // Placeholder for loading state, replace with actual state when integrating API
-
   const isButtonDisabled = !isPasswordValid || !passwordsMatch || isLoading;
 
-  const onResetPassword = () => {
-    navigation.navigate('Success', {
-      title: 'Password reset successful!',
-      description:
-        'Your password has been reset successfully. You can now use your new password to log in to your account.',
-      onPress: () => navigation.navigate('Login'),
-      buttonText: 'Go to Login',
-      Icon: ResetSuccess,
-    });
-  };
+  const [resetPasswordApi, { isLoading }] = useResetPasswordMutation();
+
+  const onResetPassword = useCallback(async () => {
+    if (isPasswordValid && passwordsMatch) {
+      try {
+        const response = await resetPasswordApi({
+          reset_token,
+          password: password,
+        }).unwrap();
+        if (response?.message === 'Password reset successful') {
+          navigation.navigate('Success', {
+            title: 'Password reset successful!',
+            description:
+              'Your password has been reset successfully. You can now use your new password to log in to your account.',
+            onPress: () => navigation.navigate('Login'),
+            buttonText: 'Go to Login',
+            Icon: ResetSuccess,
+          });
+        }
+      } catch (err) {
+        if (err?.status === 401) {
+          return;
+        }
+        setIsErrorModalVisible(true);
+        setErrorMessage(getErrorMessage(err));
+        return;
+      }
+    }
+  }, [resetPasswordApi, isPasswordValid, passwordsMatch]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>

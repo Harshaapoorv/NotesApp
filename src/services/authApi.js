@@ -33,8 +33,47 @@ export const authApi = createApi({
         body,
       }),
     }),
+
+    verifyOtp: builder.mutation({
+      query: body => ({
+        url: '/auth/verify-otp',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    forgotPassword: builder.mutation({
+      query: body => ({
+        url: '/auth/forgot-password',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    resetPassword: builder.mutation({
+      query: body => ({
+        url: '/auth/reset-password',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    resendOtp: builder.mutation({
+      query: body => ({
+        url: '/auth/resend-otp',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useSignupMutation, useLoginMutation, useRefreshTokenMutation } =
-  authApi;
+export const {
+  useSignupMutation,
+  useLoginMutation,
+  useRefreshTokenMutation,
+  useVerifyOtpMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+  useResendOtpMutation,
+} = authApi;
