@@ -17,7 +17,7 @@ const ProfileCard = ({ user }) => {
           <Text style={styles.name}>{user?.full_name}</Text>
           <Text style={styles.email}>{user?.email}</Text>
         </View>
-        {!user?.is_email_verified ? (
+        {user?.is_email_verified ? (
           <View style={styles.verified}>
             <Verified width={16} height={16} />
             <Text style={styles.verifiedText}>Verified</Text>
