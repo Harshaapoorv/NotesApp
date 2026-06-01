@@ -13,26 +13,26 @@ import {
   Keyboard,
 } from 'react-native';
 
-import Button from '../components/Button';
-import BackgroundDecorations from '../components/BackgroundDecorations.jsx';
+import Button from '../../components/Button.js';
+import BackgroundDecorations from '../../components/BackgroundDecorations.jsx';
 
 import { useNavigation } from '@react-navigation/native';
 
-import BackArrow from '../assets/icons/SmallBack.jsx';
-import ErrorIcon from '../assets/icons/ErrorIcon.jsx';
+import BackArrow from '../../assets/icons/SmallBack.jsx';
+import ErrorIcon from '../../assets/icons/ErrorIcon.jsx';
 
 import { useHeaderHeight } from '@react-navigation/elements';
-import VerifyEmailIllustration from '../assets/icons/VerifyEmailIllustration.jsx';
-import VerifySuccess from '../assets/icons/VerifySuccess.jsx';
+import VerifyEmailIllustration from '../../assets/icons/VerifyEmailIllustration.jsx';
+import VerifySuccess from '../../assets/icons/VerifySuccess.jsx';
 
 import {
   useVerifyOtpMutation,
   useResendOtpMutation,
-} from '../services/authApi.js';
+} from '../../services/authApi.js';
 
-import { setCredentials } from '../redux/slices/authSlice';
+import { setCredentials } from '../../redux/slices/authSlice.js';
 
-import { saveRefreshToken } from '../shared/auth/authStorage.js';
+import { saveRefreshToken } from '../../shared/auth/authStorage.js';
 
 import { useDispatch } from 'react-redux';
 

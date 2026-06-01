@@ -8,33 +8,27 @@ import {
   RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ListItem from '../components/NotesListItem';
-import Add from '../assets/icons/Add.jsx';
-import NotesIcon from '../assets/icons/NotesIcon.jsx';
-import AddNote from '../components/AddNote';
+import ListItem from '../../components/NotesListItem.js';
+import Add from '../../assets/icons/Add.jsx';
+import NotesIcon from '../../assets/icons/NotesIcon.jsx';
+import AddNote from '../../components/AddNote.js';
 import {
   useGetNotesQuery,
   useUpdateStatusMutation,
   useUpdateStarMutation,
-} from '../services/notesApi';
-import HomeScreenSkeleton from '../components/HomeScreenSkeleton.js';
-import ErrorModal from '../components/ErrorModal.js';
-import getErrorMessage from '../services/apiErrorHandler.js';
-import ToastMessage from '../components/ToastMessage.js';
+} from '../../services/notesApi.js';
+import HomeScreenSkeleton from '../../components/HomeScreenSkeleton.js';
+import ErrorModal from '../../components/ErrorModal.js';
+import getErrorMessage from '../../services/apiErrorHandler.js';
+import ToastMessage from '../../components/ToastMessage.js';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import Export from '../assets/icons/Export.jsx';
-import Filters from '../assets/icons/Filters.jsx';
-import { exportNotesToExcel } from '../shared/exportNotesToExcel';
-import { notesApi } from '../services/notesApi';
-import { authApi } from '../services/authApi';
-import { logout } from '../redux/slices/authSlice';
-import { clearRefreshToken } from '../shared/auth/authStorage';
-import { useDispatch } from 'react-redux';
+import Export from '../../assets/icons/Export.jsx';
+import Filters from '../../assets/icons/Filters.jsx';
+import { exportNotesToExcel } from '../../shared/exportNotesToExcel.js';
 
 const HomeScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const dispatch = useDispatch();
 
   const [isAddNoteVisible, setIsAddNoteVisible] = useState(false);
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
@@ -188,20 +182,13 @@ const HomeScreen = () => {
 
   const keyExtractor = useCallback(item => item.id, []);
 
-  const handleLogout = async () => {
-    await clearRefreshToken();
-
-    dispatch(logout());
-
-    dispatch(notesApi.util.resetApiState());
-
-    dispatch(authApi.util.resetApiState());
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Pressable onPress={() => console.log('Filters')}>
+        <Pressable
+          style={{ display: 'none' }}
+          onPress={() => console.log('Filters')}
+        >
           <Filters width={24} height={24} />
         </Pressable>
         <Text style={styles.title}>Notes</Text>
@@ -252,13 +239,6 @@ const HomeScreen = () => {
           >
             <Add width={48} height={48} color="#ffffff" />
           </Pressable>
-          <Text
-            onPress={() => {
-              handleLogout();
-            }}
-          >
-            Logout
-          </Text>
           {isSuccessVisible && (
             <ToastMessage
               message={successMessage.title}

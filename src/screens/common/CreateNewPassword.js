@@ -5,49 +5,63 @@ import {
   StyleSheet,
   Pressable,
   ScrollView,
-  TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import BackArrow from '../assets/icons/SmallBack.jsx';
-import Button from '../components/Button';
-import BackgroundDecorations from '../components/BackgroundDecorations.jsx';
-import Input from '../components/Input.js';
+import BackArrow from '../../assets/icons/SmallBack.jsx';
+import Button from '../../components/Button.js';
+import BackgroundDecorations from '../../components/BackgroundDecorations.jsx';
+import Input from '../../components/Input.js';
 import { useNavigation } from '@react-navigation/native';
-import Mail from '../assets/icons/Mail.jsx';
+import Lock from '../../assets/icons/Lock.jsx';
+import ResetSuccess from '../../assets/icons/ResetSuccess.jsx';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { isValidEmail, normalizeEmail } from '../shared/validators/validators';
-import { useForgotPasswordMutation } from '../services/authApi.js';
-import ErrorModal from '../components/ErrorModal.js';
-import getErrorMessage from '../services/apiErrorHandler.js';
+import PasswordRules from '../../components/PasswordRules.js';
+import {
+  getPasswordChecks,
+  isValidPassword,
+  doPasswordsMatch,
+} from '../../shared/validators/validators.js';
+import { useResetPasswordMutation } from '../../services/authApi.js';
 
-const ForgotPassword = () => {
+const CreateNewPassword = ({ route }) => {
   const navigation = useNavigation();
   const headerHeight = useHeaderHeight();
-  const [email, setEmail] = useState('');
-  const [isEmailValid, setIsEmailValid] = useState(true);
 
-  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const { reset_token } = route?.params;
 
-  const onCloseErrorModal = () => {
-    setIsErrorModalVisible(false);
-    setErrorMessage('');
-  };
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [forgotPasswordApi, { isLoading }] = useForgotPasswordMutation();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const onReset = useCallback(async () => {
-    if (email) {
+  const passwordChecks = getPasswordChecks(password);
+
+  const passwordsMatch = doPasswordsMatch(password, confirmPassword);
+
+  const isPasswordValid = isValidPassword(password);
+
+  const isButtonDisabled = !isPasswordValid || !passwordsMatch || isLoading;
+
+  const [resetPasswordApi, { isLoading }] = useResetPasswordMutation();
+
+  const onResetPassword = useCallback(async () => {
+    if (isPasswordValid && passwordsMatch) {
       try {
-        const response = await forgotPasswordApi({
-          email: normalizeEmail(email),
+        const response = await resetPasswordApi({
+          reset_token,
+          password: password,
         }).unwrap();
-        if (response?.message === 'OTP sent successfully') {
-          navigation.navigate('VerifyYourEmail', {
-            email: email,
-            flowType: 'reset',
-            purpose: response?.purpose,
+        if (response?.message === 'Password reset successful') {
+          navigation.navigate('Success', {
+            title: 'Password reset successful!',
+            description:
+              'Your password has been reset successfully. You can now use your new password to log in to your account.',
+            onPress: () => navigation.navigate('Login'),
+            buttonText: 'Go to Login',
+            Icon: ResetSuccess,
           });
         }
       } catch (err) {
@@ -59,9 +73,7 @@ const ForgotPassword = () => {
         return;
       }
     }
-  }, [forgotPasswordApi, email]);
-
-  const isButtonDisabled = !isValidEmail(email) || isLoading;
+  }, [resetPasswordApi, isPasswordValid, passwordsMatch]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -85,35 +97,42 @@ const ForgotPassword = () => {
             </Pressable>
 
             <View style={styles.header}>
-              <View>
-                <Text style={styles.title}>Forgot Password</Text>
-                <Text style={styles.description}>
-                  Don't worry, we'll help you reset it.
-                </Text>
-              </View>
+              <Text style={styles.title}>Create new password</Text>
+              <Text style={styles.description}>
+                Your new password must be different from your previous
+                passwords.
+              </Text>
               <View style={styles.body}>
                 <Input
-                  placeholder="Email"
+                  placeholder="New password"
+                  label="Password"
                   additionalStyles={styles.input}
-                  label="Email"
+                  LeftIcon={Lock}
+                  secureTextEntry
+                  value={password}
+                  onChangeText={setPassword}
+                  showPasswordToggle={showPassword}
+                  setShowPassword={setShowPassword}
                   variantType="text"
-                  value={email}
-                  onChangeText={setEmail}
-                  LeftIcon={Mail}
                   isRequired
-                  onBlur={() => {
-                    if (email.length > 0 && !isValidEmail(email)) {
-                      setIsEmailValid(false);
-                    } else {
-                      setIsEmailValid(true);
-                    }
-                  }}
-                  onFocus={() => {
-                    setIsEmailValid(true);
-                  }}
-                  errorMsg={
-                    isEmailValid ? '' : 'Please enter a valid email address.'
-                  }
+                />
+                <Input
+                  placeholder="Confirm password"
+                  label="Confirm Password"
+                  additionalStyles={styles.input}
+                  LeftIcon={Lock}
+                  secureTextEntry
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  showPasswordToggle={showConfirmPassword}
+                  setShowPassword={setShowConfirmPassword}
+                  variantType="text"
+                  isRequired
+                />
+                <PasswordRules
+                  passwordChecks={passwordChecks}
+                  passwordsMatch={passwordsMatch}
+                  showMatchRule={confirmPassword.length > 0}
                 />
               </View>
             </View>
@@ -121,32 +140,24 @@ const ForgotPassword = () => {
             <View style={styles.footer}>
               <View style={styles.buttonsContainer}>
                 <Button
-                  title="Send Verification Code"
+                  title="Reset Password"
                   variantType="primary"
-                  onPress={() => onReset()}
+                  onPress={() => onResetPassword()}
                   additionalStyles={styles.loginButton}
                   textStyles={styles.loginButtonText}
                   isDisabled={isButtonDisabled}
-                  isLoading={isLoading}
                 />
               </View>
               <Text style={styles.footerText}>
-                Remember your password?{' '}
+                Remember password?{' '}
                 <Text
                   style={styles.signUpText}
-                  onPress={() => navigation.goBack()}
+                  onPress={() => navigation.navigate('Login')}
                 >
                   Log In
                 </Text>
               </Text>
             </View>
-            <ErrorModal
-              isErrorModalVisible={isErrorModalVisible}
-              setIsErrorModalVisible={setIsErrorModalVisible}
-              title={errorMessage?.title}
-              description={errorMessage?.description}
-              onClose={onCloseErrorModal}
-            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -176,9 +187,9 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    marginTop: 80,
+    marginTop: 48,
     alignItems: 'flex-start',
-    gap: 32,
+    gap: 4,
   },
   title: {
     fontSize: 32,
@@ -193,6 +204,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   body: {
+    paddingTop: 24,
+    paddingBottom: 16,
     width: '100%',
     gap: 16,
   },
@@ -203,15 +216,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 12,
   },
-  forgotPasswordText: {
-    alignSelf: 'flex-end',
-    color: '#2563EB',
+  passwordCriteria: {
+    width: '100%',
+    marginBottom: 8,
+    gap: 8,
+    alignItems: 'flex-start',
+  },
+  passwordCriteriaItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  passwordCriteriaText: {
     fontSize: 14,
-    fontWeight: '500',
+    color: '#4B5563',
   },
   footer: {
     width: '100%',
-    gap: 24,
+    gap: 16,
     alignItems: 'center',
   },
   buttonsContainer: {
@@ -232,7 +254,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 24,
-    marginTop: 8,
+    marginTop: 4,
   },
   line: {
     flex: 1,
@@ -265,4 +287,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ForgotPassword;
+export default CreateNewPassword;

@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 
 import { View, Text, StyleSheet } from 'react-native';
 
-import NotesIcon from '../assets/Notes.svg';
+import NotesIcon from '../../assets/Notes.svg';
 
-import Button from '../components/Button';
+import Button from '../../components/Button.js';
 
-import Google from '../assets/icons/Google.jsx';
+import Google from '../../assets/icons/Google.jsx';
 
-import BackgroundDecorations from '../components/BackgroundDecorations.jsx';
+import BackgroundDecorations from '../../components/BackgroundDecorations.jsx';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -17,16 +17,15 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 
-import { useGoogleAuthMutation } from '../services/authApi';
+import { useGoogleAuthMutation } from '../../services/authApi.js';
 
-import { setCredentials } from '../redux/slices/authSlice';
+import { setCredentials } from '../../redux/slices/authSlice.js';
 
-import { saveRefreshToken } from '../shared/auth/authStorage';
+import { saveRefreshToken } from '../../shared/auth/authStorage.js';
 
 import { useDispatch } from 'react-redux';
 
-import ErrorModal from '../components/ErrorModal.js';
-import getErrorMessage from '../services/apiErrorHandler.js';
+import ErrorModal from '../../components/ErrorModal.js';
 
 const LaunchScreen = () => {
   const navigation = useNavigation();

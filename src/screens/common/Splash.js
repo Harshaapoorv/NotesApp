@@ -4,18 +4,22 @@ import { Animated, StyleSheet, View, Text, Easing } from 'react-native';
 
 import { useDispatch } from 'react-redux';
 
-import NotesIcon from '../assets/Notes.svg';
+import NotesIcon from '../../assets/Notes.svg';
 
-import { setCredentials, setAppReady, logout } from '../redux/slices/authSlice';
+import {
+  setCredentials,
+  setAppReady,
+  logout,
+} from '../../redux/slices/authSlice.js';
 
 import {
   getRefreshToken,
   saveRefreshToken,
   clearRefreshToken,
-} from '../shared/auth/authStorage';
-import { useRefreshTokenMutation } from '../services/authApi.js';
-import { notesApi } from '../services/notesApi';
-import { authApi } from '../services/authApi';
+} from '../../shared/auth/authStorage.js';
+import { useRefreshTokenMutation } from '../../services/authApi.js';
+import { notesApi } from '../../services/notesApi.js';
+import { authApi } from '../../services/authApi.js';
 
 const Splash = () => {
   const styles = getStyles();

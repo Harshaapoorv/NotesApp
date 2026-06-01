@@ -5,63 +5,52 @@ import {
   StyleSheet,
   Pressable,
   ScrollView,
-  KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  KeyboardAvoidingView,
   Keyboard,
 } from 'react-native';
-import BackArrow from '../assets/icons/SmallBack.jsx';
-import Button from '../components/Button';
-import BackgroundDecorations from '../components/BackgroundDecorations.jsx';
-import Input from '../components/Input.js';
+import BackArrow from '../../assets/icons/SmallBack.jsx';
+import Button from '../../components/Button.js';
+import BackgroundDecorations from '../../components/BackgroundDecorations.jsx';
+import Input from '../../components/Input.js';
 import { useNavigation } from '@react-navigation/native';
-import Lock from '../assets/icons/Lock.jsx';
-import ResetSuccess from '../assets/icons/ResetSuccess.jsx';
+import Mail from '../../assets/icons/Mail.jsx';
 import { useHeaderHeight } from '@react-navigation/elements';
-import PasswordRules from '../components/PasswordRules.js';
 import {
-  getPasswordChecks,
-  isValidPassword,
-  doPasswordsMatch,
-} from '../shared/validators/validators';
-import { useResetPasswordMutation } from '../services/authApi.js';
+  isValidEmail,
+  normalizeEmail,
+} from '../../shared/validators/validators.js';
+import { useForgotPasswordMutation } from '../../services/authApi.js';
+import ErrorModal from '../../components/ErrorModal.js';
+import getErrorMessage from '../../services/apiErrorHandler.js';
 
-const CreateNewPassword = ({ route }) => {
+const ForgotPassword = () => {
   const navigation = useNavigation();
   const headerHeight = useHeaderHeight();
+  const [email, setEmail] = useState('');
+  const [isEmailValid, setIsEmailValid] = useState(true);
 
-  const { reset_token } = route?.params;
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const onCloseErrorModal = () => {
+    setIsErrorModalVisible(false);
+    setErrorMessage('');
+  };
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [forgotPasswordApi, { isLoading }] = useForgotPasswordMutation();
 
-  const passwordChecks = getPasswordChecks(password);
-
-  const passwordsMatch = doPasswordsMatch(password, confirmPassword);
-
-  const isPasswordValid = isValidPassword(password);
-
-  const isButtonDisabled = !isPasswordValid || !passwordsMatch || isLoading;
-
-  const [resetPasswordApi, { isLoading }] = useResetPasswordMutation();
-
-  const onResetPassword = useCallback(async () => {
-    if (isPasswordValid && passwordsMatch) {
+  const onReset = useCallback(async () => {
+    if (email) {
       try {
-        const response = await resetPasswordApi({
-          reset_token,
-          password: password,
+        const response = await forgotPasswordApi({
+          email: normalizeEmail(email),
         }).unwrap();
-        if (response?.message === 'Password reset successful') {
-          navigation.navigate('Success', {
-            title: 'Password reset successful!',
-            description:
-              'Your password has been reset successfully. You can now use your new password to log in to your account.',
-            onPress: () => navigation.navigate('Login'),
-            buttonText: 'Go to Login',
-            Icon: ResetSuccess,
+        if (response?.message === 'OTP sent successfully') {
+          navigation.navigate('VerifyYourEmail', {
+            email: email,
+            flowType: 'reset',
+            purpose: response?.purpose,
           });
         }
       } catch (err) {
@@ -73,7 +62,9 @@ const CreateNewPassword = ({ route }) => {
         return;
       }
     }
-  }, [resetPasswordApi, isPasswordValid, passwordsMatch]);
+  }, [forgotPasswordApi, email]);
+
+  const isButtonDisabled = !isValidEmail(email) || isLoading;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -97,42 +88,35 @@ const CreateNewPassword = ({ route }) => {
             </Pressable>
 
             <View style={styles.header}>
-              <Text style={styles.title}>Create new password</Text>
-              <Text style={styles.description}>
-                Your new password must be different from your previous
-                passwords.
-              </Text>
+              <View>
+                <Text style={styles.title}>Forgot Password</Text>
+                <Text style={styles.description}>
+                  Don't worry, we'll help you reset it.
+                </Text>
+              </View>
               <View style={styles.body}>
                 <Input
-                  placeholder="New password"
-                  label="Password"
+                  placeholder="Email"
                   additionalStyles={styles.input}
-                  LeftIcon={Lock}
-                  secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
-                  showPasswordToggle={showPassword}
-                  setShowPassword={setShowPassword}
+                  label="Email"
                   variantType="text"
+                  value={email}
+                  onChangeText={setEmail}
+                  LeftIcon={Mail}
                   isRequired
-                />
-                <Input
-                  placeholder="Confirm password"
-                  label="Confirm Password"
-                  additionalStyles={styles.input}
-                  LeftIcon={Lock}
-                  secureTextEntry
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  showPasswordToggle={showConfirmPassword}
-                  setShowPassword={setShowConfirmPassword}
-                  variantType="text"
-                  isRequired
-                />
-                <PasswordRules
-                  passwordChecks={passwordChecks}
-                  passwordsMatch={passwordsMatch}
-                  showMatchRule={confirmPassword.length > 0}
+                  onBlur={() => {
+                    if (email.length > 0 && !isValidEmail(email)) {
+                      setIsEmailValid(false);
+                    } else {
+                      setIsEmailValid(true);
+                    }
+                  }}
+                  onFocus={() => {
+                    setIsEmailValid(true);
+                  }}
+                  errorMsg={
+                    isEmailValid ? '' : 'Please enter a valid email address.'
+                  }
                 />
               </View>
             </View>
@@ -140,24 +124,32 @@ const CreateNewPassword = ({ route }) => {
             <View style={styles.footer}>
               <View style={styles.buttonsContainer}>
                 <Button
-                  title="Reset Password"
+                  title="Send Verification Code"
                   variantType="primary"
-                  onPress={() => onResetPassword()}
+                  onPress={() => onReset()}
                   additionalStyles={styles.loginButton}
                   textStyles={styles.loginButtonText}
                   isDisabled={isButtonDisabled}
+                  isLoading={isLoading}
                 />
               </View>
               <Text style={styles.footerText}>
-                Remember password?{' '}
+                Remember your password?{' '}
                 <Text
                   style={styles.signUpText}
-                  onPress={() => navigation.navigate('Login')}
+                  onPress={() => navigation.goBack()}
                 >
                   Log In
                 </Text>
               </Text>
             </View>
+            <ErrorModal
+              isErrorModalVisible={isErrorModalVisible}
+              setIsErrorModalVisible={setIsErrorModalVisible}
+              title={errorMessage?.title}
+              description={errorMessage?.description}
+              onClose={onCloseErrorModal}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -187,9 +179,9 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    marginTop: 48,
+    marginTop: 80,
     alignItems: 'flex-start',
-    gap: 4,
+    gap: 32,
   },
   title: {
     fontSize: 32,
@@ -204,8 +196,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   body: {
-    paddingTop: 24,
-    paddingBottom: 16,
     width: '100%',
     gap: 16,
   },
@@ -216,24 +206,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 12,
   },
-  passwordCriteria: {
-    width: '100%',
-    marginBottom: 8,
-    gap: 8,
-    alignItems: 'flex-start',
-  },
-  passwordCriteriaItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  passwordCriteriaText: {
+  forgotPasswordText: {
+    alignSelf: 'flex-end',
+    color: '#2563EB',
     fontSize: 14,
-    color: '#4B5563',
+    fontWeight: '500',
   },
   footer: {
     width: '100%',
-    gap: 16,
+    gap: 24,
     alignItems: 'center',
   },
   buttonsContainer: {
@@ -254,7 +235,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 24,
-    marginTop: 4,
+    marginTop: 8,
   },
   line: {
     flex: 1,
@@ -287,4 +268,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateNewPassword;
+export default ForgotPassword;

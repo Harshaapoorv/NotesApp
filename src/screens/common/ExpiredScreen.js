@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { View } from 'react-native';
-import ErrorModal from '../components/ErrorModal.js';
-import { hideSessionExpiredModal } from '../redux/slices/authSlice.js';
-import { logout } from '../redux/slices/authSlice.js';
-import { notesApi } from '../services/notesApi.js';
-import { authApi } from '../services/authApi.js';
-import { clearRefreshToken } from '../shared/auth/authStorage.js';
+import ErrorModal from '../../components/ErrorModal.js';
+import { hideSessionExpiredModal } from '../../redux/slices/authSlice.js';
+import { logout } from '../../redux/slices/authSlice.js';
+import { notesApi } from '../../services/notesApi.js';
+import { authApi } from '../../services/authApi.js';
+import { clearRefreshToken } from '../../shared/auth/authStorage.js';
 import { useDispatch } from 'react-redux';
 
 const ExpiredScreen = ({ isVisible }) => {

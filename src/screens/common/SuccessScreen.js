@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import BackArrow from '../assets/icons/SmallBack.jsx';
-import Button from '../components/Button.js';
-import BackgroundDecorations from '../components/BackgroundDecorations.jsx';
+import BackArrow from '../../assets/icons/SmallBack.jsx';
+import Button from '../../components/Button.js';
+import BackgroundDecorations from '../../components/BackgroundDecorations.jsx';
 
 const SuccessScreen = ({ route }) => {
   const navigation = useNavigation();

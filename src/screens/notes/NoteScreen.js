@@ -11,46 +11,46 @@ import {
   Animated,
   Modal,
 } from 'react-native';
-import contentConfig from '../assets/json/content.json';
-import Button from '../components/Button';
-import AddNote from '../components/AddNote.js';
-import BackArrow from '../assets/icons/Back.jsx';
-import Edit from '../assets/icons/Edit.jsx';
-import CalendarIcon from '../assets/icons/CalendarIcon.jsx';
-import Timer from '../assets/icons/Timer.jsx';
-import Dot from '../assets/icons/Dot.jsx';
+import contentConfig from '../../assets/json/content.json';
+import Button from '../../components/Button.js';
+import AddNote from '../../components/AddNote.js';
+import BackArrow from '../../assets/icons/Back.jsx';
+import Edit from '../../assets/icons/Edit.jsx';
+import CalendarIcon from '../../assets/icons/CalendarIcon.jsx';
+import Timer from '../../assets/icons/Timer.jsx';
+import Dot from '../../assets/icons/Dot.jsx';
 import { useNavigation } from '@react-navigation/native';
 import {
   useDeleteNoteMutation,
   useGetNoteByIdQuery,
   useUpdateStatusMutation,
-} from '../services/notesApi.js';
-import { formatShortDate, formatTime } from '../shared/date.js';
-import NoteScreenSkeleton from '../components/NoteScreenSkeleton.js';
-import ErrorModal from '../components/ErrorModal.js';
-import getErrorMessage from '../services/apiErrorHandler.js';
-import ToastMessage from '../components/ToastMessage.js';
-import AlertModal from '../components/AlertModal.js';
-import ClipBoard from '../assets/icons/ClipBoard.jsx';
+} from '../../services/notesApi.js';
+import { formatShortDate, formatTime } from '../../shared/date.js';
+import NoteScreenSkeleton from '../../components/NoteScreenSkeleton.js';
+import ErrorModal from '../../components/ErrorModal.js';
+import getErrorMessage from '../../services/apiErrorHandler.js';
+import ToastMessage from '../../components/ToastMessage.js';
+import AlertModal from '../../components/AlertModal.js';
+import ClipBoard from '../../assets/icons/ClipBoard.jsx';
 import Clipboard from '@react-native-clipboard/clipboard';
-import SuccessTick from '../assets/icons/SuccessTick.jsx';
-import FormattedText from '../components/FormattedText.js';
-import Info from '../assets/icons/Info.jsx';
-import Close from '../assets/icons/Close.jsx';
-import Book from '../assets/icons/Book.jsx';
-import Bold from '../assets/icons/FormatterIcons/Bold.jsx';
-import Italic from '../assets/icons/FormatterIcons/Italic.jsx';
-import LinkSvg from '../assets/icons/FormatterIcons/Link.jsx';
-import Heading from '../assets/icons/FormatterIcons/Heading.jsx';
-import UnOrderedList from '../assets/icons/FormatterIcons/UnOrderedList.jsx';
-import NumberedList from '../assets/icons/FormatterIcons/NumberedList.jsx';
-import Quote from '../assets/icons/FormatterIcons/Quote.jsx';
-import Code from '../assets/icons/FormatterIcons/Code.jsx';
-import Alphabets from '../assets/icons/FormatterIcons/Alphabets.jsx';
-import Next from '../assets/icons/Next.jsx';
-import Copy from '../assets/icons/Copy.jsx';
-import StrikeThrough from '../assets/icons/FormatterIcons/StrikeThrough.jsx';
-import BackgroundDecorations from '../components/BackgroundDecorations.jsx';
+import SuccessTick from '../../assets/icons/SuccessTick.jsx';
+import FormattedText from '../../components/FormattedText.js';
+import Info from '../../assets/icons/Info.jsx';
+import Close from '../../assets/icons/Close.jsx';
+import Book from '../../assets/icons/Book.jsx';
+import Bold from '../../assets/icons/FormatterIcons/Bold.jsx';
+import Italic from '../../assets/icons/FormatterIcons/Italic.jsx';
+import LinkSvg from '../../assets/icons/FormatterIcons/Link.jsx';
+import Heading from '../../assets/icons/FormatterIcons/Heading.jsx';
+import UnOrderedList from '../../assets/icons/FormatterIcons/UnOrderedList.jsx';
+import NumberedList from '../../assets/icons/FormatterIcons/NumberedList.jsx';
+import Quote from '../../assets/icons/FormatterIcons/Quote.jsx';
+import Code from '../../assets/icons/FormatterIcons/Code.jsx';
+import Alphabets from '../../assets/icons/FormatterIcons/Alphabets.jsx';
+import Next from '../../assets/icons/Next.jsx';
+import Copy from '../../assets/icons/Copy.jsx';
+import StrikeThrough from '../../assets/icons/FormatterIcons/StrikeThrough.jsx';
+import BackgroundDecorations from '../../components/BackgroundDecorations.jsx';
 
 const NoteScreen = ({ route }) => {
   const { id: id } = route.params;
