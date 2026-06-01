@@ -23,7 +23,7 @@ const AppTabs = () => {
         tabBarShowLabel: true,
 
         tabBarStyle: {
-          height: 48,
+          height: 72,
           paddingBottom: 8,
           paddingTop: 8,
           borderTopWidth: 1,
