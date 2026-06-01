@@ -14,6 +14,12 @@ import getErrorMessage from '../services/apiErrorHandler.js';
 import { saveRefreshToken } from '../shared/auth/authStorage.js';
 import { useDispatch } from 'react-redux';
 import { setCredentials } from '../redux/slices/authSlice';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+
+import { useGoogleAuthMutation } from '../services/authApi';
 
 import {
   isValidPassword,
@@ -59,14 +65,6 @@ const Login = () => {
           user: data?.user,
         }),
       );
-
-      // navigation.navigate('SuccessScreen', {
-      //   title: 'Account created',
-      //   description: 'Your account has been successfully created.',
-      //   buttonText: 'Go to Login',
-      //   onPress: () => navigation.navigate('Login'),
-      //   Icon: SuccessTick,
-      // });
     } else if (isError) {
       setErrorMessage(
         getErrorMessage(error) || {
@@ -76,11 +74,43 @@ const Login = () => {
       );
       setIsErrorModalVisible(true);
     }
-    // navigation.navigate('VerifyYourEmail', {
-    //   email: email,
-    //   flowType: 'signUp',
-    // });
   }, [isSuccess, navigation, isError, error]);
+
+  const [googleAuthApi] = useGoogleAuthMutation();
+
+  const onGooglePress = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+
+      const userInfo = await GoogleSignin.signIn();
+
+      const idToken = userInfo.data?.idToken;
+
+      if (!idToken) {
+        throw new Error('Google token not found');
+      }
+
+      const response = await googleAuthApi({
+        id_token: idToken,
+      }).unwrap();
+
+      await saveRefreshToken(response.refresh_token);
+
+      dispatch(
+        setCredentials({
+          accessToken: response.access_token,
+
+          user: response.user,
+        }),
+      );
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        return;
+      }
+
+      console.log('Google Sign In Error', error);
+    }
+  };
 
   return (
     <ScrollView
@@ -166,7 +196,7 @@ const Login = () => {
             title="Continue with Google"
             variantType="secondary"
             LeftIcon={Google}
-            onPress={() => {}}
+            onPress={() => onGooglePress()}
             additionalStyles={styles.googleButton}
             textStyles={styles.googleButtonText}
           />

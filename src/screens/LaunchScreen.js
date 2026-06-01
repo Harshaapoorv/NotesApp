@@ -5,9 +5,60 @@ import Button from '../components/Button';
 import Google from '../assets/icons/Google.jsx';
 import BackgroundDecorations from '../components/BackgroundDecorations.jsx';
 import { useNavigation } from '@react-navigation/native';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+
+import { useGoogleAuthMutation } from '../services/authApi';
+
+import { setCredentials } from '../redux/slices/authSlice';
+
+import { saveRefreshToken } from '../shared/auth/authStorage';
+
+import { useDispatch } from 'react-redux';
 
 const LaunchScreen = () => {
   const navigation = useNavigation();
+
+  const dispatch = useDispatch();
+
+  const [googleAuthApi] = useGoogleAuthMutation();
+
+  const onGooglePress = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+
+      const userInfo = await GoogleSignin.signIn();
+
+      const idToken = userInfo.data?.idToken;
+
+      if (!idToken) {
+        throw new Error('Google token not found');
+      }
+
+      const response = await googleAuthApi({
+        id_token: idToken,
+      }).unwrap();
+
+      await saveRefreshToken(response.refresh_token);
+
+      dispatch(
+        setCredentials({
+          accessToken: response.access_token,
+
+          user: response.user,
+        }),
+      );
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        return;
+      }
+
+      console.log('Google Sign In Error', error);
+    }
+  };
+
   return (
     <View style={styles.screen}>
       <BackgroundDecorations />
@@ -44,7 +95,7 @@ const LaunchScreen = () => {
           title="Continue with Google"
           variantType="secondary"
           LeftIcon={Google}
-          onPress={() => {}}
+          onPress={() => onGooglePress()}
           additionalStyles={styles.googleButton}
           textStyles={styles.googleButtonText}
         />

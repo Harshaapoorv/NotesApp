@@ -1,4 +1,4 @@
-package com.notesapp
+package com.apoorv.notesapp
 
 import android.os.Bundle
 import com.facebook.react.ReactActivity
