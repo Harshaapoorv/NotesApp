@@ -68,13 +68,33 @@ const SignUp = () => {
 
   const [googleAuthApi] = useGoogleAuthMutation();
 
+  const [googleLoading, setGoogleLoading] = useState(false);
+
   const onGooglePress = async () => {
+    if (googleLoading) {
+      return;
+    }
+
     try {
+      setGoogleLoading(true);
+
+      setIsErrorModalVisible(false);
+
+      setErrorMessage('');
+
       await GoogleSignin.hasPlayServices();
 
-      const userInfo = await GoogleSignin.signIn();
+      let userInfo;
 
-      const idToken = userInfo.data?.idToken;
+      const currentUser = GoogleSignin.getCurrentUser();
+
+      if (currentUser?.data?.idToken) {
+        userInfo = currentUser;
+      } else {
+        userInfo = await GoogleSignin.signIn();
+      }
+
+      const idToken = userInfo?.data?.idToken;
 
       if (!idToken) {
         throw new Error('Google token not found');
@@ -98,7 +118,71 @@ const SignUp = () => {
         return;
       }
 
-      console.log('Google Sign In Error', error);
+      setIsErrorModalVisible(true);
+
+      if (error.code === statusCodes.IN_PROGRESS) {
+        setErrorMessage({
+          title: 'Sign-In In Progress',
+
+          description:
+            'Google sign in is already in progress. Please wait a moment.',
+        });
+
+        return;
+      }
+
+      if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        setErrorMessage({
+          title: 'Google Services Unavailable',
+
+          description:
+            'Google Play Services is unavailable or outdated on this device.',
+        });
+
+        return;
+      }
+
+      if (error?.status === 'FETCH_ERROR') {
+        setErrorMessage({
+          title: 'Connection Failed',
+
+          description:
+            'Unable to connect to the server. Please check your internet connection and try again.',
+        });
+
+        return;
+      }
+
+      if (error?.data?.detail) {
+        setErrorMessage({
+          title: 'Authentication Failed',
+
+          description:
+            error?.data?.detail ||
+            'Unable to authenticate your Google account.',
+        });
+
+        return;
+      }
+
+      if (error?.message === 'Google token not found') {
+        setErrorMessage({
+          title: 'Google Sign In Failed',
+
+          description:
+            'Unable to retrieve Google authentication token. Please try again.',
+        });
+
+        return;
+      }
+
+      setErrorMessage({
+        title: 'Something Went Wrong',
+
+        description: 'Google sign in failed unexpectedly. Please try again.',
+      });
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -266,6 +350,8 @@ const SignUp = () => {
             onPress={() => onGooglePress()}
             additionalStyles={styles.googleButton}
             textStyles={styles.googleButtonText}
+            isLoading={googleLoading}
+            loaderColor="#2563EB"
           />
           <Text style={styles.footerText}>
             Already have an account?{' '}
