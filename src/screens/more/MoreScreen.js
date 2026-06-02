@@ -5,6 +5,8 @@ import MoreScreenSkeleton from '../../components/MoreScreenSkeleton.js';
 import ErrorModal from '../../components/ErrorModal.js';
 import { notesApi } from '../../services/notesApi.js';
 import { authApi } from '../../services/authApi.js';
+import { appApi } from '../../services/appApi.js';
+import { userApi } from '../../services/userApi.js';
 import { logout } from '../../redux/slices/authSlice.js';
 import { clearRefreshToken } from '../../shared/auth/authStorage.js';
 import { useDispatch } from 'react-redux';
@@ -87,9 +89,31 @@ const MoreScreen = () => {
   ];
 
   const switchGoogleAccount = async () => {
-    await GoogleSignin.signOut();
-    await GoogleSignin.revokeAccess();
-    handleLogout();
+    try {
+      await GoogleSignin.revokeAccess();
+
+      await GoogleSignin.signOut();
+
+      await clearRefreshToken();
+
+      dispatch(logout());
+
+      dispatch(notesApi.util.resetApiState());
+
+      dispatch(authApi.util.resetApiState());
+
+      dispatch(appApi.util.resetApiState());
+
+      dispatch(userApi.util.resetApiState());
+    } catch (error) {
+      setErrorMessage({
+        title: 'Unable to Switch Account',
+        description:
+          'Something went wrong while switching your Google account. Please try logging out and signing in again.',
+      });
+
+      setIsErrorModalVisible(true);
+    }
   };
 
   const switchGoogleConfig = [
@@ -109,6 +133,10 @@ const MoreScreen = () => {
     dispatch(notesApi.util.resetApiState());
 
     dispatch(authApi.util.resetApiState());
+
+    dispatch(appApi.util.resetApiState());
+
+    dispatch(userApi.util.resetApiState());
   };
 
   return (

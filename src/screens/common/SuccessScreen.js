@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import BackArrow from '../../assets/icons/SmallBack.jsx';
 import Button from '../../components/Button.js';
@@ -26,24 +26,26 @@ const SuccessScreen = ({ route }) => {
           <BackArrow width={24} height={24} />
         </Pressable>
       )}
-      <View style={styles.content}>
-        <View style={styles.header}>
-          {Icon && <Icon width={220} height={120} />}
-          <View style={{ gap: 16, marginTop: 24, alignItems: 'center' }}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.description}>{description}</Text>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.content}>
+          <View style={styles.header}>
+            {Icon && <Icon width={220} height={120} />}
+            <View style={{ gap: 16, marginTop: 24, alignItems: 'center' }}>
+              <Text style={styles.title}>{title}</Text>
+              <Text style={styles.description}>{description}</Text>
+            </View>
           </View>
-        </View>
 
-        {buttonText && (
-          <Button
-            title={buttonText}
-            onPress={onPress}
-            additionalStyles={styles.button}
-            textStyles={styles.buttonText}
-          />
-        )}
-      </View>
+          {buttonText && (
+            <Button
+              title={buttonText}
+              onPress={onPress}
+              additionalStyles={styles.button}
+              textStyles={styles.buttonText}
+            />
+          )}
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -65,6 +67,10 @@ const styles = StyleSheet.create({
     gap: 48,
     alignItems: 'center',
     marginTop: 40,
+  },
+  scrollContainer: {
+    backgroundColor: '#F9FAFB',
+    flexGrow: 1,
   },
   content: {
     marginTop: 80,

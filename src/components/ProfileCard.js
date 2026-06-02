@@ -2,19 +2,28 @@ import React from 'react';
 
 import { View, Text, StyleSheet, Image } from 'react-native';
 import Verified from '../assets/icons/Verified.jsx';
+import Person from '../assets/icons/Person.jsx';
 
 const ProfileCard = ({ user }) => {
   return (
     <View style={styles.card}>
-      <Image
-        source={{
-          uri: user?.profile_picture || 'https://via.placeholder.com/80',
-        }}
-        style={styles.profileImage}
-      />
-      <View style={{ gap: 4 }}>
-        <View style={{ gap: 2 }}>
-          <Text style={styles.name}>{user?.full_name}</Text>
+      <View style={styles.profileImage}>
+        {user?.profile_picture ? (
+          <Image
+            source={{
+              uri: user?.profile_picture || 'https://via.placeholder.com/80',
+            }}
+            style={styles.profileImage}
+          />
+        ) : (
+          <Person width={48} height={48} />
+        )}
+      </View>
+      <View style={{ gap: 4, flexWrap: 'wrap' }}>
+        <View style={{ gap: 2, flexWrap: 'wrap' }}>
+          <Text style={styles.name} textBreakStrategy="words">
+            {user?.full_name}
+          </Text>
           <Text style={styles.email}>{user?.email}</Text>
         </View>
         {user?.is_email_verified ? (
@@ -47,6 +56,8 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   profileImage: {
+    alignItems: 'center',
+    justifyContent: 'center',
     width: 84,
     height: 84,
     borderRadius: 40,

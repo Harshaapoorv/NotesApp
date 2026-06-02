@@ -24,6 +24,8 @@ import {
   doPasswordsMatch,
 } from '../../shared/validators/validators.js';
 import { useResetPasswordMutation } from '../../services/authApi.js';
+import getErrorMessage from '../../services/apiErrorHandler.js';
+import ErrorModal from '../../components/ErrorModal.js';
 
 const CreateNewPassword = ({ route }) => {
   const navigation = useNavigation();
@@ -33,6 +35,14 @@ const CreateNewPassword = ({ route }) => {
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const onCloseErrorModal = () => {
+    setIsErrorModalVisible(false);
+    setErrorMessage('');
+  };
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -146,6 +156,7 @@ const CreateNewPassword = ({ route }) => {
                   additionalStyles={styles.loginButton}
                   textStyles={styles.loginButtonText}
                   isDisabled={isButtonDisabled}
+                  isLoading={isLoading}
                 />
               </View>
               <Text style={styles.footerText}>
@@ -159,6 +170,13 @@ const CreateNewPassword = ({ route }) => {
               </Text>
             </View>
           </View>
+          <ErrorModal
+            isErrorModalVisible={isErrorModalVisible}
+            setIsErrorModalVisible={setIsErrorModalVisible}
+            title={errorMessage?.title}
+            description={errorMessage?.description}
+            onClose={onCloseErrorModal}
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>

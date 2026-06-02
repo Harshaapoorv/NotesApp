@@ -8,6 +8,8 @@ import { notesApi } from '../../services/notesApi.js';
 import { authApi } from '../../services/authApi.js';
 import { clearRefreshToken } from '../../shared/auth/authStorage.js';
 import { useDispatch } from 'react-redux';
+import { appApi } from '../../services/appApi.js';
+import { userApi } from '../../services/userApi.js';
 
 const ExpiredScreen = ({ isVisible }) => {
   const dispatch = useDispatch();
@@ -22,6 +24,10 @@ const ExpiredScreen = ({ isVisible }) => {
     dispatch(notesApi.util.resetApiState());
 
     dispatch(authApi.util.resetApiState());
+
+    dispatch(appApi.util.resetApiState());
+
+    dispatch(userApi.util.resetApiState());
   };
 
   return (
