@@ -1,328 +1,99 @@
-# NotesFlow – Full Stack Productivity & Notes Platform
+# 📝 NotesApp
 
-A modern full-stack productivity application built using **React Native**, **FastAPI**, and **PostgreSQL** featuring markdown-inspired note formatting, optimized rendering architecture, Excel export functionality, authentication-ready APIs, and scalable backend infrastructure.
+<div align="center">
 
----
+**A production-ready cross-platform note-taking application built with React Native, FastAPI, and PostgreSQL.**
 
-# Features
-
-## Productivity Features
-
-- Create, update and delete notes
-- Status-based workflow management
-  - Pending
-  - In Progress
-  - Completed
-- Star important notes
-- Deadline management
-- Rich note formatting support
-- Code block support
-- Copy formatted content
-- Optimized note ordering
-- Persistent backend storage
+Create rich notes • Manage tasks • Organize ideas • Export data • Stay productive
 
 ---
 
-# Rich Text Formatting
+![React Native](https://img.shields.io/badge/React%20Native-0.8x-61DAFB?style=for-the-badge&logo=react)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.11x-009688?style=for-the-badge&logo=fastapi)
+![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql)
+![JWT](https://img.shields.io/badge/JWT-Authentication-000000?style=for-the-badge&logo=jsonwebtokens)
+![Google OAuth](https://img.shields.io/badge/Google-OAuth-4285F4?style=for-the-badge&logo=google)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-Supports markdown-inspired formatting options including:
-
-| Format | Syntax |
-|---|---|
-| Bold | `**text**` |
-| Italic | `*text*` |
-| Links | `<<yourlink>>` |
-| Links | `https://yourlink.com` |
-| Links | `www.yourlink.com` |
-| Strikethrough | `~~text~~` |
-| Inline Code | `` ```code``` `` |
-| Code Block | ```` ```js ``` ```` |
-| Bullet List | `- item` |
-| Numbered List | `1. item` |
-| Quote | `<text>` |
-| Headings | `# Heading` |
-| Headings | `## Heading` |
-| Headings | `### Heading` |
+</div>
 
 ---
 
-# Performance Optimizations
+## 📖 Overview
 
-Implemented multiple rendering and state optimization techniques:
+NotesApp is a modern, cloud-powered productivity application designed to help users capture ideas, organize information, manage tasks, and write beautifully formatted notes through an intuitive mobile experience.
 
-- `React.memo` based list item optimization
-- Optimized `FlatList` virtualization
-- Stable callback references using `useCallback`
-- RTK Query optimistic updates
-- Prevented unnecessary list rerenders
-- Optimized cache synchronization
-- Local cache updates without full refetch
-- Selective item reordering for starred notes
+Built using **React Native**, **FastAPI**, and **PostgreSQL**, the application combines a responsive cross-platform interface with a scalable backend architecture, enabling secure authentication, cloud synchronization, rich text editing, and productivity-focused workflows.
+
+Unlike many note-taking applications that primarily demonstrate CRUD operations, NotesApp was engineered with production-oriented architecture in mind. The project emphasizes modular design, reusable components, secure authentication, clean API design, and extensibility for future AI-powered productivity features.
+
+Whether you're documenting ideas, maintaining technical notes with code snippets, tracking personal tasks, or organizing day-to-day work, NotesApp provides a clean and distraction-free experience while ensuring your data remains secure and accessible across sessions.
 
 ---
 
-# Excel Export System
+## ✨ Highlights
 
-Export all notes into a professionally formatted Excel workbook with:
-
-- Styled headers
-- Autofilters
-- Frozen rows
-- Wrapped content
-- Column sizing
-- Structured formatting
-- Native mobile share support
-
----
-
-# Tech Stack
-
-## Frontend
-
-- React Native
-- Redux Toolkit
-- RTK Query
-- React Navigation
-- React Native SVG
-- DayJS
-- XLSX-JS-Style
+- 🔐 Secure Email & Google Authentication
+- 📧 Email OTP Verification & Password Recovery
+- 📝 Rich Text Editor with Markdown-style Formatting
+- 💻 Code Blocks with Programming Language Support
+- 📖 Built-in Formatting Guide for Rich Text & Code Syntax
+- ⭐ Starred Notes for Quick Access
+- 📊 Export Notes to Excel
+- ☁️ Secure Cloud Synchronization
+- 📈 Task Status Tracking *(Pending → In Progress → Completed)*
+- 🔒 JWT-based Authentication with Session Persistence
+- 📱 Cross-Platform Mobile Application *(Android & iOS)*
+- ⚡ FastAPI REST Backend with PostgreSQL
 
 ---
 
-## Backend
+# 📸 Screenshots
 
-- FastAPI
-- SQLAlchemy
-- Alembic
-- PostgreSQL
+> **Authentication**
 
----
-
-## Cloud & Deployment
-
-- Render
-- Neon PostgreSQL
+| Splash | Login / Signup | Email Verification |
+|---------|----------------|--------------------|
+| *(Add Screenshot)* | *(Add Screenshot)* | *(Add Screenshot)* |
 
 ---
 
-# Architecture Highlights
+> **Core Experience**
 
-## Frontend Architecture
+| Notes List | Rich Text Editor |
+|------------|------------------|
+| *(Add Screenshot)* | *(Add Screenshot)* |
 
-- Component-based scalable architecture
-- Reusable UI system
-- Centralized API layer using RTK Query
-- Optimistic UI updates
-- Shared formatting utilities
-- Modular feature organization
+| Formatting Guide | Code Blocks |
+|------------------|-------------|
+| *(Add Screenshot)* | *(Add Screenshot)* |
 
----
-
-## Backend Architecture
-
-- RESTful API architecture
-- Alembic database migrations
-- Structured schema validation
-- User-ready scalable note APIs
-- Optimized query handling
+| Task Status | Export to Excel |
+|-------------|-----------------|
+| *(Add Screenshot)* | *(Add Screenshot)* |
 
 ---
 
-# Folder Structure
+> **More**
 
-```bash
-src/
-│
-├── assets/
-├── components/
-├── screens/
-├── services/
-├── shared/
-├── store/
-```
+| About | Privacy Policy | Contact |
+|--------|----------------|---------|
+| *(Add Screenshot)* | *(Add Screenshot)* | *(Add Screenshot)* |
 
 ---
 
-# Screens
+## 🚀 Why NotesApp Stands Out
 
-- Home Screen
-- Add/Edit Note Modal
-- Note Details Screen
-- Formatting Guide
-- Export Workflow
-- Error & Success Modals
+NotesApp goes beyond a traditional note-taking application by combining a modern mobile experience with production-grade backend architecture.
 
----
+Some of the engineering decisions that distinguish the project include:
 
-# Upcoming Features
+- Production-ready authentication architecture supporting Email, Google OAuth, OTP verification, and secure JWT session management.
+- A custom rich text editing experience supporting headings, hyperlinks, lists, quotes, and language-aware code blocks.
+- A dedicated **Formatting Guide** integrated into both the note creation and viewing flows, allowing users to discover formatting capabilities without leaving the application.
+- Secure cloud-backed storage with user-specific authorization and persistent synchronization.
+- RESTful backend architecture built using FastAPI, SQLAlchemy, Alembic, and PostgreSQL.
+- An extensible foundation designed for upcoming AI-powered productivity features, offline synchronization, syntax highlighting, reminders, and advanced editor capabilities.
 
-## Version 1
-
-- User Authentication
-- Login / Signup
-- Filters
-- Sorting
-
----
-
-## Version 2
-
-- AI Workspace Assistant
-- AI Note Intelligence
-- Voice-to-Note
-- AI Generated Notes
-
----
-
-## Version 3
-
-- Excel Import System
-- Bulk Note Import Validation
-- Data Migration Tools
-
----
-
-## Version 4
-
-- Syntax Highlighting
-- Language-aware Code Blocks
-
----
-
-# Installation
-
-## Clone Repository
-
-```bash
-git clone https://github.com/Harshaapoorv/NotesApp
-```
-
----
-
-# Frontend Setup
-
-```bash
-cd frontend
-npm install
-```
-
-Create `.env`
-
-```env
-BASE_URL=YOUR_API_URL
-```
-
-Start Metro
-
-```bash
-npm start
-```
-
-Run Android
-
-```bash
-npm run android
-```
-
-Run iOS
-
-```bash
-npm run ios
-```
-
----
-
-# Backend Setup
-
-```bash
-cd backend
-pip install -r requirements.txt
-```
-
-Run migrations
-
-```bash
-alembic upgrade head
-```
-
-Start server
-
-```bash
-uvicorn app.main:app --reload
-```
-
----
-
-# Environment Variables
-
-## Frontend
-
-```env
-BASE_URL=
-```
-
----
-
-## Backend
-
-```env
-DATABASE_URL=
-SECRET_KEY=
-ALGORITHM=
-ACCESS_TOKEN_EXPIRE_MINUTES=
-```
-
----
-
-# Key Engineering Challenges Solved
-
-- Large `FlatList` rerender optimization
-- RTK Query cache synchronization
-- Optimistic update architecture
-- Date & timezone normalization
-- Dynamic markdown formatting
-- Modal + keyboard handling
-- Cross-platform Excel export workflows
-- Efficient list ordering strategies
-
----
-
-# Future AI Architecture
-
-The platform is designed for future AI integrations including:
-
-## Lakshmi
-Workspace-level productivity assistant capable of:
-- Note analytics
-- Task summaries
-- AI-generated notes
-- Smart productivity insights
-
----
-
-## Nag
-Contextual note intelligence capable of:
-- Code explanation
-- Note summarization
-- Contextual assistance
-- Note-specific AI interactions
-
----
-
-# Author
-
-## Harsha Apoorv
-
-Full Stack Mobile Application Developer
-
-- React Native
-- FastAPI
-- PostgreSQL
-- Mobile Performance Optimization
-- Full Stack Product Development
-
----
-
-# License
-
-This project is licensed under the MIT License.
+Rather than being developed solely as a portfolio CRUD application, NotesApp was built as a scalable software engineering project focused on maintainability, extensibility, and real-world user experience.
