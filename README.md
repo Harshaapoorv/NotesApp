@@ -342,3 +342,235 @@ Examples include:
 - CSS
 
 with future support planned for syntax highlighting.
+
+---
+
+# ⚡ State Management
+
+NotesApp uses **Redux Toolkit** and **RTK Query** to provide predictable state management, efficient API communication, and automatic cache synchronization.
+
+## Redux Toolkit
+
+Global application state is centralized using Redux Toolkit, making authentication, session management, and UI state easy to manage across the application.
+
+State currently managed includes:
+
+- Authentication state
+- Logged-in user information
+- Access token
+- Session expiration
+- Application initialization
+- Global UI state
+
+---
+
+## RTK Query
+
+RTK Query powers all server communication and provides:
+
+- Automatic API caching
+- Background refetching
+- Cache invalidation
+- Optimistic updates
+- Loading & error states
+- Automatic token refresh
+- Retry after successful authentication
+
+The application minimizes unnecessary network requests while keeping the UI synchronized with backend data.
+
+---
+
+# 🚀 Performance Optimizations
+
+Performance was considered throughout the development process to ensure a smooth experience as the application scales.
+
+## Rendering Optimizations
+
+- React.memo for reusable components
+- useCallback for stable function references
+- Optimized FlatList rendering
+- Efficient component hierarchy
+- Lazy screen rendering
+- Controlled re-renders
+
+---
+
+## API Optimizations
+
+- RTK Query caching
+- Optimistic UI updates
+- Automatic cache synchronization
+- Selective cache invalidation
+- Background token refresh
+- Minimal redundant API calls
+
+---
+
+## User Experience Optimizations
+
+- Skeleton loading states
+- Non-blocking API interactions
+- Reusable loading indicators
+- Consistent error handling
+- Session persistence
+- Responsive layouts
+
+---
+
+# 📤 Excel Export
+
+NotesApp allows users to export all their notes into a professionally formatted Excel workbook.
+
+Generated workbooks include:
+
+- Styled header row
+- Auto filters
+- Frozen header
+- Wrapped cell content
+- Automatic column sizing
+- Rich note content
+- Status information
+- Deadlines
+- Creation timestamps
+
+The generated workbook can be shared directly using the device's native sharing capabilities.
+
+This feature enables users to create backups or analyze their notes using spreadsheet software such as Microsoft Excel or Google Sheets.
+
+---
+
+# 🌐 Connectivity & Session Management
+
+## Internet Connectivity
+
+The application continuously monitors network connectivity using **React Native NetInfo**.
+
+When internet connectivity is unavailable:
+
+- A dedicated offline screen is displayed
+- User interactions are prevented
+- Application automatically recovers when connectivity is restored
+
+---
+
+## Session Persistence
+
+Users remain signed in across application launches through secure token storage.
+
+The authentication flow supports:
+
+- Automatic session restoration
+- Access token refresh
+- Refresh token rotation
+- Session expiration handling
+- Secure logout
+- Google account switching
+
+This allows users to continue working without repeatedly signing in while maintaining secure authentication practices.
+
+---
+
+# 📱 User Experience
+
+A significant emphasis was placed on creating an intuitive and distraction-free user experience.
+
+## Authentication Experience
+
+- Clean onboarding flow
+- Email verification
+- Password recovery
+- Google Sign-In
+- Helpful validation messages
+- Loading indicators
+- Error recovery
+
+---
+
+## Notes Experience
+
+- Fast note creation
+- Rich text editing
+- Formatting Guide
+- Status badges
+- Starred notes
+- Deadline visualization
+- Search
+- Instant updates
+
+---
+
+## More
+
+The More section centralizes account and application information.
+
+Users can:
+
+- View profile information
+- Check email verification status
+- Read About NotesApp
+- View Privacy Policy
+- Contact the developer
+- Switch Google accounts
+- Log out securely
+- View current application version
+
+Application content such as the About page, Privacy Policy, and contact information is dynamically fetched from the backend, allowing updates without requiring a new mobile release.
+
+---
+
+# 💡 Engineering Challenges Solved
+
+Throughout development, several engineering challenges were addressed to improve maintainability, scalability, and user experience.
+
+## Authentication Architecture
+
+Designed reusable authentication flows supporting both Email/Password and Google Sign-In while sharing common session management logic.
+
+---
+
+## Rich Text Rendering
+
+Implemented a markdown-inspired rendering system capable of displaying formatted content consistently across Android and iOS while remaining lightweight and extensible.
+
+---
+
+## Formatting Discoverability
+
+Rather than expecting users to remember markdown syntax, a dedicated Formatting Guide was integrated directly into the application, significantly improving feature discoverability.
+
+---
+
+## Secure Session Management
+
+Implemented JWT authentication with automatic refresh token handling, secure credential storage, and graceful session expiration.
+
+---
+
+## Modular Architecture
+
+Designed reusable screens, shared components, common navigation stacks, centralized API services, and feature-based organization to simplify future development.
+
+---
+
+## Extensibility
+
+The project architecture was intentionally designed to accommodate upcoming features such as AI assistance, syntax highlighting, reminders, offline synchronization, profile management, and additional productivity tools without major architectural refactoring.
+
+---
+
+# 🎯 Lessons Learned
+
+Building NotesApp provided practical experience across the complete software development lifecycle—from planning and architecture to implementation, debugging, optimization, and deployment.
+
+Key learnings include:
+
+- Designing scalable mobile applications
+- Building production-ready REST APIs
+- Structuring reusable frontend architecture
+- Implementing secure authentication systems
+- Managing relational databases with SQLAlchemy
+- Designing efficient state management
+- Optimizing rendering performance
+- Building maintainable software through modular design
+- Preparing applications for cloud deployment
+- Thinking beyond features to prioritize user experience
