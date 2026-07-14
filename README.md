@@ -57,7 +57,7 @@ Whether you're documenting ideas, maintaining technical notes with code snippets
 > **Authentication**
 
 | Splash | Login / Signup | Email Verification | Launch |
-|---------|----------------|--------------------|
+|---------|----------------|--------------------|--------|
 | <img width="120" height="120" alt="Splash" src="https://github.com/user-attachments/assets/c2e57b85-af2d-4747-b423-cef063575845" /> | <img width="120" height="120" alt="SignUp" src="https://github.com/user-attachments/assets/a8ffce2e-697d-43ba-8d34-c94983a020b6" /> | <img width="120" height="120" alt="VerifyEmail" src="https://github.com/user-attachments/assets/5463ae49-b8a8-4c7b-846f-349621a6cbfc" /> | <img width="120" height="120" alt="Launch" src="https://github.com/user-attachments/assets/484b2666-745d-4e85-b745-9ae638541109" /> |
 
 ---
