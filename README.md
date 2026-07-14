@@ -58,7 +58,7 @@ Whether you're documenting ideas, maintaining technical notes with code snippets
 
 | Splash | Login / Signup | Email Verification | Launch |
 |---------|----------------|--------------------|
-| <img width="1080" height="2400" alt="Splash" src="https://github.com/user-attachments/assets/c2e57b85-af2d-4747-b423-cef063575845" /> | <img width="1080" height="2400" alt="SignUp" src="https://github.com/user-attachments/assets/a8ffce2e-697d-43ba-8d34-c94983a020b6" /> | <img width="1080" height="2400" alt="VerifyEmail" src="https://github.com/user-attachments/assets/5463ae49-b8a8-4c7b-846f-349621a6cbfc" /> | <img width="1080" height="2400" alt="Launch" src="https://github.com/user-attachments/assets/484b2666-745d-4e85-b745-9ae638541109" /> |
+| <img width="120" height="120" alt="Splash" src="https://github.com/user-attachments/assets/c2e57b85-af2d-4747-b423-cef063575845" /> | <img width="120" height="120" alt="SignUp" src="https://github.com/user-attachments/assets/a8ffce2e-697d-43ba-8d34-c94983a020b6" /> | <img width="120" height="120" alt="VerifyEmail" src="https://github.com/user-attachments/assets/5463ae49-b8a8-4c7b-846f-349621a6cbfc" /> | <img width="120" height="120" alt="Launch" src="https://github.com/user-attachments/assets/484b2666-745d-4e85-b745-9ae638541109" /> |
 
 ---
 
@@ -66,19 +66,19 @@ Whether you're documenting ideas, maintaining technical notes with code snippets
 
 | Notes List | Rich Text Editor |
 |------------|------------------|
-| <img width="1080" height="2400" alt="Home" src="https://github.com/user-attachments/assets/d8bf33d6-cee6-41cd-97ec-0168f0b6415c" /> | <img width="1080" height="2400" alt="View Note Formatting Guide" src="https://github.com/user-attachments/assets/3c559668-60f8-4a9a-ac2f-719c046c5a61" /> |
+| <img width="120" height="120" alt="Home" src="https://github.com/user-attachments/assets/d8bf33d6-cee6-41cd-97ec-0168f0b6415c" /> | <img width="120" height="120" alt="View Note Formatting Guide" src="https://github.com/user-attachments/assets/3c559668-60f8-4a9a-ac2f-719c046c5a61" /> |
 
 | Formatting Guide | Code Blocks |
 |------------------|-------------|
-| <img width="1080" height="2400" alt="Create Note Formatting Guide" src="https://github.com/user-attachments/assets/a41ee5fa-6ac2-4ac2-90ef-8da88084e08b" /> | <img width="1080" height="2400" alt="View Note Code Block" src="https://github.com/user-attachments/assets/70935b56-78d3-487a-82fb-83a8deb62a90" /> |
+| <img width="120" height="120" alt="Create Note Formatting Guide" src="https://github.com/user-attachments/assets/a41ee5fa-6ac2-4ac2-90ef-8da88084e08b" /> | <img width="120" height="120" alt="View Note Code Block" src="https://github.com/user-attachments/assets/70935b56-78d3-487a-82fb-83a8deb62a90" /> |
 
 | Task Status | Edit Note |
 |-------------|-----------------|
-| <img width="1080" height="2400" alt="Starred Notes" src="https://github.com/user-attachments/assets/7dbb266e-b300-49fb-aed4-464a921f9007" /> | <img width="1080" height="2400" alt="Edit Note" src="https://github.com/user-attachments/assets/3009ae24-e2b5-4842-8e2e-b6010c41abab" /> |
+| <img width="120" height="120" alt="Starred Notes" src="https://github.com/user-attachments/assets/7dbb266e-b300-49fb-aed4-464a921f9007" /> | <img width="120" height="120" alt="Edit Note" src="https://github.com/user-attachments/assets/3009ae24-e2b5-4842-8e2e-b6010c41abab" /> |
 
 | No Internet | Export Excel |
 |-------------|-----------------|
-| <img width="1080" height="2400" alt="No Internet" src="https://github.com/user-attachments/assets/7981a6f2-404c-47a7-85f8-a71b6b3f180e" />| <img width="1080" height="2400" alt="ExportExcel" src="https://github.com/user-attachments/assets/aa78d3b1-8801-4ece-8ccd-b5dd306b7b8c" /> |
+| <img width="120" height="120" alt="No Internet" src="https://github.com/user-attachments/assets/7981a6f2-404c-47a7-85f8-a71b6b3f180e" />| <img width="120" height="120" alt="ExportExcel" src="https://github.com/user-attachments/assets/aa78d3b1-8801-4ece-8ccd-b5dd306b7b8c" /> |
 
 
 ---
@@ -87,7 +87,7 @@ Whether you're documenting ideas, maintaining technical notes with code snippets
 
 | Profile | About | Privacy Policy | Contact |
 |---------|--------|----------------|---------|
-| <img width="1080" height="2400" alt="More" src="https://github.com/user-attachments/assets/4ae3b618-b3db-4785-9c7b-e1e36e3cebf0" /> | <img width="1080" height="2400" alt="About" src="https://github.com/user-attachments/assets/e28a36f2-986b-468d-ae05-13143bc4f34b" /> | <img width="1080" height="2400" alt="Privacy Policy" src="https://github.com/user-attachments/assets/76e2fea4-bd83-4de1-8a6b-58c3429aa691" /> | <img width="1080" height="2400" alt="Contact Me" src="https://github.com/user-attachments/assets/3b1f3c0e-f362-4702-a9a0-9f338258f879" /> |
+| <img width="120" height="120" alt="More" src="https://github.com/user-attachments/assets/4ae3b618-b3db-4785-9c7b-e1e36e3cebf0" /> | <img width="120" height="120" alt="About" src="https://github.com/user-attachments/assets/e28a36f2-986b-468d-ae05-13143bc4f34b" /> | <img width="120" height="120" alt="Privacy Policy" src="https://github.com/user-attachments/assets/76e2fea4-bd83-4de1-8a6b-58c3429aa691" /> | <img width="120" height="120" alt="Contact Me" src="https://github.com/user-attachments/assets/3b1f3c0e-f362-4702-a9a0-9f338258f879" /> |
 
 ---
 
