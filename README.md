@@ -1,10 +1,9 @@
-<div align="center">
+
 
 <img src="src/assets/Notes.svg" alt="NotesApp Logo" width="120"/>
 
 # NotesApp
 
-<div align="center">
 
 **A production-ready cross-platform note-taking application built with React Native, FastAPI, and PostgreSQL.**
 
