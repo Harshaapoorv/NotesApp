@@ -67,7 +67,7 @@ You can download and install the latest Android APK from the GitHub Releases pag
 > - Android 8.0 (API 26) or later
 > - Internet connection for authentication and cloud synchronization
 
-> **Note**
+> **Note: **
 > This APK is intended for demonstration purposes and showcases the latest stable build of NotesApp.
 
 ---
