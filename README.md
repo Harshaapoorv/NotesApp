@@ -59,9 +59,11 @@ Experience NotesApp without setting up the development environment.
 
 > **Android APK**
 >
-> 📥 Download the latest APK:
->
-> **[APK](https://drive.google.com/file/d/156IJTUGU9DmAqLCqRPfJvK8wy4Hiz6Rf/view?usp=drive_link)**
+> ## 📱 Download APK
+
+You can download and install the latest Android APK from the GitHub Releases page.
+
+👉 https://github.com/Harshaapoorv/NotesApp/releases/latest
 
 > **Requirements**
 > - Android 8.0 (API 26) or later
