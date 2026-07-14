@@ -18,6 +18,7 @@ Create rich notes • Manage tasks • Organize ideas • Export data • Stay p
 ![JWT](https://img.shields.io/badge/JWT-Authentication-000000?style=for-the-badge&logo=jsonwebtokens)
 ![Google OAuth](https://img.shields.io/badge/Google-OAuth-4285F4?style=for-the-badge&logo=google)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+[![Download APK](https://img.shields.io/badge/Download-Android%20APK-34A853?style=for-the-badge&logo=android)](https://drive.google.com/file/d/12neHiPEVg71Ht4DnA1b_iwnHzqRcJXUh/view?usp=drive_link)
 
 </div>
 
@@ -49,6 +50,25 @@ Whether you're documenting ideas, maintaining technical notes with code snippets
 - 🔒 JWT-based Authentication with Session Persistence
 - 📱 Cross-Platform Mobile Application *(Android & iOS)*
 - ⚡ FastAPI REST Backend with PostgreSQL
+
+---
+
+# 📲 Try the App
+
+Experience NotesApp without setting up the development environment.
+
+> **Android APK**
+>
+> 📥 Download the latest APK:
+>
+> **[APK](https://drive.google.com/file/d/12neHiPEVg71Ht4DnA1b_iwnHzqRcJXUh/view?usp=drive_link)**
+
+> **Requirements**
+> - Android 8.0 (API 26) or later
+> - Internet connection for authentication and cloud synchronization
+
+> **Note**
+> This APK is intended for demonstration purposes and showcases the latest stable build of NotesApp.
 
 ---
 
