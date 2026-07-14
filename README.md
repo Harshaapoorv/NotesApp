@@ -1,4 +1,8 @@
-# 📝 NotesApp
+<div align="center">
+
+<img src="src/assets/Notes.svg" alt="NotesApp Logo" width="120"/>
+
+# NotesApp
 
 <div align="center">
 
@@ -851,7 +855,7 @@ https://github.com/Harshaapoorv
 
 ### LinkedIn
 
-https://www.linkedin.com/in/harsha-apoorv/
+https://www.linkedin.com/in/harshaapoorv/
 
 ---
 
