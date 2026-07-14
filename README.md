@@ -11,7 +11,7 @@ Create rich notes • Manage tasks • Organize ideas • Export data • Stay p
 
 ---
 
-[![Download APK](https://img.shields.io/badge/Download-Android%20APK-34A853?style=for-the-badge&logo=android)](https://drive.google.com/file/d/156IJTUGU9DmAqLCqRPfJvK8wy4Hiz6Rf/view?usp=drive_link)
+[![Download APK](https://img.shields.io/badge/Download-Android%20APK-34A853?style=for-the-badge&logo=android)](https://github.com/Harshaapoorv/NotesApp/releases/tag/v1.0.0)
 ![React Native](https://img.shields.io/badge/React%20Native-0.8x-61DAFB?style=for-the-badge&logo=react)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.11x-009688?style=for-the-badge&logo=fastapi)
 ![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python)
@@ -57,13 +57,11 @@ Whether you're documenting ideas, maintaining technical notes with code snippets
 
 Experience NotesApp without setting up the development environment.
 
-> **Android APK**
->
 > ## 📱 Download APK
 
 You can download and install the latest Android APK from the GitHub Releases page.
 
-👉 https://github.com/Harshaapoorv/NotesApp/releases/latest
+👉 [Github Release](https://github.com/Harshaapoorv/NotesApp/releases/tag/v1.0.0)
 
 > **Requirements**
 > - Android 8.0 (API 26) or later
