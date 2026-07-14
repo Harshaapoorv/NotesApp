@@ -82,3 +82,20 @@ yarn-error.log
 !.yarn/versions
 
 *.code-workspace
+# Environment
+.env
+.env.*
+
+# Keep template
+!.env.example
+
+# Android signing keys
+*.keystore
+*.jks
+
+# Firebase Admin SDK
+serviceAccountKey.json
+
+# Build outputs
+android/app/build/
+android/build/
