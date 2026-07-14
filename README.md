@@ -574,3 +574,309 @@ Key learnings include:
 - Building maintainable software through modular design
 - Preparing applications for cloud deployment
 - Thinking beyond features to prioritize user experience
+
+---
+
+# 🚀 Getting Started
+
+Follow the steps below to run NotesApp locally.
+
+> **Prerequisites**
+>
+> Make sure you have the following installed:
+>
+> - Node.js (v18 or later)
+> - npm
+> - React Native CLI
+> - Android Studio
+> - Xcode (macOS only)
+> - CocoaPods (iOS)
+> - Git
+
+---
+
+# 📥 Clone Repository
+
+```bash
+git clone https://github.com/Harshaapoorv/NotesApp.git
+
+cd NotesApp
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+---
+
+# ⚙ Environment Variables
+
+Create a `.env` file in the project root.
+
+```env
+BASE_URL=http://localhost:8000
+```
+
+For production:
+
+```env
+BASE_URL=https://your-production-api.com
+```
+
+---
+
+# 🤖 Running on Android
+
+Start Metro
+
+```bash
+npm start
+```
+
+Open a new terminal
+
+```bash
+npx react-native run-android
+```
+
+---
+
+# 🍎 Running on iOS
+
+Install CocoaPods
+
+```bash
+cd ios
+
+pod install
+
+cd ..
+```
+
+Start Metro
+
+```bash
+npm start
+```
+
+Open another terminal
+
+```bash
+npx react-native run-ios
+```
+
+---
+
+# 🔗 Backend
+
+NotesApp communicates with the Notes Backend built using FastAPI.
+
+Backend repository:
+
+```text
+https://github.com/Harshaapoorv/notes-backend
+```
+
+Start the backend before launching the mobile application.
+
+Once the backend is running, update the `BASE_URL` inside your `.env` file to point to your API.
+
+---
+
+# 🔑 Google Sign-In Configuration
+
+Google authentication requires platform-specific configuration.
+
+## Android
+
+- Create a Firebase project.
+- Register the Android application.
+- Configure SHA-1 and SHA-256 fingerprints.
+- Download `google-services.json`.
+- Place it inside:
+
+```
+android/app/
+```
+
+---
+
+## iOS
+
+- Register the iOS application.
+- Download `GoogleService-Info.plist`.
+- Add it to the Xcode project.
+- Configure URL Types using the generated client ID.
+
+Refer to the official Google Sign-In documentation for detailed platform setup.
+
+---
+
+# 📦 Building Release
+
+## Android APK
+
+```bash
+cd android
+
+./gradlew assembleRelease
+```
+
+Generated APK
+
+```
+android/app/build/outputs/apk/release/
+```
+
+---
+
+## Android App Bundle
+
+```bash
+./gradlew bundleRelease
+```
+
+Generated AAB
+
+```
+android/app/build/outputs/bundle/release/
+```
+
+---
+
+## iOS
+
+Open the workspace in Xcode
+
+```
+ios/NotesApp.xcworkspace
+```
+
+Archive
+
+```
+Product
+→ Archive
+```
+
+Export the IPA for App Store deployment.
+
+---
+
+# 🛣 Roadmap
+
+## ✅ Version 1.0
+
+- Email Authentication
+- Google Sign-In
+- OTP Verification
+- Password Recovery
+- Rich Text Formatting
+- Formatting Guide
+- Code Blocks
+- Starred Notes
+- Search Notes
+- Status Tracking
+- Excel Export
+- JWT Authentication
+- Session Persistence
+- User Profiles
+- About NotesApp
+- Privacy Policy
+- Contact Developer
+- Offline Detection
+- Cloud Synchronization
+
+---
+
+## 🚧 Version 1.1
+
+- Change Password
+- Change Email
+- Profile Personalization
+- Sort Notes
+- Filter Notes
+- User Settings
+
+---
+
+## 🚀 Version 2.0
+
+- AI Workspace Assistant
+- Smart Note Summarization
+- AI Generated Notes
+- Syntax Highlighting
+- Smart Search
+- Offline Draft Synchronization
+- Push Notifications
+- Reminder System
+- Theme Customization
+- Import Notes from Excel
+
+---
+
+# 🤝 Contributing
+
+Contributions, ideas, and feature suggestions are always welcome.
+
+If you would like to improve NotesApp:
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Push your branch.
+5. Open a Pull Request.
+
+For significant feature proposals, please open an issue first to discuss the idea.
+
+---
+
+# 👨‍💻 Developer
+
+## Harsha Apoorv
+
+Full Stack Mobile Application Developer
+
+Passionate about building scalable mobile applications, backend systems, and AI-powered productivity tools.
+
+### Portfolio
+
+https://www.harshaapoorv.com
+
+### GitHub
+
+https://github.com/Harshaapoorv
+
+### LinkedIn
+
+https://www.linkedin.com/in/harsha-apoorv/
+
+---
+
+# 🙏 Acknowledgements
+
+Special thanks to the open-source community and the creators of the technologies that made this project possible.
+
+- React Native
+- FastAPI
+- PostgreSQL
+- SQLAlchemy
+- Redux Toolkit
+- RTK Query
+- React Navigation
+- Google Sign-In
+- Resend
+- Neon
+- Render
+
+---
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
+Feel free to use the project for learning, experimentation, and personal development.
+
+If you found this repository helpful, consider giving it a ⭐ on GitHub.
