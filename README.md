@@ -1014,6 +1014,7 @@ Specializing in:
 
 ---
 
+<a id="license"></a>
 ## 📄 License
 
 This project is licensed under the MIT License.
