@@ -42,8 +42,8 @@ This repository contains the **React Native mobile application** for NotesApp.
 
 | Repository | Technology | Purpose |
 |------------|------------|---------|
-| **NotesApp** | React Native | Cross-platform mobile application |
-| **notes-backend** | FastAPI | Authentication, Notes APIs, User Management, App Configuration |
+| **[NotesApp](https://github.com/Harshaapoorv/NotesApp)** | React Native | Cross-platform mobile application |
+| **[notes-backend](https://github.com/Harshaapoorv/notes-backend)** | FastAPI | Authentication, Notes APIs, User Management, App Configuration |
 
 ---
 
