@@ -19,6 +19,8 @@ Create rich notes • Manage tasks • Organize ideas • Export data • Stay p
 ![JWT](https://img.shields.io/badge/JWT-Authentication-000000?style=for-the-badge&logo=jsonwebtokens)
 ![Google OAuth](https://img.shields.io/badge/Google-OAuth-4285F4?style=for-the-badge&logo=google)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+[![Frontend](https://img.shields.io/badge/Frontend-React_Native-61DAFB?style=for-the-badge&logo=react)](https://github.com/Harshaapoorv/NotesApp)
+[![Backend](https://img.shields.io/badge/FastAPI-Production-009688?style=for-the-badge&logo=fastapi)](https://github.com/Harshaapoorv/notes-backend)
 
 </div>
 
@@ -33,6 +35,15 @@ Built using **React Native**, **FastAPI**, and **PostgreSQL**, the application c
 Unlike many note-taking applications that primarily demonstrate CRUD operations, NotesApp was engineered with production-oriented architecture in mind. The project emphasizes modular design, reusable components, secure authentication, clean API design, and extensibility for future AI-powered productivity features.
 
 Whether you're documenting ideas, maintaining technical notes with code snippets, tracking personal tasks, or organizing day-to-day work, NotesApp provides a clean and distraction-free experience while ensuring your data remains secure and accessible across sessions.
+
+### 🔗 Part of the NotesApp Ecosystem
+
+This repository contains the backend services for **NotesApp**.
+
+| Repository | Technology | Purpose |
+|------------|------------|---------|
+| **[NotesApp](https://github.com/Harshaapoorv/NotesApp)** | React Native | Cross-platform mobile application |
+| **[notes-backend](https://github.com/Harshaapoorv/notes-backend)** | FastAPI | Authentication, Notes APIs, User Management, App Configuration |
 
 ---
 
