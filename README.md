@@ -537,7 +537,7 @@ This feature enables users to create backups or analyze their notes using spread
 
 <a id="connectivity--session-management"></a>
 <details>
-<summary><strong>🌐 Connectivity & Session Management></summary>
+<summary><strong>🌐 Connectivity & Session Management</strong></summary>
 
 ### Internet Connectivity
 
@@ -571,7 +571,7 @@ This allows users to continue working without repeatedly signing in while mainta
 
 <a id="user-experience"></a>
 <details>
-<summary><strong>📱 User Experience></summary>
+<summary><strong>📱 User Experience</strong></summary>
 
 A significant emphasis was placed on creating an intuitive and distraction-free user experience.
 
@@ -622,7 +622,7 @@ Application content such as the About page, Privacy Policy, and contact informat
 
 <a id="engineering-challenges-solved"></a>
 <details>
-<summary><strong>💡 Engineering Challenges Solved></summary>
+<summary><strong>💡 Engineering Challenges Solved</strong></summary>
 
 Throughout development, several engineering challenges were addressed to improve maintainability, scalability, and user experience.
 
@@ -665,7 +665,7 @@ The project architecture was intentionally designed to accommodate upcoming feat
 
 <a id="repository-highlights"></a>
 <details>
-<summary><strong>🌟 Repository Highlights></summary>
+<summary><strong>🌟 Repository Highlights</strong></summary>
 
 This repository demonstrates practical experience in:
 
@@ -685,7 +685,7 @@ This repository demonstrates practical experience in:
 
 <a id="lessons-learned"></a>
 <details>
-<summary><strong>🎯 Lessons Learned></summary>
+<summary><strong>🎯 Lessons Learned</strong></summary>
 
 Building NotesApp provided practical experience across the complete software development lifecycle—from planning and architecture to implementation, debugging, optimization, and deployment.
 
@@ -707,7 +707,7 @@ Key learnings include:
 
 <a id="getting-started"></a>
 <details>
-<summary><strong>🚀 Getting Started></summary>
+<summary><strong>🚀 Getting Started</strong></summary>
 
 Follow the steps below to run NotesApp locally.
 
@@ -847,7 +847,7 @@ Refer to the official Google Sign-In documentation for detailed platform setup.
 
 <a id="building-release"></a>
 <details>
-<summary><strong>📦 Building Release></summary>
+<summary><strong>📦 Building Release</strong></summary>
 
 ### Android APK
 
@@ -901,7 +901,7 @@ Export the IPA for App Store deployment.
 
 <a id="roadmap"></a>
 <details>
-<summary><strong>🛣 Roadmap></summary>
+<summary><strong>🛣 Roadmap</strong></summary>
 
 ## ✅ Version 1.0
 
@@ -956,7 +956,7 @@ Export the IPA for App Store deployment.
 
 <a id="contributing"></a>
 <details>
-<summary><strong>🤝 Contributing></summary>
+<summary><strong>🤝 Contributing</strong></summary>
 
 Contributions, ideas, and feature suggestions are always welcome.
 
@@ -975,7 +975,7 @@ For significant feature proposals, please open an issue first to discuss the ide
 
 <a id="acknowledgements"></a>
 <details>
-<summary><strong>🙏 Acknowledgements></summary>
+<summary><strong>🙏 Acknowledgements</strong></summary>
 
 Special thanks to the open-source community and the creators of the technologies that made this project possible.
 
