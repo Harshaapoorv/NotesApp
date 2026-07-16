@@ -621,8 +621,7 @@ Application content such as the About page, Privacy Policy, and contact informat
 ---
 
 <a id="engineering-challenges-solved"></a>
-<details>
-<summary><strong>💡 Engineering Challenges Solved</strong></summary>
+## 💡 Engineering Challenges Solved
 
 Throughout development, several engineering challenges were addressed to improve maintainability, scalability, and user experience.
 
@@ -659,13 +658,11 @@ Designed reusable screens, shared components, common navigation stacks, centrali
 ### Extensibility
 
 The project architecture was intentionally designed to accommodate upcoming features such as AI assistance, syntax highlighting, reminders, offline synchronization, profile management, and additional productivity tools without major architectural refactoring.
-</details>
 
 ---
 
 <a id="repository-highlights"></a>
-<details>
-<summary><strong>🌟 Repository Highlights</strong></summary>
+## 🌟 Repository Highlights
 
 This repository demonstrates practical experience in:
 
@@ -679,7 +676,6 @@ This repository demonstrates practical experience in:
 - Cloud deployment
 - React Native architecture
 - Production-ready software engineering
-</details>
 
 ---
 
