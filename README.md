@@ -70,8 +70,8 @@ This repository contains the **React Native mobile application** for NotesApp.
 - 📦 [Building Release](#building-release)
 - 🛣️ [Roadmap](#roadmap)
 - 🤝 [Contributing](#contributing)
-- 👨‍💻 [Developer](#developer)
 - 🙏 [Acknowledgements](#acknowledgements)
+- 👨‍💻 [Developer](#developer)
 - 📄 [License](#license)
 
 ---
