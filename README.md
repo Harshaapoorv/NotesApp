@@ -36,17 +36,47 @@ Unlike many note-taking applications that primarily demonstrate CRUD operations,
 
 Whether you're documenting ideas, maintaining technical notes with code snippets, tracking personal tasks, or organizing day-to-day work, NotesApp provides a clean and distraction-free experience while ensuring your data remains secure and accessible across sessions.
 
-### 🔗 Part of the NotesApp Ecosystem
+## 🔗 Part of the NotesApp Ecosystem
 
-This repository contains the backend services for **NotesApp**.
+This repository contains the **React Native mobile application** for NotesApp.
 
 | Repository | Technology | Purpose |
 |------------|------------|---------|
-| **[NotesApp](https://github.com/Harshaapoorv/NotesApp)** | React Native | Cross-platform mobile application |
-| **[notes-backend](https://github.com/Harshaapoorv/notes-backend)** | FastAPI | Authentication, Notes APIs, User Management, App Configuration |
+| **NotesApp** | React Native | Cross-platform mobile application |
+| **notes-backend** | FastAPI | Authentication, Notes APIs, User Management, App Configuration |
 
 ---
 
+## 📚 Table of Contents
+
+- ✨ [Highlights](#highlights)
+- 📲 [Try the App](#try-the-app)
+- 📸 [Screenshots](#screenshots)
+- 🚀 [Why NotesApp Stands Out](#why-notesapp-stands-out)
+- 🏗️ [Architecture](#architecture)
+- ⚙️ [Technology Stack](#technology-stack)
+- 📂 [Project Structure](#project-structure)
+- 🔐 [Authentication & Security](#authentication--security)
+- ✍️ [Rich Text Formatting System](#rich-text-formatting-system)
+- ⚡ [State Management](#state-management)
+- 🚀 [Performance Optimizations](#performance-optimizations)
+- 📤 [Excel Export](#excel-export)
+- 🌐 [Connectivity & Session Management](#connectivity--session-management)
+- 📱 [User Experience](#user-experience)
+- 💡 [Engineering Challenges Solved](#engineering-challenges-solved)
+- 🌟 [Repository Highlights](#repository-highlights)
+- 🎯 [Lessons Learned](#lessons-learned)
+- 🚀 [Getting Started](#getting-started)
+- 📦 [Building Release](#building-release)
+- 🛣️ [Roadmap](#roadmap)
+- 🤝 [Contributing](#contributing)
+- 👨‍💻 [Developer](#developer)
+- 🙏 [Acknowledgements](#acknowledgements)
+- 📄 [License](#license)
+
+---
+
+<a id="highlights"></a>
 ## ✨ Highlights
 
 - 🔐 Secure Email & Google Authentication
@@ -64,11 +94,12 @@ This repository contains the backend services for **NotesApp**.
 
 ---
 
-# 📲 Try the App
+<a id="try-the-app"></a>
+## 📲 Try the App
 
 Experience NotesApp without setting up the development environment.
 
-> ## 📱 Download APK
+> ### 📱 Download APK
 
 You can download and install the latest Android APK from the GitHub Releases page.
 
@@ -83,7 +114,8 @@ You can download and install the latest Android APK from the GitHub Releases pag
 
 ---
 
-# 📸 Screenshots
+<a id="screenshots"></a>
+## 📸 Screenshots
 
 > **Authentication**
 
@@ -122,6 +154,7 @@ You can download and install the latest Android APK from the GitHub Releases pag
 
 ---
 
+<a id="why-notesapp-stands-out"></a>
 ## 🚀 Why NotesApp Stands Out
 
 NotesApp goes beyond a traditional note-taking application by combining a modern mobile experience with production-grade backend architecture.
@@ -139,7 +172,8 @@ Rather than being developed solely as a portfolio CRUD application, NotesApp was
 
 ---
 
-# 🏗 Architecture
+<a id="architecture"></a>
+## 🏗 Architecture
 
 NotesApp follows a modular full-stack architecture that separates concerns across the mobile application, backend services, and database layer. The project was designed with scalability, maintainability, and extensibility in mind, making it easy to introduce new features without major architectural changes.
 
@@ -176,9 +210,10 @@ The architecture intentionally keeps the presentation layer, business logic, and
 
 ---
 
-# ⚙ Technology Stack
+<a id="technology-stack"></a>
+## ⚙️ Technology Stack
 
-## 📱 Mobile Application
+### 📱 Mobile Application
 
 | Technology | Purpose |
 |------------|---------|
@@ -197,7 +232,7 @@ The architecture intentionally keeps the presentation layer, business logic, and
 
 ---
 
-## ⚡ Backend
+### ⚡ Backend
 
 | Technology | Purpose |
 |------------|---------|
@@ -213,7 +248,7 @@ The architecture intentionally keeps the presentation layer, business logic, and
 
 ---
 
-## ☁ Cloud Infrastructure
+### ☁ Cloud Infrastructure
 
 | Technology | Purpose |
 |------------|---------|
@@ -223,7 +258,9 @@ The architecture intentionally keeps the presentation layer, business logic, and
 
 ---
 
-# 📂 Project Structure
+<a id="project-structure"></a>
+<details>
+<summary><strong>📂 Project Structure</strong></summary>
 
 ```
 NotesApp
@@ -269,14 +306,17 @@ NotesApp
 ```
 
 The project adopts a feature-oriented folder structure, separating authentication, notes, common screens, shared utilities, navigation stacks, reusable UI components, and API services into independent modules.
+</details>
 
 ---
 
-# 🔐 Authentication & Security
+<a id="authentication--security"></a>
+<details>
+<summary><strong>🔐 Authentication & Security</strong></summary>
 
 NotesApp implements a production-oriented authentication system designed around secure, reusable workflows.
 
-## Authentication Methods
+### Authentication Methods
 
 - Email & Password Authentication
 - Google Sign-In
@@ -285,7 +325,7 @@ NotesApp implements a production-oriented authentication system designed around 
 
 ---
 
-## Email Authentication Flow
+### Email Authentication Flow
 
 ```text
 User Signup
@@ -314,7 +354,7 @@ Authenticated Session
 
 ---
 
-## Security Features
+### Security Features
 
 - Password hashing using Bcrypt
 - JWT-based authentication
@@ -326,14 +366,17 @@ Authenticated Session
 - Secure Google OAuth verification
 - User-specific authorization
 - Environment-based configuration
+</details>
 
 ---
 
-# ✍ Rich Text Formatting System
+<a id="rich-text-formatting-system"></a>
+<details>
+<summary><strong>✍️ Rich Text Formatting System</strong></summary>
 
 Unlike traditional note applications that provide plain text editing, NotesApp includes a custom markdown-inspired rich text system designed specifically for mobile devices.
 
-## Supported Formatting
+### Supported Formatting
 
 | Feature | Supported |
 |----------|-----------|
@@ -351,7 +394,7 @@ Unlike traditional note applications that provide plain text editing, NotesApp i
 
 ---
 
-## Formatting Guide
+### Formatting Guide
 
 One of the key usability features of NotesApp is the built-in **Formatting Guide**.
 
@@ -368,7 +411,7 @@ This design improves feature discoverability while keeping the editor clean and 
 
 ---
 
-## Code Block Support
+### Code Block Support
 
 NotesApp supports multi-line code blocks with optional language identifiers, making it suitable for developers, students, and technical note-taking.
 
@@ -385,14 +428,17 @@ Examples include:
 - CSS
 
 with future support planned for syntax highlighting.
+</details>
 
 ---
 
-# ⚡ State Management
+<a id="state-management"></a>
+<details>
+<summary><strong>⚡ State Management</strong></summary>
 
 NotesApp uses **Redux Toolkit** and **RTK Query** to provide predictable state management, efficient API communication, and automatic cache synchronization.
 
-## Redux Toolkit
+### Redux Toolkit
 
 Global application state is centralized using Redux Toolkit, making authentication, session management, and UI state easy to manage across the application.
 
@@ -407,7 +453,7 @@ State currently managed includes:
 
 ---
 
-## RTK Query
+### RTK Query
 
 RTK Query powers all server communication and provides:
 
@@ -420,14 +466,17 @@ RTK Query powers all server communication and provides:
 - Retry after successful authentication
 
 The application minimizes unnecessary network requests while keeping the UI synchronized with backend data.
+</details>
 
 ---
 
-# 🚀 Performance Optimizations
+<a id="performance-optimizations"></a>
+<details>
+<summary><strong>🚀 Performance Optimizations</strong></summary>
 
 Performance was considered throughout the development process to ensure a smooth experience as the application scales.
 
-## Rendering Optimizations
+### Rendering Optimizations
 
 - React.memo for reusable components
 - useCallback for stable function references
@@ -438,7 +487,7 @@ Performance was considered throughout the development process to ensure a smooth
 
 ---
 
-## API Optimizations
+### API Optimizations
 
 - RTK Query caching
 - Optimistic UI updates
@@ -449,7 +498,7 @@ Performance was considered throughout the development process to ensure a smooth
 
 ---
 
-## User Experience Optimizations
+### User Experience Optimizations
 
 - Skeleton loading states
 - Non-blocking API interactions
@@ -457,10 +506,13 @@ Performance was considered throughout the development process to ensure a smooth
 - Consistent error handling
 - Session persistence
 - Responsive layouts
+</details>
 
 ---
 
-# 📤 Excel Export
+<a id="excel-export"></a>
+<details>
+<summary><strong>📤 Excel Export</strong></summary>
 
 NotesApp allows users to export all their notes into a professionally formatted Excel workbook.
 
@@ -479,12 +531,15 @@ Generated workbooks include:
 The generated workbook can be shared directly using the device's native sharing capabilities.
 
 This feature enables users to create backups or analyze their notes using spreadsheet software such as Microsoft Excel or Google Sheets.
+</details>
 
 ---
 
-# 🌐 Connectivity & Session Management
+<a id="connectivity--session-management"></a>
+<details>
+<summary><strong>🌐 Connectivity & Session Management></summary>
 
-## Internet Connectivity
+### Internet Connectivity
 
 The application continuously monitors network connectivity using **React Native NetInfo**.
 
@@ -496,7 +551,7 @@ When internet connectivity is unavailable:
 
 ---
 
-## Session Persistence
+### Session Persistence
 
 Users remain signed in across application launches through secure token storage.
 
@@ -510,14 +565,17 @@ The authentication flow supports:
 - Google account switching
 
 This allows users to continue working without repeatedly signing in while maintaining secure authentication practices.
+</details>
 
 ---
 
-# 📱 User Experience
+<a id="user-experience"></a>
+<details>
+<summary><strong>📱 User Experience></summary>
 
 A significant emphasis was placed on creating an intuitive and distraction-free user experience.
 
-## Authentication Experience
+### Authentication Experience
 
 - Clean onboarding flow
 - Email verification
@@ -529,7 +587,7 @@ A significant emphasis was placed on creating an intuitive and distraction-free 
 
 ---
 
-## Notes Experience
+### Notes Experience
 
 - Fast note creation
 - Rich text editing
@@ -542,7 +600,7 @@ A significant emphasis was placed on creating an intuitive and distraction-free 
 
 ---
 
-## More
+### More
 
 The More section centralizes account and application information.
 
@@ -558,50 +616,56 @@ Users can:
 - View current application version
 
 Application content such as the About page, Privacy Policy, and contact information is dynamically fetched from the backend, allowing updates without requiring a new mobile release.
+</details>
 
 ---
 
-# 💡 Engineering Challenges Solved
+<a id="engineering-challenges-solved"></a>
+<details>
+<summary><strong>💡 Engineering Challenges Solved></summary>
 
 Throughout development, several engineering challenges were addressed to improve maintainability, scalability, and user experience.
 
-## Authentication Architecture
+### Authentication Architecture
 
 Designed reusable authentication flows supporting both Email/Password and Google Sign-In while sharing common session management logic.
 
 ---
 
-## Rich Text Rendering
+### Rich Text Rendering
 
 Implemented a markdown-inspired rendering system capable of displaying formatted content consistently across Android and iOS while remaining lightweight and extensible.
 
 ---
 
-## Formatting Discoverability
+### Formatting Discoverability
 
 Rather than expecting users to remember markdown syntax, a dedicated Formatting Guide was integrated directly into the application, significantly improving feature discoverability.
 
 ---
 
-## Secure Session Management
+### Secure Session Management
 
 Implemented JWT authentication with automatic refresh token handling, secure credential storage, and graceful session expiration.
 
 ---
 
-## Modular Architecture
+### Modular Architecture
 
 Designed reusable screens, shared components, common navigation stacks, centralized API services, and feature-based organization to simplify future development.
 
 ---
 
-## Extensibility
+### Extensibility
 
 The project architecture was intentionally designed to accommodate upcoming features such as AI assistance, syntax highlighting, reminders, offline synchronization, profile management, and additional productivity tools without major architectural refactoring.
+</details>
 
 ---
 
-# 🌟 Repository Highlights
+<a id="repository-highlights"></a>
+<details>
+<summary><strong>🌟 Repository Highlights></summary>
 
 This repository demonstrates practical experience in:
 
@@ -615,10 +679,13 @@ This repository demonstrates practical experience in:
 - Cloud deployment
 - React Native architecture
 - Production-ready software engineering
+</details>
 
 ---
 
-# 🎯 Lessons Learned
+<a id="lessons-learned"></a>
+<details>
+<summary><strong>🎯 Lessons Learned></summary>
 
 Building NotesApp provided practical experience across the complete software development lifecycle—from planning and architecture to implementation, debugging, optimization, and deployment.
 
@@ -634,10 +701,13 @@ Key learnings include:
 - Building maintainable software through modular design
 - Preparing applications for cloud deployment
 - Thinking beyond features to prioritize user experience
+</details>
 
 ---
 
-# 🚀 Getting Started
+<a id="getting-started"></a>
+<details>
+<summary><strong>🚀 Getting Started></summary>
 
 Follow the steps below to run NotesApp locally.
 
@@ -655,7 +725,7 @@ Follow the steps below to run NotesApp locally.
 
 ---
 
-# 📥 Clone Repository
+## 📥 Clone Repository
 
 ```bash
 git clone https://github.com/Harshaapoorv/NotesApp.git
@@ -671,7 +741,7 @@ npm install
 
 ---
 
-# ⚙ Environment Variables
+## ⚙ Environment Variables
 
 Create a `.env` file in the project root.
 
@@ -687,7 +757,7 @@ BASE_URL=https://your-production-api.com
 
 ---
 
-# 🤖 Running on Android
+## 🤖 Running on Android
 
 Start Metro
 
@@ -703,7 +773,7 @@ npx react-native run-android
 
 ---
 
-# 🍎 Running on iOS
+## 🍎 Running on iOS
 
 Install CocoaPods
 
@@ -729,7 +799,7 @@ npx react-native run-ios
 
 ---
 
-# 🔗 Backend
+## 🔗 Backend
 
 NotesApp communicates with the Notes Backend built using FastAPI.
 
@@ -745,11 +815,11 @@ Once the backend is running, update the `BASE_URL` inside your `.env` file to po
 
 ---
 
-# 🔑 Google Sign-In Configuration
+## 🔑 Google Sign-In Configuration
 
 Google authentication requires platform-specific configuration.
 
-## Android
+### Android
 
 - Create a Firebase project.
 - Register the Android application.
@@ -763,7 +833,7 @@ android/app/
 
 ---
 
-## iOS
+### iOS
 
 - Register the iOS application.
 - Download `GoogleService-Info.plist`.
@@ -771,12 +841,15 @@ android/app/
 - Configure URL Types using the generated client ID.
 
 Refer to the official Google Sign-In documentation for detailed platform setup.
+</details>
 
 ---
 
-# 📦 Building Release
+<a id="building-release"></a>
+<details>
+<summary><strong>📦 Building Release></summary>
 
-## Android APK
+### Android APK
 
 ```bash
 cd android
@@ -792,7 +865,7 @@ android/app/build/outputs/apk/release/
 
 ---
 
-## Android App Bundle
+### Android App Bundle
 
 ```bash
 ./gradlew bundleRelease
@@ -806,7 +879,7 @@ android/app/build/outputs/bundle/release/
 
 ---
 
-## iOS
+### iOS
 
 Open the workspace in Xcode
 
@@ -822,10 +895,13 @@ Product
 ```
 
 Export the IPA for App Store deployment.
+</details>
 
 ---
 
-# 🛣 Roadmap
+<a id="roadmap"></a>
+<details>
+<summary><strong>🛣 Roadmap></summary>
 
 ## ✅ Version 1.0
 
@@ -874,10 +950,13 @@ Export the IPA for App Store deployment.
 - Reminder System
 - Theme Customization
 - Import Notes from Excel
+</details>
 
 ---
 
-# 🤝 Contributing
+<a id="contributing"></a>
+<details>
+<summary><strong>🤝 Contributing></summary>
 
 Contributions, ideas, and feature suggestions are always welcome.
 
@@ -890,32 +969,13 @@ If you would like to improve NotesApp:
 5. Open a Pull Request.
 
 For significant feature proposals, please open an issue first to discuss the idea.
+</details>
 
 ---
 
-# 👨‍💻 Developer
-
-## Harsha Apoorv
-
-Full Stack Mobile Application Developer
-
-Passionate about building scalable mobile applications, backend systems, and AI-powered productivity tools.
-
-### Portfolio
-
-https://www.harshaapoorv.com
-
-### GitHub
-
-https://github.com/Harshaapoorv
-
-### LinkedIn
-
-https://www.linkedin.com/in/harshaapoorv/
-
----
-
-# 🙏 Acknowledgements
+<a id="acknowledgements"></a>
+<details>
+<summary><strong>🙏 Acknowledgements></summary>
 
 Special thanks to the open-source community and the creators of the technologies that made this project possible.
 
@@ -930,10 +990,31 @@ Special thanks to the open-source community and the creators of the technologies
 - Resend
 - Neon
 - Render
+</details>
 
 ---
 
-# 📄 License
+<a id="developer"></a>
+## 👨‍💻 Developer
+
+<strong>Harsha Apoorv</strong>
+
+Full Stack Mobile Application Developer
+
+Specializing in:
+
+- React Native
+- FastAPI
+- PostgreSQL
+- Mobile Application Architecture
+- Backend Engineering
+- Full Stack Product Development
+
+🌐 [Portfolio](https://www.harshaapoorv.com)  💼 [LinkedIn](https://www.linkedin.com/in/harshaapoorv)  💻 [GitHub](https://github.com/Harshaapoorv)
+
+---
+
+## 📄 License
 
 This project is licensed under the MIT License.
 
